@@ -59,7 +59,7 @@ Certifique-se de ter instalado em sua máquina:
 2.  **Configurar o Backend (PHP):**
 
       * Navegue até a pasta `backend`: `cd backend`
-      * Crie o banco de dados `green_oasis` no seu MySQL.
+      * Crie o banco de dados `gardenme` no seu MySQL.
       * Configure as credenciais do banco de dados no arquivo `backend/api/config/database.php` (ou equivalente).
       * Importe o esquema do banco de dados e os dados de exemplo (se houver) usando o arquivo `backend/api/database/schema.sql`.
       * Certifique-se de que seu servidor web (Apache/Nginx) está configurado para apontar para a pasta `backend/public` e que as regras de reescrita de URL (`.htaccess`) estão ativas para o PHP.
@@ -96,5 +96,3 @@ Este projeto foi desenvolvido como parte do Projeto Integrador do Senac por:
 ## 🌟 **Agradecimentos**
 
 Agradecemos ao Senac pela oportunidade e orientação neste projeto desafiador e enriquecedor\!
-
------
