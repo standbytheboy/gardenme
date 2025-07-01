@@ -85,7 +85,7 @@ export const Navbar = () => {
         className="
           fixed top-0 left-0 z-10 flex justify-between items-center
           px-5 h-[85px] w-full text-[#5B5968] shadow-lg shadow-black/5
-          bg-white
+          bg-[#386641]
         "
       >
         <img src="" alt="Logo" className="mr-6 h-9 w-9" />

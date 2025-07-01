@@ -1,8 +1,6 @@
 import { useRef, useState } from "react";
 import type { FC } from "react";
-import "./Accordion.css";
 import { ChevronDown } from "akar-icons";
-
 
 // Define the shape of a single accordion item
 interface AccordionItemData {
@@ -26,28 +24,36 @@ const AccordionItem: FC<AccordionItemProps> = ({ handleToggle, active, item, ind
   const isActive = active === index;
 
   return (
-    <li className="accordion-item">
+    <li className="list-none m-0 p-0"> {}
       <h2
-        className={isActive ? "active" : ""}
+        className={`
+          flex items-center gap-5 h-12 px-2.5 pl-5 rounded-lg cursor-pointer
+          mb-2.5 text-[#A7C957] text-base font-bold transition-all duration-300
+          opacity-70
+          ${isActive ? "opacity-100" : ""}
+          hover:bg-[#A7C95750] hover:opacity-100
+        `}
         onClick={() => handleToggle(index)}
       >
         {header}
-        <ChevronDown 
-          strokeWidth={2} 
-          size={20} 
-          className={`chevron-icon ${isActive ? "rotate" : ""}`} 
+        <ChevronDown
+          strokeWidth={4}
+          size={20}
+          className={`transition-transform duration-300 ease-in-out ${isActive ? "rotate-180" : ""}`}
         />
       </h2>
       <div
         ref={contentEl}
-        className="accordion-content"
+        className="relative h-0 overflow-hidden transition-all duration-500 ease-in-out"
         style={
           isActive
             ? { height: contentEl.current?.scrollHeight || 0 }
             : { height: 0 }
         }
       >
-        <p>{content}</p>
+        <p className="px-5 pb-2.5 leading-relaxed text-sm m-0 opacity-65 cursor-pointer">
+          {content}
+        </p>
       </div>
     </li>
   );
@@ -64,7 +70,7 @@ export const Accordion: FC<AccordionProps> = ({ items }) => {
   const handleToggle = (index: number) => setActive(active === index ? null : index);
 
   return (
-    <ul className="accordion">
+    <ul className="list-none m-0 p-0"> {/* .accordion */}
       {items.map((item, index) => (
         <AccordionItem
           key={index}
