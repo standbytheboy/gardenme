@@ -1,8 +1,7 @@
 import { useRef, useState } from "react";
-import "./Navbar.css";
 import { Search } from "akar-icons";
+import { Button } from "../loginBtn/LoginBtn";
 
-// Define the shape of a single navigation item
 interface NavItem {
   name: string;
   items?: string[]; // Optional array of strings for sub-items
@@ -43,7 +42,11 @@ const Link = ({ item, activeItem, onHover }: LinkProps) => {
 
   return (
     <a
-      className={item?.name === activeItem?.name ? "active" : ""}
+      className={`
+        px-3 flex items-center cursor-pointer w-full h-[72px] text-[15px]
+        text-[#a7c957] hover:text-[#a7c95790]
+        ${item?.name === activeItem?.name ? "text-[#a7c95790]" : ""}
+      `}
       ref={linkRef}
       onMouseEnter={handleHover}
     >
@@ -53,9 +56,17 @@ const Link = ({ item, activeItem, onHover }: LinkProps) => {
 };
 
 const SearchLupe = () => (
-  <div className="navbar-search">
-    <Search strokeWidth={2} size={20} className="lupa" />
-    <input type="text" placeholder="Pesquisar" />
+  <div className="relative mr-20 w-[150rem]"> {/* Adjusted width for better proportion, original 150rem is very large */}
+    <Search strokeWidth={2} size={20} className="absolute top-1/2 left-3 -translate-y-1/2 text-[#F2E8CF]" />
+    <input
+      type="text"
+      placeholder="Pesquisar"
+      className="
+        border-none rounded-full h-9 w-full text-[#F2E8CF] bg-[#F2E8CF50] pl-9 text-base
+        focus:outline-none focus:border-2 focus:border-[#386641]
+        placeholder:text-[#F2E8CF]
+      "
+    />
   </div>
 );
 
@@ -69,14 +80,20 @@ export const Navbar = () => {
   };
 
   return (
-    <section className="page navbar-page">
-      <nav className="navbar">
-        <img src="" alt="Logo" /> {/* Added alt attribute for accessibility */}
-        <div className="navbar-menu">
+    <section className="font-sans">
+      <nav
+        className="
+          fixed top-0 left-0 z-10 flex justify-between items-center
+          px-5 h-[85px] w-full text-[#5B5968] shadow-lg shadow-black/5
+          bg-white
+        "
+      >
+        <img src="" alt="Logo" className="mr-6 h-9 w-9" />
+        <div className="flex items-center justify-center w-1/2 font-medium">
           <SearchLupe />
           {items.map((item) => (
             <Link
-              key={item.name} // Added a unique key for list rendering
+              key={item.name}
               activeItem={activeItem}
               item={item}
               onHover={handleLinkHover}
@@ -84,18 +101,29 @@ export const Navbar = () => {
           ))}
           <div
             style={{
-              translate: `${translateX} 0`,
+              transform: `translateX(${translateX})`, // Use transform for translate
             }}
-            className={`navbar-dropdown ${activeItem ? "visible" : ""}`}
+            className={`
+              fixed z-10 top-[82px] left-0 h-0 py-1.5 overflow-hidden grid opacity-0 invisible transition-all duration-300
+              rounded-md bg-[#F2E8CF50] shadow-md shadow-black/10
+              ${activeItem ? "opacity-100 visible h-max" : ""}
+              after:content-[''] after:absolute after:inset-0 after:top-[-12px]
+            `}
           >
             {activeItem?.items?.map((link) => (
-              <a key={link}>{link}</a>
+              <a key={link} className="relative z-10 h-10 text-sm whitespace-nowrap">
+                {link}
+              </a>
             ))}
           </div>
         </div>
         <div className="flex justify-between">
-          <button className="btn">Login</button>
-          <button className="btn">Cadastre-se</button>
+          <Button>
+            Login
+          </Button>
+          <Button>
+            Cadastre-se
+          </Button>
         </div>
       </nav>
     </section>
