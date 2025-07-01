@@ -91,10 +91,12 @@ export const Navbar = () => {
             {activeItem?.items?.map((link) => (
               <a key={link}>{link}</a>
             ))}
-        </div>
           </div>
+        </div>
+        <div className="flex justify-between">
           <button className="btn">Login</button>
           <button className="btn">Cadastre-se</button>
+        </div>
       </nav>
     </section>
   );
