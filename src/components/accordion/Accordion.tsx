@@ -32,7 +32,6 @@ const AccordionItem: FC<AccordionItemProps> = ({ handleToggle, active, item, ind
         onClick={() => handleToggle(index)}
       >
         {header}
-        {/* Add a class for rotation based on active state */}
         <ChevronDown 
           strokeWidth={2} 
           size={20} 

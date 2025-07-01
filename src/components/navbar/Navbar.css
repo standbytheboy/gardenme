@@ -1,0 +1,127 @@
+.page.navbar-page {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .navbar {
+    --color-primary: #A7C957;
+    --color-primary-hover: #A7C95790;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 72px;
+    width: 100%;
+    color: #5b5968;
+    box-shadow: 0 10px 50px rgb(0 0 0 / 2%);
+  }
+  
+  .navbar a {
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    width: 100%;
+    height: 72px;
+    font-size: 15px;
+  }
+  
+  .navbar > img {
+    margin: 0 24px 0 0;
+    height: 36px;
+    width: 36px;
+  }
+  
+  .navbar-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    font-weight: 500;
+  }
+  
+  .navbar-dropdown {
+    position: fixed;
+    z-index: 1;
+    top: 82px;
+    left: 0;
+    height: 0;
+    padding: 6px 0;
+    overflow: hidden;
+    display: grid;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+    border-radius: 6px;
+    background: #F2E8CF50;
+    box-shadow: 0 0 30px rgb(0 0 0 / 4%);
+    transition: 0.3s;
+  }
+
+  .navbar a {
+    color: var(--color-primary);
+  }
+  
+  .navbar a:is(:hover, .active) {
+    color: var(--color-primary-hover);
+  }
+  
+  .navbar-dropdown.visible {
+    opacity: 1;
+    visibility: visible;
+    height: max-content;
+  }
+  
+  .navbar-dropdown::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    top: -12px;
+  }
+  
+  .navbar-dropdown > a {
+    position: relative;
+    z-index: 1;
+    height: 40px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  
+  .navbar-search {
+    position: relative;
+    margin-left: auto;
+    width: 100rem;
+  }
+  
+  .navbar-search .lupa {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    translate: 0 -50%;
+    font-size: 18px;
+  }
+  
+  .navbar-search input {
+    border: 0;
+    border-radius: 6px;
+    height: 36px;
+    width: 100%;
+    max-width: 200px;
+    background: #F2E8CF50;
+    padding-left: 36px;
+    font-size: 15px;
+  }
+  
+  .navbar-search .lupa,
+  .navbar-search input::placeholder {
+    color: #F2E8CF;
+  }
+
+  .btn {
+    width: 10rem;
+    color: #386641;
+    background-color: #F2E8CF;
+    border-radius: 10rem;
+  }

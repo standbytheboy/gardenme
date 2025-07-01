@@ -1,4 +1,3 @@
-/* Existing CSS */
 .accordion {
   list-style: none;
   margin: 0;
@@ -8,8 +7,7 @@
 .accordion-item h2 {
   display: flex;
   align-items: center;
-  /* Add justify-content to push the icon to the right */
-  justify-content: space-between; /* This will push header text to left and icon to right */
+  justify-content: space-between; 
   height: 48px;
   padding: 0 10px 0 20px;
   border-radius: 8px;
@@ -32,26 +30,13 @@
   background: #3472ff;
   opacity: 1;
 }
-
-/* --- New/Modified CSS for Chevron Rotation --- */
-
-/* Base style for the icon - add transition */
 .chevron-icon {
-  transition: transform 0.3s ease; /* Smooth transition for rotation */
+  transition: transform 0.3s ease; 
 }
 
-/* Style when the accordion item is active */
 .chevron-icon.rotate {
-  transform: rotate(-180deg); /* Rotate 180 degrees when active */
+  transform: rotate(-180deg); 
 }
-
-/* You can remove or adjust your old rule if it's no longer needed or conflicting */
-/* .accordion-item h2.active > span:last-child {
-  rotate: -180deg;
-} */
-/* If ChevronDown renders as a direct SVG, this old rule might not apply to it as 'span' */
-
-/* Existing CSS for content */
 .accordion-item p {
   padding: 0 20px 10px;
   line-height: 1.7;
