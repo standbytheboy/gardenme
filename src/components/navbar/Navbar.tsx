@@ -84,7 +84,7 @@ export const Navbar = () => {
       <nav
         className="
           fixed top-0 left-0 z-10 flex justify-between items-center
-          px-5 h-[85px] w-full text-[#5B5968] shadow-lg shadow-black/5
+          px-5 h-[85px] w-full text-[#5B5968]
           bg-[#386641]
         "
       >
