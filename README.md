@@ -83,6 +83,10 @@ Certifique-se de ter instalado em sua máquina:
 
 -----
 
+## 👥 **Estrutura do Banco de Dados**
+![Tabelas Do Banco](./backend/api/database/gardenme.png)
+
+----- 
 ## 👥 **Equipe de Desenvolvimento**
 
 Este projeto foi desenvolvido como parte do Projeto Integrador do Senac por:
