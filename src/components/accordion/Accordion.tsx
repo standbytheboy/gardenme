@@ -3,7 +3,7 @@ import type { FC } from "react";
 import { ChevronDown } from "akar-icons";
 
 // Define the shape of a single accordion item
-interface AccordionItemData { 
+interface AccordionItemData{ 
   header: string;
   content: string;
 }
