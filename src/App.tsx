@@ -1,11 +1,11 @@
 import "./App.css";
-import { Header } from "./components/header/Header.tsx"
+import { ActionBtn } from "./components/actionBtn/ActionBtn";
 
 function App() {
   return (
     <>
       <div>
-        <Header></Header>
+        <ActionBtn>Todas as Categorias</ActionBtn> 
       </div>
     </>
   );
