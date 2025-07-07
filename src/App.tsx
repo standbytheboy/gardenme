@@ -1,11 +1,11 @@
 import "./App.css";
-import { ActionBtn } from "./components/actionBtn/ActionBtn";
+import { PlantCard } from "./components/plantCard/PlantCard";
 
 function App() {
   return (
     <>
       <div>
-        <ActionBtn>Todas as Categorias</ActionBtn> 
+        <PlantCard></PlantCard>
       </div>
     </>
   );
