@@ -1,0 +1,17 @@
+{
+    "name": "seu-nome/gardenme-backend",
+    "description": "API para o projeto GardenMe.",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Seu Nome",
+            "email": "seu-email@exemplo.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Garden\\": "src/"
+        }
+    }
+}
