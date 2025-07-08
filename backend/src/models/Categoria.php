@@ -52,4 +52,21 @@ class Categoria {
             return null;
         }
     }
+
+    public function criar(array $dados) {
+            $sql = 'INSERT INTO categorias (nome_categoria) VALUES (:nome_categoria)';
+        
+
+        try {
+            $conn = \Garden\Core\Database::getInstance();
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindParam(':nome_categoria', $dados['nome_categoria']);
+
+            $stmt->execute();
+            return $conn->lastInsertId(); 
+        } catch (\PDOException $e) {
+            return false;
+        }
+    }
 }

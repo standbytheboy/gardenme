@@ -71,4 +71,27 @@ class Usuario {
             return null;
         }
     }
+
+        public function criar(array $dados) {
+            $sql = 'INSERT INTO usuario (nome, sobrenome, email, senha_hash)
+                    VALUES (:nome, :sobrenome, :email, :senha_hash)';
+        
+
+        try {
+            $conn = \Garden\Core\Database::getInstance();
+            $stmt = $conn->prepare($sql);
+
+            $senhaCriptografada = password_hash($dados['senha'], PASSWORD_ARGON2ID);
+
+            $stmt->bindParam(':nome', $dados['nome']);
+            $stmt->bindParam(':sobrenome', $dados['sobrenome']);
+            $stmt->bindParam(':email', $dados['email']);
+            $stmt->bindParam(':senha_hash', $senhaCriptografada);
+
+            $stmt->execute();
+            return $conn->lastInsertId();
+        } catch (\PDOException $e) {
+            return false;
+        }
+    }
 }
