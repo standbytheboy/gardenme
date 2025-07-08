@@ -41,8 +41,7 @@ class Categoria {
                     categorias
                     WHERE
                     id_categoria = :id';
-                    
-            $conn = \Garden\Core\Database::getInstance();
+
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();

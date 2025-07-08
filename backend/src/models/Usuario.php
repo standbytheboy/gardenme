@@ -55,4 +55,20 @@ class Usuario {
             return null;
         }
     }
+
+    public function buscarPorEmail(string $email): ?array {
+        try {
+            $conn = \Garden\Core\Database::getInstance();
+
+            $sql = 'SELECT * FROM usuario WHERE email = :email';
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->execute();
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            return $resultado ?: null;
+        } catch (\PDOException $e) {
+            return null;
+        }
+    }
 }
