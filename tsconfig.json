@@ -1,7 +1,33 @@
+// tsconfig.app.json (exemplo)
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tsbuildinfo",
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "baseUrl": "./", // Pode ser necessário dependendo da sua estrutura
+    "paths": { // Pode ser necessário se você usa aliases de caminho
+      // ...
+    }
+  },
+  "include": ["src"], // <-- ESSA LINHA É CRUCIAL. Garanta que ela inclua 'src'.
+  "references": [{ "path": "./tsconfig.node.json" }] // Se for uma sub-referência
 }

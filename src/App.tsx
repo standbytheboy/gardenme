@@ -1,13 +1,11 @@
-import "./App.css";
-import { PlantCard } from "./components/plantCard/PlantCard";
+import { Carousel } from "./components/carousel/Carousel";
 
 function App() {
+
   return (
-    <>
-      <div>
-        <PlantCard></PlantCard>
-      </div>
-    </>
+    <div className="min-h-screen bg-gray-100 p-8 flex items-center justify-center">
+      <Carousel></Carousel>
+    </div>
   );
 }
 
