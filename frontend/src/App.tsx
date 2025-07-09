@@ -1,7 +1,10 @@
-function App() {
+import ShoppingCart from './components/shoppingCart/ShoppingCart.tsx';
+import './index.css'; // Importe o CSS global do Tailwind
 
+function App() {
   return (
-    <div className="min-h-screen bg-gray-100 p-8 flex items-center justify-center">
+    <div className="App">
+      <ShoppingCart />
     </div>
   );
 }
