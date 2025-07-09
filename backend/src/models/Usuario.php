@@ -94,4 +94,36 @@ class Usuario {
             return false;
         }
     }
-}
+
+    public function atualizar(int $id, array $dados) {
+         $camposParaAtualizar = [];
+
+         foreach(array_keys($dados) as $campo) {
+            if ($campo === 'senha') {
+                $camposParaAtualizar[] = "senha_hash = :senha_hash";
+            } else {
+                $camposParaAtualizar[] = "{$campo} = :{$campo}";
+            }
+         }
+         $listaDeCampos = implode(', ', $camposParaAtualizar);
+
+         $sql = "UPDATE usuario SET {$listaDeCampos} WHERE id_usuario = :id";
+
+         try {
+            $conn = \Garden\Core\Database::getInstance();
+            $stmt = $conn->prepare($sql);
+
+            foreach ($dados as $campo => $valor) {
+                if ($campo === 'senha') {
+                    $senhaCriptografada = password_hash($valor, PASSWORD_ARGON2ID);
+                    $stmt->bindValue(":senha_hash", $senhaCriptografada);
+                } else {
+                    $stmt->bindValue(":{$campo}", $valor);
+                }
+            }
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
+    } catch (\PDOException $e) {
+        return false; 
+    }
+}}

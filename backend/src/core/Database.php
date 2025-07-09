@@ -12,7 +12,6 @@ class Database {
     private const DB_USER = 'root';
     private const DB_PASS = '';
 
-    private function __construct() {}
 
     public static function getInstance(): PDO
     {
