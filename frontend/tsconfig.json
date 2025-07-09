@@ -23,11 +23,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "baseUrl": "./", // Pode ser necessário dependendo da sua estrutura
+    "baseUrl": "./",
     "paths": { // Pode ser necessário se você usa aliases de caminho
       // ...
     }
   },
-  "include": ["src"], // <-- ESSA LINHA É CRUCIAL. Garanta que ela inclua 'src'.
+  "include": ["src"], 
   "references": [{ "path": "./tsconfig.node.json" }] // Se for uma sub-referência
 }
