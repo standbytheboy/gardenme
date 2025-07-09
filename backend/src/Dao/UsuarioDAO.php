@@ -1,71 +1,27 @@
 <?php
 
-namespace Garden\Models;
+namespace Garden\Dao;
+
 use PDO;
 use Garden\Core\Database;
+use Garden\Models\Usuario;
 
-class Usuario {
-    public function listarTodos(): array {
-        try {
-            $conn = \Garden\Core\Database::getInstance();
+class UsuarioDAO {
+    private PDO $conn;
 
-            $sql = 'SELECT
-                        id_usuario,
-                        nome,
-                        sobrenome,
-                        email,
-                        criado_em,
-                        atualizado_em
-                      FROM
-                        usuario -- Tabela no singular
-                      ORDER BY
-                        nome ASC';
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            return [];
-        }
-    }
-
-    public function buscarPorId(int $id): ?array {
-        try {
-            $conn = \Garden\Core\Database::getInstance();
-
-            $sql = 'SELECT
-                        id_usuario,
-                        nome,
-                        sobrenome,
-                        email,
-                        criado_em,
-                        atualizado_em
-                    FROM
-                        usuario -- Tabela no singular
-                    WHERE
-                        id_usuario = :id';
-                        
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-            return $resultado ?: null;
-        } catch (\PDOException $e) {
-            return null;
-        }
+    public function __construct() {
+        $this->conn = \Garden\Core\Database::getInstance();
     }
 
     public function buscarPorEmail(string $email): ?array {
         try {
-            $conn = \Garden\Core\Database::getInstance();
-
             $sql = 'SELECT * FROM usuario WHERE email = :email';
-            $stmt = $conn->prepare($sql);
+            
+            $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
+            
             $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-    
             return $resultado ?: null;
         } catch (\PDOException $e) {
             return null;
@@ -73,13 +29,11 @@ class Usuario {
     }
 
         public function criar(array $dados) {
+        try {
             $sql = 'INSERT INTO usuario (nome, sobrenome, email, senha_hash)
                     VALUES (:nome, :sobrenome, :email, :senha_hash)';
-        
-
-        try {
-            $conn = \Garden\Core\Database::getInstance();
-            $stmt = $conn->prepare($sql);
+            
+            $stmt = $this->conn->prepare($sql);
 
             $senhaCriptografada = password_hash($dados['senha'], PASSWORD_ARGON2ID);
 
@@ -89,7 +43,7 @@ class Usuario {
             $stmt->bindParam(':senha_hash', $senhaCriptografada);
 
             $stmt->execute();
-            return $conn->lastInsertId();
+            return $this->conn->lastInsertId();
         } catch (\PDOException $e) {
             return false;
         }
@@ -110,8 +64,7 @@ class Usuario {
          $sql = "UPDATE usuario SET {$listaDeCampos} WHERE id_usuario = :id";
 
          try {
-            $conn = \Garden\Core\Database::getInstance();
-            $stmt = $conn->prepare($sql);
+            $stmt = $this->conn->prepare($sql);
 
             foreach ($dados as $campo => $valor) {
                 if ($campo === 'senha') {
@@ -122,8 +75,9 @@ class Usuario {
                 }
             }
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            
             return $stmt->execute();
-    } catch (\PDOException $e) {
-        return false; 
-    }
+        } catch (\PDOException $e) {
+            return false;
+        }
 }}
