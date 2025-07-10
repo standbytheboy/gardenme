@@ -1,12 +1,12 @@
-import ShoppingCart from './components/shoppingCart/ShoppingCart';
 import Footer from './components/footer/Footer';
+import CheckoutPage from './components/checkoutPage/CheckoutPage'; // Importe o novo componente
 import './index.css';
 
 function App() {
   return (
-    <div className="App flex flex-col min-h-screen"> {/* Adicione flex-col e min-h-screen para o footer ir pro final */}
-      <main className="flex-grow"> {/* Isso fará com que o main ocupe o espaço restante empurrando o footer */}
-        <ShoppingCart />
+    <div className="App flex flex-col min-h-screen">
+      <main className="flex-grow">
+        <CheckoutPage /> {/* Renderize a tela de finalizar compra */}
       </main>
       <Footer />
     </div>
