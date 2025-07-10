@@ -1,10 +1,10 @@
-import SignupPage from './components/signUpPage/SignUpPage'; 
+import UserProfileSettings from './components/userProfileSettings/UserProfileSettings';
 import './index.css'; 
 
 function App() {
   return (
     <div className="App">
-    <SignupPage />
+    <UserProfileSettings />
     </div>
   );
 }
