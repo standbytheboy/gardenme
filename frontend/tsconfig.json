@@ -1,4 +1,3 @@
-// tsconfig.app.json (exemplo)
 {
   "compilerOptions": {
     "composite": true,
@@ -24,10 +23,9 @@
     "noFallthroughCasesInSwitch": true,
 
     "baseUrl": "./",
-    "paths": { // Pode ser necessário se você usa aliases de caminho
+    "paths": { // Pode ser necessário para usar aliases de caminho
       // ...
     }
   },
-  "include": ["src"], 
-  "references": [{ "path": "./tsconfig.node.json" }] // Se for uma sub-referência
+  "include": ["src"]
 }
