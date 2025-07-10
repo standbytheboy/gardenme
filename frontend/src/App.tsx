@@ -1,10 +1,15 @@
-import OrderSuccessPage from './components/orderSucessPage/OrderSucessPage.tsx'; // Importe o novo componente
-import './index.css';
+import LoginPage from './components/loginPage/LoginPage';   
+import SignupPage from './components/signUpPage/SignUpPage'; 
+import './index.css'; 
 
 function App() {
   return (
     <div className="App">
-      <OrderSuccessPage orderNumber="123456789" /> {/* Passe um número de pedido opcional */}
+      <LoginPage />
+      {/* <SignupPage /> */}
+      {/* <OrderSuccessPage /> */}
+      {/* <ShoppingCart /> */}
+      {/* <CheckoutPage /> */}
     </div>
   );
 }
