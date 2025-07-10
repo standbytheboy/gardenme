@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../../assets/apple-logo.svg";
-
-// Assumindo que você tem um logo para o Garden Me
-// import gardenMeLogo from '../assets/garden-me-logo.png'; // Ajuste o caminho conforme necessário
+// import gardenMeLogo from '../assets/garden-me-logo.png';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +9,7 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica para fazer login
+
     console.log("Email:", email);
     console.log("Senha:", password);
     alert("Fazer Login (Lógica não implementada)");
