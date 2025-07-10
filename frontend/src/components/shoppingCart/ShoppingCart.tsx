@@ -21,7 +21,7 @@ const ShoppingCart: React.FC = () => {
       kit: 'Kit Completo',
       price: 59.99,
       quantity: 2,
-      image: aloeImage, // Placeholder image
+      image: aloeImage,
     },
     {
       id: '2',
@@ -86,13 +86,13 @@ const ShoppingCart: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-green p-4 md:p-8 flex flex-col items-center">
+    <div className="min-h-screen bg-[#3E6F52] p-4 md:p-8 flex flex-col items-center">
 
-      <h1 className="w-full max-w-7xl text-4xl font-bold text-text-light mb-8 self-start">Seu Carrinho</h1>
+      <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">Seu Carrinho</h1>
 
       <div className="w-full max-w-7xl flex flex-col lg:flex-row gap-8">
         {/* Lista de Itens do Carrinho */}
-        <div className="flex-1 bg-primary-green p-6 rounded-lg shadow-lg">
+        <div className="flex-1 bg-[#F2E8CF] p-6 rounded-4xl shadow-lg">
           {cartItems.map((item) => (
             <CartItem
               key={item.id}
@@ -103,7 +103,7 @@ const ShoppingCart: React.FC = () => {
         </div>
 
         {/* Resumo do Pedido */}
-        <div className="lg:w-96 bg-card-bg p-6 rounded-lg shadow-lg self-start sticky top-8">
+        <div className="lg:w-96 bg-[#F2E8CF] p-6 rounded-4xl shadow-lg self-start sticky top-8">
           <h2 className="text-xl font-semibold mb-4 text-text-dark">Subtotal</h2>
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-600">Subtotal</span>
@@ -118,7 +118,7 @@ const ShoppingCart: React.FC = () => {
             <span>Total</span>
             <span>R$ {total.toFixed(2).replace('.', ',')}</span>
           </div>
-          <button className="w-full bg-button-green text-text-light py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300">
+          <button className="w-full bg-[#A7C957] text-[#386641] py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300">
             Continuar Compra
           </button>
         </div>
