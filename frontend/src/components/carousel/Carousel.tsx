@@ -4,7 +4,7 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "./Carousel.css"; // Mantenha este para o box-reflect e quaisquer outros estilos customizados
 
-import { PlantCard } from '../plantCard/PlantCard';
+import { PlantCard } from '../PlantCard';
 
 export const Carousel = () => {
     const plantCardsData = [

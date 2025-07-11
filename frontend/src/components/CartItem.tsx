@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Interface para definir a estrutura de um item do carrinho
 interface CartItemProps {
   id: string;
   name: string;

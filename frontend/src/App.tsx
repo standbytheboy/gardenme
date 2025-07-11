@@ -1,10 +1,10 @@
-import UserProfileSettings from './components/UserProfileSettings';
+import PopularCategories from './components/PopularCategories';
 import './index.css'; 
 
 function App() {
   return (
     <div className="App">
-    <UserProfileSettings />
+    <PopularCategories />
     </div>
   );
 }
