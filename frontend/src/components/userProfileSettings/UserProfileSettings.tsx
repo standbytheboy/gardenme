@@ -37,7 +37,7 @@ const UserProfileSettings: React.FC = () => {
       <div className="flex flex-col lg:flex-row gap-8 w-full max-w-7xl h-[95vh] rounded-lg overflow-hidden">
         <Sidebar9 activeMenuItem={activeMenuItem} setActiveMenuItem={setActiveMenuItem} />
 
-        <div className="flex-1 bg-[#344E41] p-6 rounded-lg shadow-lg overflow-auto">
+        <div className="flex-1 bg-[#344E41] p-15 rounded-lg shadow-lg overflow-auto flex flex-col justify-center">
           <h2 className="text-2xl font-bold text-[#A7C957] mb-6">{activeMenuItem}</h2>
 
           {activeMenuItem === 'Meus Dados' && (
