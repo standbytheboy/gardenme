@@ -1,4 +1,4 @@
-import UserProfileSettings from './components/userProfileSettings/UserProfileSettings';
+import UserProfileSettings from './components/UserProfileSettings';
 import './index.css'; 
 
 function App() {
