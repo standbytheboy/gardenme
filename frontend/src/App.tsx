@@ -1,10 +1,11 @@
-import PopularCategories from './components/PopularCategories';
-import './index.css'; 
+import TestimonialsCarousel from './components/Testimonials.tsx'; 
+import './index.css';
 
 function App() {
   return (
     <div className="App">
-    <PopularCategories />
+      <TestimonialsCarousel />
+      
     </div>
   );
 }
