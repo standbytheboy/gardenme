@@ -23,13 +23,9 @@ export const Sidebar9: React.FC<Sidebar9Props> = ({ activeMenuItem, setActiveMen
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    // Removidas as classes de posicionamento e background da section e do overlay.
-    // Essas responsabilidades serão do componente pai (UserProfileSettings).
-    // O sidebar terá h-full para se esticar dentro do container flex do pai.
     <aside
-      // Restaurado 'border border-white border-opacity-60' e 'text-gray-50' para os itens do menu
-      className={`rounded-2xl border border-white border-opacity-60 bg-[#00000030] backdrop-blur-md transition-all duration-450 ease-in-out h-full
-        ${isOpen ? "w-48" : "w-14"} 
+      className={`rounded-2xl bg-[#00000050] backdrop-blur-md transition-all duration-450 ease-in-out h-full flex justify-center items-center
+        ${isOpen ? "w-50" : "w-20"} 
       `}
       style={{ transitionProperty: 'width' }}
     >
@@ -54,9 +50,9 @@ export const Sidebar9: React.FC<Sidebar9Props> = ({ activeMenuItem, setActiveMen
               key={item.name}
               type="button"
               onClick={() => setActiveMenuItem(item.name)} // Atualiza o estado no pai
-              className={`group flex items-center h-11 font-sans text-sm capitalize leading-none px-3 rounded-lg opacity-70 text-gray-50 transition-all duration-300 ease-in-out {/* RESTAURADO: Cor do texto: #f9f9f9 -> text-gray-50 */}
+              className={`group flex items-center h-11 font-sans text-sm capitalize leading-none px-3 rounded-lg opacity-70 transition-all duration-300 ease-in-out text-gray-50
                 ${isOpen ? 'w-full' : 'w-11'} 
-                ${activeMenuItem === item.name ? 'bg-white bg-opacity-10 opacity-100 font-semibold' : 'hover:bg-white hover:bg-opacity-10 hover:opacity-100'} {/* Estilo para item ativo (mantém o hover original) */}
+                ${activeMenuItem === item.name ? 'bg-[#ffffff50] bg-opacity-10 opacity-100 font-semibold' : 'hover:bg-[#ffffff20] hover:bg-opacity-10 hover:opacity-100'}
               `}
             >
               <item.icon size={20} className="flex-shrink-0 mr-5" />

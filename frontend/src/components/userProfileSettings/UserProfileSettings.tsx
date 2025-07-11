@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import userProfilePic from '../../assets/profile-picture.avif'; // Certifique-se de que o caminho está correto
-import { Sidebar9 } from '../sidebarUserSettings/SidebarUserSettings.tsx'; // Caminho corrigido para o seu Sidebar9
+import userProfilePic from '../../assets/profile-picture.avif'; 
+import { Sidebar9 } from '../sidebarUserSettings/SidebarUserSettings.tsx'; 
 
 const UserProfileSettings: React.FC = () => {
   // Estados para os dados do usuário
@@ -32,24 +32,16 @@ const UserProfileSettings: React.FC = () => {
   };
 
   return (
-    // Container principal da página - agora flex para centralizar todo o conteúdo
     <div className="min-h-screen flex items-center justify-center bg-[#386641] p-4 md:p-8">
 
-      {/* Conteúdo principal: Sidebar + Painel de Dados */}
-      {/* Este div agora tem a altura de 95vh, largura máxima e está centralizado pelo pai */}
-      {/* Removido o div 'fixed inset-0 z-0' daqui, pois o bg-[#386641] já é o fundo da tela */}
       <div className="flex flex-col lg:flex-row gap-8 w-full max-w-7xl h-[95vh] rounded-lg overflow-hidden">
-        {/* Sidebar - Componente isolado */}
         <Sidebar9 activeMenuItem={activeMenuItem} setActiveMenuItem={setActiveMenuItem} />
 
-        {/* Painel de Conteúdo (Meus Dados) - Fundo: #344E41, Título: #A7C957 */}
         <div className="flex-1 bg-[#344E41] p-6 rounded-lg shadow-lg overflow-auto">
           <h2 className="text-2xl font-bold text-[#A7C957] mb-6">{activeMenuItem}</h2>
 
-          {/* Renderização condicional do conteúdo com base no item de menu ativo */}
           {activeMenuItem === 'Meus Dados' && (
             <form onSubmit={handleSalvarAlteracoes} className="space-y-6">
-              {/* Foto de Perfil - Label: #A7C957, Borda da foto: #A7C957, Botões: #A7C957 / #386641 / #EF4444 */}
               <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                 <span className="text-lg text-[#A7C957] min-w-[120px]">Foto de perfil</span>
                 <div className="flex items-center space-x-4 flex-1">
@@ -77,7 +69,6 @@ const UserProfileSettings: React.FC = () => {
                 </div>
               </div>
 
-              {/* Nome - Label: #A7C957, Inputs BG: #00000030, Text: #fff, Placeholder: #D4EDC8 */}
               <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 items-baseline justify-between">
                 <label htmlFor="firstName" className="text-lg text-[#A7C957] min-w-[120px]">Nome</label>
                 <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 max-w-[30rem] flex-none">
@@ -100,7 +91,6 @@ const UserProfileSettings: React.FC = () => {
                 </div>
               </div>
 
-              {/* Endereço de email - Label: #A7C957, Input BG: #00000030, Text: #fff, Placeholder: #D4EDC8 */}
               <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 items-baseline justify-between">
                 <label htmlFor="email" className="text-lg text-[#A7C957] min-w-[120px]">Endereço de email</label>
                 <input
@@ -113,7 +103,6 @@ const UserProfileSettings: React.FC = () => {
                 />
               </div>
 
-              {/* País - Label: #A7C957, Input BG: #00000030, Text: #fff, Placeholder: #D4EDC8 */}
               <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 items-baseline justify-between">
                 <label htmlFor="country" className="text-lg text-[#A7C957] min-w-[120px]">País</label>
                 <input
@@ -126,7 +115,6 @@ const UserProfileSettings: React.FC = () => {
                 />
               </div>
 
-              {/* Sobre mim - Label: #A7C957, Textarea BG: #00000030, Text: #fff, Placeholder: #D4EDC8 */}
               <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 items-start justify-between">
                 <label htmlFor="aboutMe" className="text-lg text-[#A7C957] min-w-[120px] mt-2">Sobre mim</label>
                 <textarea
@@ -138,7 +126,6 @@ const UserProfileSettings: React.FC = () => {
                 ></textarea>
               </div>
 
-              {/* Botão Salvar alterações - BG: #A7C957, Text: #386641 */}
               <div className="flex justify-end pt-4">
                 <button
                   type="submit"
@@ -150,7 +137,6 @@ const UserProfileSettings: React.FC = () => {
             </form>
           )}
 
-          {/* Adicione outros conteúdos para outros itens do menu aqui */}
           {activeMenuItem === 'Segurança' && (
             <div className="text-lg text-white">Conteúdo de Segurança...</div>
           )}
