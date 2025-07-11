@@ -1,10 +1,10 @@
-import TestimonialsCarousel from './components/Testimonials.tsx'; 
+import WhyPlantWithUs from './components/WhyPlantWithUs';
 import './index.css';
 
 function App() {
   return (
     <div className="App">
-      <TestimonialsCarousel />
+      <WhyPlantWithUs />
       
     </div>
   );
