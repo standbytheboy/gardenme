@@ -24,24 +24,30 @@ class CategoriaDAO
             $stmt = $this->conn->query($sql);
             $stmt->execute();
 
-            return $stmt->fetchAll(PDO::FETCH_ASSOC, Categoria::class);
+            $listaDeDados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $categorias = [];
+
+            foreach ($listaDeDados as $dados) {
+                $categorias[] = $this->mapCategoria($dados);
+            }
+            return $categorias;
         } catch (\PDOException $e) {
             return [];
         }
     }
 
-    public function buscarPorId(int $id): ?array
+    public function buscarPorId(int $id): ?Categoria
     {
-       try {
+        try {
             $sql = 'SELECT * FROM categorias WHERE id_categoria = :id';
-            
+
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, Categoria::class);
-            
-            $resultado = $stmt->fetch();
-            return $resultado ?: null;
+
+            $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $dados ? $this->mapCategoria($dados) : null;
         } catch (\PDOException $e) {
             return null;
         }
@@ -51,10 +57,9 @@ class CategoriaDAO
     {
         try {
             $sql = 'INSERT INTO categorias (nome_categoria) VALUES (:nome_categoria)';
-            
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':nome_categoria', $categoria['nome_categoria']);
 
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':nome_categoria', $categoria->getNomeCategoria());
             $stmt->execute();
             return $this->conn->lastInsertId();
         } catch (\PDOException $e) {
@@ -75,16 +80,28 @@ class CategoriaDAO
         }
     }
 
-    public function deletar(int $id): bool {
+    public function deletar(int $id): bool
+    {
         try {
             $sql = 'DELETE FROM categorias WHERE id_categoria = :id';
-            
-            $stmt = $this->conn->prepare($sql); 
+
+            $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
             return $stmt->execute();
         } catch (\PDOException $e) {
             return false;
         }
+    }
+
+     private function mapCategoria(array $dados): Categoria
+    {
+        // A ordem aqui precisa bater com o construtor da sua classe Categoria
+        return new Categoria(
+            idCategoria: $dados['id_categoria'],
+            nomeCategoria: $dados['nome_categoria'],
+            criadoEm: $dados['criado_em'],
+            atualizacaoEm: $dados['atualizado_em']
+        );
     }
 }
