@@ -2,11 +2,18 @@
 
 namespace Garden\Models;
 
-class Entidade
+abstract class Entidade
 {
-    protected ?int $id = null;
-    protected ?string $criadoEm = null;
-    protected ?string $atualizadoEm = null;
+    protected ?int $id;
+    protected ?string $criadoEm;
+    protected ?string $atualizacaoEm;
+
+    public function __construct(?int $id, ?string $criadoEm, ?string $atualizacaoEm)
+    {
+        $this->id = $id;
+        $this->criadoEm = $criadoEm;
+        $this->atualizacaoEm = $atualizacaoEm;
+    }
 
     public function getId(): ?int
     {
@@ -20,6 +27,6 @@ class Entidade
 
     public function getAtualizadoEm(): ?string
     {
-        return $this->atualizadoEm;
+        return $this->atualizacaoEm;
     }
 }

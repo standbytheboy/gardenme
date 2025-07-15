@@ -1,10 +1,12 @@
 <?php
 
 namespace Garden\Core;
+
 use PDO;
 use PDOException;
 
-class Database {
+class Database
+{
     private static ?PDO $instance = null;
 
     private const DB_HOST = 'localhost';
@@ -13,24 +15,26 @@ class Database {
     private const DB_PASS = '';
 
 
+
     public static function getInstance(): PDO
     {
+        // die('ESTOU TENTANDO CONECTAR NO BANCO: ' . self::DB_NAME);
+
         if (self::$instance === null) {
             try {
-                $dsn = 'mysql:host=' . self::DB_HOST . ';dbname=' . self::DB_NAME . ';charset=utf8';
-                
+                $dsn = 'mysql:host=' . self::DB_HOST . ';port=3307;dbname=' . self::DB_NAME . ';charset=utf8';
+
                 self::$instance = new PDO($dsn, self::DB_USER, self::DB_PASS);
-                
-                
+
+
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 self::$instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
                 self::$instance->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-
             } catch (PDOException $e) {
                 throw $e;
             }
         }
-        
+
         return self::$instance;
     }
 }

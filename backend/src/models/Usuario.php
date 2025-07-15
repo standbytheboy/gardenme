@@ -1,7 +1,7 @@
 <?php
 
 namespace Garden\Models;
-
+die('PAREI AQUI: O ARQUIVO Entidade.php FOI CARREGADO!');
 use Garden\Models\Entidade;
 
 class Usuario extends Entidade

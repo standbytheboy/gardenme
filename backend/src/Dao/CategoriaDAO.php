@@ -86,15 +86,16 @@ class CategoriaDAO
             $sql = 'DELETE FROM categorias WHERE id_categoria = :id';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+            $stmt->execute();
 
-            return $stmt->execute();
+            return $stmt->rowCount() > 0;
         } catch (\PDOException $e) {
             return false;
         }
     }
 
-     private function mapCategoria(array $dados): Categoria
+    private function mapCategoria(array $dados): Categoria
     {
         // A ordem aqui precisa bater com o construtor da sua classe Categoria
         return new Categoria(
