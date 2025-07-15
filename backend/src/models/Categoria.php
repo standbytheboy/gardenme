@@ -1,5 +1,4 @@
 <?php
-// Local: backend/src/Models/Categoria.php
 
 namespace Garden\Models;
 
@@ -13,7 +12,6 @@ class Categoria extends Entidade
         ?int $idCategoria = null,
         string $nomeCategoria = '',
         ?string $criadoEm = null,
-        // CORRIGIDO: Adicionado o '?' para permitir que o valor seja nulo
         ?string $atualizacaoEm = null
     ) {
         parent::__construct($idCategoria, $criadoEm, $atualizacaoEm);

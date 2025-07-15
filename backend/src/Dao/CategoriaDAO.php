@@ -97,7 +97,6 @@ class CategoriaDAO
 
     private function mapCategoria(array $dados): Categoria
     {
-        // A ordem aqui precisa bater com o construtor da sua classe Categoria
         return new Categoria(
             idCategoria: $dados['id_categoria'],
             nomeCategoria: $dados['nome_categoria'],

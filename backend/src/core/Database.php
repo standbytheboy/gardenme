@@ -18,8 +18,6 @@ class Database
 
     public static function getInstance(): PDO
     {
-        // die('ESTOU TENTANDO CONECTAR NO BANCO: ' . self::DB_NAME);
-
         if (self::$instance === null) {
             try {
                 $dsn = 'mysql:host=' . self::DB_HOST . ';port=3307;dbname=' . self::DB_NAME . ';charset=utf8';

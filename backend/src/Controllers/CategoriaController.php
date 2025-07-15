@@ -1,5 +1,4 @@
 <?php
-// Local: backend/src/Controllers/CategoriaController.php
 
 namespace Garden\Controllers;
 
@@ -19,7 +18,6 @@ class CategoriaController
     {
         $categorias = $this->categoriaDAO->listarTodos();
 
-        // CORRIGIDO: Usando os getters corretos da sua classe Categoria
         $resultado = array_map(function ($categoria) {
             return [
                 'id_categoria' => $categoria->getId(),
@@ -45,7 +43,6 @@ class CategoriaController
             ];
             echo json_encode($resultado);
         } else {
-            // CORRIGIDO: Adicionado o bloco 'else' para o erro 404
             http_response_code(404);
             echo json_encode(['mensagem' => 'Categoria não encontrada.']);
         }
@@ -89,7 +86,6 @@ class CategoriaController
             return;
         }
 
-        // CORRIGIDO: O ID da categoria agora é o que veio da URL
         $categoria = new Categoria(
             idCategoria: $id,
             nomeCategoria: $dadosCorpo->nome_categoria,
@@ -112,7 +108,6 @@ class CategoriaController
         $sucesso = $this->categoriaDAO->deletar($id);
 
         if ($sucesso) {
-            // CORRIGIDO: Usando 200 OK para poder enviar la mensagem de sucesso
             http_response_code(200);
             echo json_encode(['mensagem' => 'Categoria deletada com sucesso.']);
         } else {
