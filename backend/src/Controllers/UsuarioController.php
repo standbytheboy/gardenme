@@ -4,15 +4,12 @@ use Garden\DAO\UsuarioDAO;
 
 class UsuarioController
 {
-    // Este método busca um usuário. A lógica de quem pode buscar qual ID
-    // será controlada pelo Middleware e pelo Roteador.
     public function buscar(int $id)
     {
         $usuarioDAO = new UsuarioDAO();
-        $usuario = $usuarioDAO->buscarPorId($id); // Este método retorna um objeto Usuario
+        $usuario = $usuarioDAO->buscarPorId($id); 
         header('Content-Type: application/json');
         if ($usuario) {
-            // Monta a resposta segura, sem a senha
             $resultado = [
                 'id' => $usuario->getId(),
                 'nome' => $usuario->getNome(),
