@@ -35,6 +35,7 @@ class CategoriaDAO
             return [];
         }
     }
+    
 
     public function buscarPorId(int $id): ?Categoria
     {
