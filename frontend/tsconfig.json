@@ -27,5 +27,5 @@
       // ...
     }
   },
-  "include": ["src", "../SidebarUserSettings.tsx"]
+  "include": ["src", "src/components/SidebarUserSettings.tsx"]
 }

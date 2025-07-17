@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import userProfilePic from '../../assets/profile-picture.avif'; 
-import { Sidebar9 } from '../../../SidebarUserSettings.tsx'; 
+import { Sidebar9 } from './SidebarUserSettings.tsx'; 
 
 const UserProfileSettings: React.FC = () => {
   // Estados para os dados do usuário

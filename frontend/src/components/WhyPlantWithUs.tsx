@@ -1,6 +1,4 @@
 import React from 'react';
-import { ArrowRight as ArrowRightIcon } from 'akar-icons'; 
-
 import plantingIllustration from '../assets/Blooming-amico.svg'; 
 import { ActionBtn } from './ActionBtn';
 
