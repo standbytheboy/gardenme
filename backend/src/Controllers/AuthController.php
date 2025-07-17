@@ -4,6 +4,7 @@ namespace Garden\Controllers;
 
 use Garden\Dao\UsuarioDAO;
 use Garden\Models\Usuario;
+use Firebase\JWT\JWT;
 
 class AuthController
 {
@@ -51,14 +52,37 @@ class AuthController
         $usuario = $usuarioDAO->buscarPorEmail($dadosCorpo->email);
 
         if ($usuario && password_verify($dadosCorpo->senha, $usuario['senha_hash'])) {
-            http_response_code(200); // OK
+
+            $chaveSecreta = $_ENV['JWT_SECRET'];
+            $payload = [
+                'iss' => 'http://localhost/gardenme',
+                'aud' => 'http://localhost/gardenme',
+                'iat' => time(),
+                'exp' => time() + (60 * 60),
+                'data' => [
+                    'id_usuario' => $usuario['id_usuario'],
+                    'nome' => $usuario['nome'],
+                    'email' => $usuario['email']
+                ]
+            ];
+
+            $token = JWT::encode($payload, $chaveSecreta, 'HS256');
+
+            http_response_code(200);
             echo json_encode([
                 'mensagem' => 'Login bem-sucedido!',
-                'id_usuario' => $usuario['id_usuario'],
+                'token' => $token
             ]);
         } else {
             http_response_code(401);
             echo json_encode(['mensagem' => 'Email ou senha inválidos.']);
         }
+    }
+
+
+    public function logout()
+    {
+        http_response_code(200);
+        echo json_encode(['mensagem' => 'Logout realizado com sucesso.']);
     }
 }

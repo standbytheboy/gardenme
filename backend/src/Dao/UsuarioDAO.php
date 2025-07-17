@@ -117,4 +117,20 @@ class UsuarioDAO
         }
     }
 
+    public function deletar(int $id): bool
+    {
+        $sql = "DELETE FROM usuario WHERE id_usuario = :id";
+
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->rowCount() > 0;
+
+        } catch (\PDOException $e) {
+            return false;
+        }
+    }
+
 }
