@@ -70,7 +70,7 @@ class DicasDAO
         }
     }
 
-    public function atualizar(Dicas $dica): bool
+    public function atualizar(Dicas $dica): bool|string
     {
         try {
             $sql = 'UPDATE dicas SET titulo_dica = :titulo, conteudo_dica = :conteudo, id_produto = :id_produto WHERE id_dica = :id';
@@ -83,6 +83,9 @@ class DicasDAO
 
             return $stmt->execute();
         } catch (\PDOException $e) {
+            if ($e->getCode() === '23000') {
+                return 'conflict';
+            }
             return false;
         }
     }

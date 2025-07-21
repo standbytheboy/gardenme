@@ -86,14 +86,14 @@ if (preg_match('#^/api/dicas(/(\d+))?$#', $route, $matches)) {
 }
 
 if (preg_match('#^/api/usuarios/(\d+)$#', $route, $matches)) {
-    AuthMiddleware::verificar(); 
+    $dadosToken = AuthMiddleware::verificar(); 
 
     $id = (int)$matches[1];
     $controller = new UsuarioController();
 
-    if ($method === 'GET') $controller->buscar($id);
-    if ($method === 'PUT') $controller->atualizar($id);
-    if ($method === 'DELETE') $controller->deletar($id);
+    if ($method === 'GET') $controller->buscar($id, $dadosToken);
+    if ($method === 'PUT') $controller->atualizar($id, $dadosToken);
+    if ($method === 'DELETE') $controller->deletar($id, $dadosToken);
     
     exit();
 }

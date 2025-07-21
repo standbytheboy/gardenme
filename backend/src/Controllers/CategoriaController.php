@@ -65,14 +65,17 @@ class CategoriaController
             atualizacaoEm: null
         );
 
-        $novoId = $this->categoriaDAO->criar($categoria);
+        $resultado = $this->categoriaDAO->criar($categoria);
 
-        if ($novoId) {
+        if ($resultado === 'conflict') {
+            http_response_code(409);
+            echo json_encode(['mensagem' => 'Erro ao criar a categoria. O nome já está em uso.']);
+        } elseif ($resultado) {
             http_response_code(201);
-            echo json_encode(['id_categoria' => $novoId, 'mensagem' => 'Categoria criada com sucesso.']);
+            echo json_encode(['id_categoria' => $resultado, 'mensagem' => 'Categoria criada com sucesso.']);
         } else {
             http_response_code(500);
-            echo json_encode(['mensagem' => 'Erro ao criar a categoria. O nome pode já estar em uso.']);
+            echo json_encode(['mensagem' => 'Erro interno ao criar a categoria.']);
         }
     }
 
@@ -85,27 +88,48 @@ class CategoriaController
             echo json_encode(['mensagem' => 'O campo nome_categoria é obrigatório.']);
             return;
         }
+        
+        $categoriaExistente = $this->categoriaDAO->buscarPorId($id);
 
-        $categoria = new Categoria(
+        if (!$categoriaExistente) {
+            http_response_code(404);
+            echo json_encode(['mensagem' => 'Categoria não encontrada para atualização.']);
+            return;
+        }
+
+        $categoriaParaAtualizar = new Categoria(
             idCategoria: $id,
             nomeCategoria: $dadosCorpo->nome_categoria,
             criadoEm: null,
             atualizacaoEm: null
         );
 
-        $sucesso = $this->categoriaDAO->atualizar($categoria);
+        $resultado = $this->categoriaDAO->atualizar($categoriaParaAtualizar);
 
-        if ($sucesso) {
+        header('Content-Type: application/json');
+        if ($resultado === 'conflict') {
+            http_response_code(409);
+            echo json_encode(['mensagem' => 'Erro ao atualizar: o nome da categoria já está em uso.']);
+        } elseif ($resultado) {
             echo json_encode(['mensagem' => 'Categoria atualizada com sucesso.']);
         } else {
             http_response_code(500);
-            echo json_encode(['mensagem' => 'Erro ao atualizar categoria.']);
+            echo json_encode(['mensagem' => 'Erro interno ao tentar atualizar a categoria.']);
         }
     }
 
     public function deletar(int $id)
     {
-        $sucesso = $this->categoriaDAO->deletar($id);
+        $categoriaDAO = new CategoriaDAO();
+        $categoria = $categoriaDAO->buscarPorId($id);
+
+        if(!$categoria) {
+            http_response_code(404);
+            echo json_encode(['mensagem' => 'Categoria não encontrada.']);
+            return;
+        }
+
+        $sucesso = $categoriaDAO->deletar($id);
 
         if ($sucesso) {
             http_response_code(200);

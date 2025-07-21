@@ -14,7 +14,19 @@ class AuthController
 
         if (!isset($dadosCorpo->nome) || !isset($dadosCorpo->email) || !isset($dadosCorpo->senha)) {
             http_response_code(400);
-            echo json_encode(['mensagem' => 'Dados incompletos...']);
+            echo json_encode(['mensagem' => 'Nome, e-mail e senha são obrigatórios.']);
+            return;
+        }
+
+        if (filter_var($dadosCorpo->email, FILTER_VALIDATE_EMAIL) === false) {
+            http_response_code(400);
+            echo json_encode(['mensagem' => 'O formato do e-mail é inválido.']);
+            return;
+        }
+
+        if (strlen($dadosCorpo->senha) < 6) {
+            http_response_code(400);
+            echo json_encode(['mensagem' => 'A senha deve ter no mínimo 6 caracteres.']);
             return;
         }
 
@@ -26,15 +38,18 @@ class AuthController
         );
 
         $usuarioDAO = new UsuarioDAO();
-        $novoId = $usuarioDAO->criar($usuario, $dadosCorpo->senha);
+        $resultado = $usuarioDAO->criar($usuario, $dadosCorpo->senha);
 
         header('Content-Type: application/json');
-        if ($novoId) {
-            http_response_code(201);
-            echo json_encode(['id_usuario' => $novoId, 'mensagem' => 'Usuário criado com sucesso!']);
-        } else {
+        if ($resultado === 'conflict') {
             http_response_code(409);
-            echo json_encode(['mensagem' => 'Erro ao criar usuário. O e-mail pode já estar em uso.']);
+            echo json_encode(['mensagem' => 'Erro ao criar a categoria. O nome já está em uso.']);
+        } elseif ($resultado) {
+            http_response_code(201);
+            echo json_encode(['id_categoria' => $resultado, 'mensagem' => 'Categoria criada com sucesso.']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['mensagem' => 'Erro interno ao criar a categoria.']);
         }
     }
 

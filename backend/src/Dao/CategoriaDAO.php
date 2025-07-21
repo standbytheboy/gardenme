@@ -53,7 +53,7 @@ class CategoriaDAO {
         }
     }
 
-    public function criar(Categoria $categoria): int|false
+    public function criar(Categoria $categoria): int|false|string
     {
         try {
             $sql = 'INSERT INTO categorias (nome_categoria) VALUES (:nome_categoria)';
@@ -63,11 +63,14 @@ class CategoriaDAO {
             $stmt->execute();
             return $this->conn->lastInsertId();
         } catch (\PDOException $e) {
+            if ($e->getCode() === '23000') {
+                return 'conflict'; 
+            }
             return false;
         }
     }
 
-    public function atualizar(Categoria $categoria): bool
+    public function atualizar(Categoria $categoria): bool|string
     {
         try {
             $sql = 'UPDATE categorias SET nome_categoria = :nome_categoria WHERE id_categoria = :id_categoria';
@@ -76,6 +79,9 @@ class CategoriaDAO {
             $stmt->bindValue(':id_categoria', $categoria->getId(), PDO::PARAM_INT);
             return $stmt->execute();
         } catch (\PDOException $e) {
+           if ($e->getCode() === '23000') {
+                return 'conflict';
+            }
             return false;
         }
     }

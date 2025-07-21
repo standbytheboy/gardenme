@@ -79,6 +79,14 @@ class DicasController {
             return;
         }
 
+        $dicasExistente = $this->dicasDAO->buscarPorId($id);
+
+        if (!$dicasExistente) {
+            http_response_code(404);
+            echo json_encode(['mensagem' => 'Dica não encontrada para atualização.']);
+            return;
+        }
+
         $dicas = new Dicas(
             idDica: $id,
             tituloDica: $dadosCorpo->tituloDica,
@@ -86,19 +94,30 @@ class DicasController {
             idProduto: $dadosCorpo->idProduto ?? null
         );
 
-        $sucesso = $this->dicasDAO->atualizar($dicas);
+        $resultado = $this->dicasDAO->atualizar($dicas);
 
-        if($sucesso) {
-            http_response_code(200);
+        if ($resultado === 'conflict') {
+            http_response_code(409);
+            echo json_encode(['mensagem' => 'Erro ao atualizar: o título da dica fornecido já está em uso.']);
+        } elseif ($resultado) {
             echo json_encode(['mensagem' => 'Dica atualizada com sucesso.']);
         } else {
             http_response_code(500);
-            echo json_encode(['mensagem' => 'Erro ao atualizar a dica.']);
+            echo json_encode(['mensagem' => 'Erro interno ao tentar atualizar a dica.']);
         }
     }
 
     public function deletar(int $id) {
-        $sucesso = $this->dicasDAO->deletar($id);
+        $dicasDAO = new DicasDAO();
+        $dicas = $dicasDAO->buscarPorId($id);
+
+        if(!$dicas) {
+            http_response_code(404);
+            echo json_encode(['mensagem' => 'Dica não encontrada.']);
+            return;
+        }
+
+        $sucesso = $dicasDAO->deletar($id);
 
         if($sucesso) {
             http_response_code(200);
