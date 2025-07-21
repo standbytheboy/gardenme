@@ -1,0 +1,11 @@
+USE gardenme;
+
+CREATE TABLE dicas (
+    id_dica INT AUTO_INCREMENT PRIMARY KEY,
+    titulo_dica VARCHAR(255) NOT NULL,
+    conteudo_dica TEXT NOT NULL,
+    id_produto INT, 
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE SET NULL
+) ENGINE=InnoDB;
