@@ -6,13 +6,15 @@ header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 use Garden\Middleware\AuthMiddleware;
 use Garden\Controllers\CategoriaController;
 use Garden\Controllers\AuthController;
-use Garden\Controllers\UsuarioController; 
+use Garden\Controllers\UsuarioController;
+use Garden\Controllers\DicasController; 
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
@@ -37,7 +39,6 @@ if ($route === '/api/login' && $method === 'POST') {
     exit();
 }
 
-// ...
 if ($route === '/api/logout' && $method === 'POST') {
     AuthMiddleware::verificar();
     (new AuthController())->logout();
@@ -58,6 +59,31 @@ if (preg_match('#^/api/categorias(/(\d+))?$#', $route, $matches)) {
     }
     exit();
 }
+if (preg_match('#^/api/dicas(/(\d+))?$#', $route, $matches)) {
+    $id = $matches[2] ?? null;
+    $controller = new DicasController();
+
+    if ($id) { 
+        if ($method === 'GET') $controller->detalhar($id);
+
+        if ($method === 'PUT') {
+            AuthMiddleware::verificar(); 
+            $controller->atualizar($id);
+        }
+        if ($method === 'DELETE') {
+            AuthMiddleware::verificar();
+            $controller->deletar($id);
+        }
+    } else { 
+        if ($method === 'GET') $controller->listar();
+        
+        if ($method === 'POST') {
+            AuthMiddleware::verificar(); 
+            $controller->criar();
+        }
+    }
+    exit();
+}
 
 if (preg_match('#^/api/usuarios/(\d+)$#', $route, $matches)) {
     AuthMiddleware::verificar(); 
@@ -65,20 +91,13 @@ if (preg_match('#^/api/usuarios/(\d+)$#', $route, $matches)) {
     $id = (int)$matches[1];
     $controller = new UsuarioController();
 
-    if ($method === 'GET') {
-        $controller->buscar($id);
-    }
-
-    if ($method === 'PUT') { 
-        $controller->atualizar($id); 
-    }
-    
-    if ($method === 'DELETE') {
-        $controller->deletar($id);
-    }
+    if ($method === 'GET') $controller->buscar($id);
+    if ($method === 'PUT') $controller->atualizar($id);
+    if ($method === 'DELETE') $controller->deletar($id);
     
     exit();
 }
 
+// Se nenhuma rota foi encontrada
 http_response_code(404);
 echo json_encode(['mensagem' => 'Endpoint não encontrado']);
