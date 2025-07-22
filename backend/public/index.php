@@ -14,7 +14,8 @@ use Garden\Middleware\AuthMiddleware;
 use Garden\Controllers\CategoriaController;
 use Garden\Controllers\AuthController;
 use Garden\Controllers\UsuarioController;
-use Garden\Controllers\DicasController; 
+use Garden\Controllers\DicasController;
+use Garden\Controllers\EnderecoController; // Adicionamos o novo Controller
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
@@ -29,22 +30,22 @@ if ($method === 'OPTIONS') {
 $route = str_replace($basePath, '', $path);
 $controller = null; 
 
+// --- Rotas de Autenticação ---
 if ($route === '/api/registrar' && $method === 'POST') {
     (new AuthController())->registrar();
     exit();
 }
-
 if ($route === '/api/login' && $method === 'POST') {
     (new AuthController())->login();
     exit();
 }
-
 if ($route === '/api/logout' && $method === 'POST') {
     AuthMiddleware::verificar();
     (new AuthController())->logout();
     exit();
 }
 
+// --- Rotas de Categorias ---
 if (preg_match('#^/api/categorias(/(\d+))?$#', $route, $matches)) {
     $id = $matches[2] ?? null;
     $controller = new CategoriaController();
@@ -59,6 +60,8 @@ if (preg_match('#^/api/categorias(/(\d+))?$#', $route, $matches)) {
     }
     exit();
 }
+
+// --- Rotas de Dicas e Cuidados ---
 if (preg_match('#^/api/dicas(/(\d+))?$#', $route, $matches)) {
     $id = $matches[2] ?? null;
     $controller = new DicasController();
@@ -85,9 +88,43 @@ if (preg_match('#^/api/dicas(/(\d+))?$#', $route, $matches)) {
     exit();
 }
 
+// ---- INÍCIO DAS ROTAS DE ENDEREÇO ----
+
+// Rota para LISTAR e CRIAR endereços (baseado no id do usuário)
+if (preg_match('#^/api/usuarios/(\d+)/enderecos$#', $route, $matches)) {
+    $dadosToken = AuthMiddleware::verificar();
+    $id_usuario = (int)$matches[1];
+    $controller = new EnderecoController();
+
+    if ($method === 'GET') {
+        $controller->listarPorUsuario($id_usuario, $dadosToken);
+    }
+    if ($method === 'POST') {
+        $controller->criar($id_usuario, $dadosToken);
+    }
+    exit();
+}
+
+// Rota para ATUALIZAR e DELETAR um endereço específico (baseado no id do endereço)
+if (preg_match('#^/api/enderecos/(\d+)$#', $route, $matches)) {
+    $dadosToken = AuthMiddleware::verificar();
+    $id_endereco = (int)$matches[1];
+    $controller = new EnderecoController();
+
+    if ($method === 'PUT') {
+        $controller->atualizar($id_endereco, $dadosToken);
+    }
+    if ($method === 'DELETE') {
+        $controller->deletar($id_endereco, $dadosToken);
+    }
+    exit();
+}
+
+// ---- FIM DAS ROTAS DE ENDEREÇO ----
+
+// --- Rotas de Usuários (Protegidas) ---
 if (preg_match('#^/api/usuarios/(\d+)$#', $route, $matches)) {
     $dadosToken = AuthMiddleware::verificar(); 
-
     $id = (int)$matches[1];
     $controller = new UsuarioController();
 
