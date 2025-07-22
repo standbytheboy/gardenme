@@ -65,6 +65,9 @@ class UsuarioDAO
             $stmt->execute();
             return $this->conn->lastInsertId();
         } catch (\PDOException $e) {
+            if ($e->getCode() === '23000') {
+                return 'conflict';
+            }
             return false;
         }
     }
@@ -82,7 +85,7 @@ class UsuarioDAO
         );
     }
 
-    public function atualizar(int $id, array $dados): bool
+    public function atualizar(int $id, array $dados): bool|string
     {
         $camposParaAtualizar = [];
         foreach (array_keys($dados) as $campo) {
@@ -113,6 +116,9 @@ class UsuarioDAO
             return $stmt->execute();
 
         } catch (\PDOException $e) {
+            if ($e->getCode() === '23000') {
+                return 'conflict';
+            }
             return false;
         }
     }

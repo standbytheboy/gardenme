@@ -6,13 +6,16 @@ header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 use Garden\Middleware\AuthMiddleware;
 use Garden\Controllers\CategoriaController;
 use Garden\Controllers\AuthController;
-use Garden\Controllers\UsuarioController; 
+use Garden\Controllers\UsuarioController;
+use Garden\Controllers\DicasController;
+use Garden\Controllers\EnderecoController;
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
@@ -31,13 +34,10 @@ if ($route === '/api/registrar' && $method === 'POST') {
     (new AuthController())->registrar();
     exit();
 }
-
 if ($route === '/api/login' && $method === 'POST') {
     (new AuthController())->login();
     exit();
 }
-
-// ...
 if ($route === '/api/logout' && $method === 'POST') {
     AuthMiddleware::verificar();
     (new AuthController())->logout();
@@ -59,23 +59,68 @@ if (preg_match('#^/api/categorias(/(\d+))?$#', $route, $matches)) {
     exit();
 }
 
-if (preg_match('#^/api/usuarios/(\d+)$#', $route, $matches)) {
-    AuthMiddleware::verificar(); 
+if (preg_match('#^/api/dicas(/(\d+))?$#', $route, $matches)) {
+    $id = $matches[2] ?? null;
+    $controller = new DicasController();
 
+    if ($id) { 
+        if ($method === 'GET') $controller->detalhar($id);
+
+        if ($method === 'PUT') {
+            AuthMiddleware::verificar(); 
+            $controller->atualizar($id);
+        }
+        if ($method === 'DELETE') {
+            AuthMiddleware::verificar();
+            $controller->deletar($id);
+        }
+    } else { 
+        if ($method === 'GET') $controller->listar();
+        
+        if ($method === 'POST') {
+            AuthMiddleware::verificar(); 
+            $controller->criar();
+        }
+    }
+    exit();
+}
+
+if (preg_match('#^/api/usuarios/(\d+)/enderecos$#', $route, $matches)) {
+    $dadosToken = AuthMiddleware::verificar();
+    $id_usuario = (int)$matches[1];
+    $controller = new EnderecoController();
+
+    if ($method === 'GET') {
+        $controller->listarPorUsuario($id_usuario, $dadosToken);
+    }
+    if ($method === 'POST') {
+        $controller->criar($id_usuario, $dadosToken);
+    }
+    exit();
+}
+
+if (preg_match('#^/api/enderecos/(\d+)$#', $route, $matches)) {
+    $dadosToken = AuthMiddleware::verificar();
+    $id_endereco = (int)$matches[1];
+    $controller = new EnderecoController();
+
+    if ($method === 'PUT') {
+        $controller->atualizar($id_endereco, $dadosToken);
+    }
+    if ($method === 'DELETE') {
+        $controller->deletar($id_endereco, $dadosToken);
+    }
+    exit();
+}
+
+if (preg_match('#^/api/usuarios/(\d+)$#', $route, $matches)) {
+    $dadosToken = AuthMiddleware::verificar(); 
     $id = (int)$matches[1];
     $controller = new UsuarioController();
 
-    if ($method === 'GET') {
-        $controller->buscar($id);
-    }
-
-    if ($method === 'PUT') { 
-        $controller->atualizar($id); 
-    }
-    
-    if ($method === 'DELETE') {
-        $controller->deletar($id);
-    }
+    if ($method === 'GET') $controller->buscar($id, $dadosToken);
+    if ($method === 'PUT') $controller->atualizar($id, $dadosToken);
+    if ($method === 'DELETE') $controller->deletar($id, $dadosToken);
     
     exit();
 }
