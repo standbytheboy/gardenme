@@ -84,7 +84,7 @@ Certifique-se de ter instalado em sua máquina:
 -----
 
 ## 👥 **Estrutura do Banco de Dados**
-![Tabelas Do Banco](./backend/api/database/gardenme.png)
+![Tabelas Do Banco](./backend/database/gardenme.png)
 
 ----- 
 ## 👥 **Equipe de Desenvolvimento**
