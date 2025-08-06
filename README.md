@@ -52,7 +52,7 @@ Certifique-se de ter instalado em sua máquina:
 1.  **Clone o Repositório:**
 
     ```bash
-    git clone [https://github.com/standbytheboy/gardenme](https://github.com/standbytheboy/gardenme)
+    git clone https://github.com/standbytheboy/gardenme
     cd gardenme
     ```
 
