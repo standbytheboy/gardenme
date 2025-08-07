@@ -1,10 +1,10 @@
-import WhyPlantWithUs from './components/WhyPlantWithUs';
+import SignupPage  from './components/SignUpPage';
 import './index.css';
 
 function App() {
   return (
     <div className="App">
-      <WhyPlantWithUs />
+      <SignupPage></SignupPage>
       
     </div>
   );

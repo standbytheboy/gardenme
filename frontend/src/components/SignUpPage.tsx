@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
-import appleLogo from "../../assets/apple-logo.svg";
+import appleLogo from "../assets/apple-logo.svg";
+import gardenMeLogo from '../assets/gardenme-logo.svg';
 
 const SignupPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -26,11 +27,9 @@ const SignupPage: React.FC = () => {
       <div className="flex flex-col md:flex-row w-full bg-[#344E41] rounded-lg overflow-hidden h-[95vh]">
         {/* Lado Esquerdo - Logo e Mensagem */}
         <div className="bg-[#386641] md:w-1/2 flex flex-col items-center justify-center p-8 text-center h-full mr-[5rem] rounded-4xl">
-          {/* <img src={gardenMeLogo} alt="Garden Me Logo" className="w-32 h-32 mb-4" /> */}
+          <img src={gardenMeLogo} alt="Garden Me Logo" className="w-90 h-90 mb-4" />
           <div className="p-4 rounded-full mb-4">
-            <span className="text-[#A7C957] text-6xl font-bold">G</span>
           </div>
-          <h2 className="text-4xl font-bold mb-2 text-[#A7C957]">Garden Me</h2>
           <p className="text-lg text-gray-200 mt-4">
             Cultive sua paixão pela natureza. Crie sua conta e comece sua
             jornada verde!
