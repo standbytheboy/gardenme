@@ -1,0 +1,4 @@
+USE gardenme;
+
+ALTER TABLE usuario
+ADD COLUMN is_admin BOOLEAN DEFAULT FALSE;

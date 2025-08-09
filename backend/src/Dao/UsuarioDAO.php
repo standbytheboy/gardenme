@@ -32,7 +32,7 @@ class UsuarioDAO
     public function buscarPorId(int $id): ?Usuario
     {
         try {
-            $sql = 'SELECT id_usuario, nome, sobrenome, email, celular, criado_em, atualizado_em FROM usuario WHERE id_usuario = :id';
+            $sql = 'SELECT id_usuario, nome, sobrenome, email, celular, criado_em, atualizado_em, is_admin FROM usuario WHERE id_usuario = :id';
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -49,8 +49,8 @@ class UsuarioDAO
     public function criar(Usuario $usuario, string $senhaPura): int|false
     {
         try {
-            $sql = 'INSERT INTO usuario (nome, sobrenome, email, celular, senha_hash)
-                    VALUES (:nome, :sobrenome, :email, :celular, :senha_hash)';
+            $sql = 'INSERT INTO usuario (nome, sobrenome, email, celular, senha_hash, is_admin)
+                    VALUES (:nome, :sobrenome, :email, :celular, :senha_hash, :is_admin)';
             
             $stmt = $this->conn->prepare($sql);
 
@@ -61,6 +61,7 @@ class UsuarioDAO
             $stmt->bindValue(':email', $usuario->getEmail());
             $stmt->bindValue(':celular', $usuario->getCelular());
             $stmt->bindValue(':senha_hash', $senhaCriptografada);
+            $stmt->bindValue(':is_admin', $usuario->isAdmin());
             
             $stmt->execute();
             return $this->conn->lastInsertId();
@@ -81,10 +82,26 @@ class UsuarioDAO
             nome: $dados['nome'],
             sobrenome: $dados['sobrenome'],
             email: $dados['email'],
-            celular: $dados['celular'] ?? null 
+            celular: $dados['celular'] ?? null,
+            isAdmin: $dados['is_admin']
         );
     }
 
+        public function getByToken(string $token): ?Usuario
+    {
+        // Busca por token apenas se o usuário estiver ativo
+        $stmt = $this->conn->prepare("SELECT * FROM usuario WHERE token = :token AND ativo = 1 LIMIT 1");
+        $stmt->execute([':token' => $token]);
+        $data = $stmt->fetch();
+        return $data ? $this->mapUsuario($data) : null;
+    }
+
+    public function updateToken(int $id, string $token): bool
+    {
+        $sql = "UPDATE usuario SET token = :token WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([':token' => $token, ':id' => $id]);
+    }
     public function atualizar(int $id, array $dados): bool|string
     {
         $camposParaAtualizar = [];

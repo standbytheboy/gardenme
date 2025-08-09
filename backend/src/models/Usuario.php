@@ -9,6 +9,7 @@ class Usuario extends Entidade
     private string $sobrenome;
     private string $email;
     private ?string $celular;
+    private bool $isAdmin;
 
     public function __construct(
         ?int $id = null,
@@ -17,13 +18,15 @@ class Usuario extends Entidade
         string $nome = '',
         string $sobrenome = '',
         string $email = '',
-        ?string $celular = null
+        ?string $celular = null,
+        bool $isAdmin = false
     ) {
         parent::__construct($id, $criadoEm, $atualizacaoEm);
         $this->nome = $nome;
         $this->sobrenome = $sobrenome;
         $this->email = $email;
         $this->celular = $celular;
+        $this->isAdmin = $isAdmin;
     }
 
     public function getNome(): string
@@ -44,5 +47,9 @@ class Usuario extends Entidade
     public function getCelular(): ?string
     {
         return $this->celular;
+    }
+    public function isAdmin(): bool
+    {
+        return $this->isAdmin;
     }
 }
