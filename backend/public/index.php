@@ -7,8 +7,19 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+try {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv->load();
+} catch (\Dotenv\Exception\InvalidPathException $e) {
+    // Se falhar, tenta um caminho absoluto, que é mais garantido
+    try {
+        $dotenv = Dotenv\Dotenv::createImmutable('C:/xampp/htdocs/gardenme/backend/');
+        $dotenv->load();
+    } catch (\Exception $ex) {
+        // Se ainda assim falhar, mostra um erro claro e para
+        die("Erro crítico: não foi possível carregar o arquivo .env. Verifique o caminho e as permissões. Erro: " . $ex->getMessage());
+    }
+}
 
 use Garden\Middleware\AuthMiddleware;
 use Garden\Controllers\CategoriaController;

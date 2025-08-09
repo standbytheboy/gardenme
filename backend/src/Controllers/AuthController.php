@@ -68,7 +68,8 @@ class AuthController
 
         if ($usuario && password_verify($dadosCorpo->senha, $usuario['senha_hash'])) {
 
-            $chaveSecreta = $_ENV['JWT_SECRET'];
+            // $chaveSecreta = getenv('JWT_SECRET');
+            $chaveSecreta = "1CbXldbPUZBV0LRmqVt6RYnqFJTHtrYa"; // Chave colocada diretamente no código
             $payload = [
                 'iss' => 'http://localhost/gardenme',
                 'aud' => 'http://localhost/gardenme',
