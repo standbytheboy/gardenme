@@ -32,7 +32,7 @@ Este projeto foi construído utilizando uma stack moderna e robusta, demonstrand
 
 -----
 
-## 🚀 **Como Rodar o Projeto**
+## 🚀 Como Rodar o Projeto
 
 Para configurar e rodar o **GardenMe** localmente, siga os passos abaixo:
 
@@ -40,46 +40,71 @@ Para configurar e rodar o **GardenMe** localmente, siga os passos abaixo:
 
 Certifique-se de ter instalado em sua máquina:
 
-  * **PHP** (versão 8.0+)
-  * **Composer** (gerenciador de dependências PHP)
-  * **MySQL Server**
-  * **Node.js** (versão 18+)
-  * **npm** ou **Yarn**
-  * Um servidor web como **Apache** ou **Nginx** (XAMPP/WAMP/MAMP são recomendados para Windows/macOS)
+* **PHP** (versão 8.0+)
+* **Composer** (gerenciador de dependências PHP)
+* **MySQL Server**
+* **Node.js** (versão 18+)
+* **npm** ou **Yarn**
+* Um servidor web como **Apache** ou **Nginx** (XAMPP/WAMP/MAMP são recomendados para Windows/macOS)
 
 ### **Passos**
 
 1.  **Clone o Repositório:**
 
     ```bash
-    git clone https://github.com/seu-usuario/nome-do-repositorio.git
-    cd nome-do-repositorio
+    git clone https://github.com/standbytheboy/gardenme
+    cd gardenme
     ```
 
 2.  **Configurar o Backend (PHP):**
 
-      * Navegue até a pasta `backend`: `cd backend`
-      * Crie o banco de dados `gardenme` no seu MySQL.
-      * Configure as credenciais do banco de dados no arquivo `backend/api/config/database.php` (ou equivalente).
-      * Importe o esquema do banco de dados e os dados de exemplo (se houver) usando o arquivo `backend/api/database/schema.sql`.
-      * Certifique-se de que seu servidor web (Apache/Nginx) está configurado para apontar para a pasta `backend/public` e que as regras de reescrita de URL (`.htaccess`) estão ativas para o PHP.
-      * **Inicie o servidor PHP.** (Ex: se estiver usando XAMPP, inicie o Apache e o MySQL).
+    * Navegue até a pasta `backend`: `cd backend`
+    * Instale as dependências do PHP: `composer install`, `composer require vlucas/phpdotenv` e `composer require firebase/php-jwt`
+    * Cole o seguinte conteúdo no seu arquivo `composer.json`:
+      
+       ```
+        {
+          "name": "user/backend",
+          "autoload": {
+              "psr-4": {
+                  "Garden\\": "src/"
+              }
+          },
+          "require": {
+              "vlucas/phpdotenv": "^5.6",
+              "firebase/php-jwt": "^6.11"
+          }
+       }
+
+        ```
+    * Crie o banco de dados `gardenme` no seu MySQL.
+    * Importe os esquemas do banco de dados executando os arquivos SQL na ordem correta: `a00.sql`, `a01.sql`, `a02.sql`.
+    * Crie um arquivo `.env` na raiz da pasta `backend` com a seguinte variável de ambiente para a autenticação JWT, e configuração do Banco de Dados:
+        ```
+        DB_HOST=127.0.0.1
+        DB_NAME=gardenme
+        DB_USER=root
+        DB_PASS=
+        JWT_SECRET=sua-chave-secreta-aqui
+        ```
+    * Certifique-se de que seu servidor web está configurado para apontar para a pasta `backend/public` e que as regras de reescrita de URL (`.htaccess`) estão ativas para o PHP.
+    * Inicie o servidor web (por exemplo, Apache). O arquivo `Database.php` aponta para `localhost` na porta `3307`, então ajuste conforme a sua configuração de MySQL.
 
 3.  **Configurar o Frontend (React):**
 
-      * Volte para a pasta raiz do projeto e navegue até a pasta `frontend`: `cd ../frontend`
-      * Instale as dependências: `npm install` (ou `yarn install`)
-      * Crie um arquivo `.env` na raiz da pasta `frontend` e adicione a URL da sua API backend:
+    * Volte para a pasta raiz do projeto e navegue até a pasta `frontend`: `cd ../frontend`
+    * Instale as dependências: `npm install` (ou `yarn install`).
+    * Crie um arquivo `.env` na raiz da pasta `frontend` e adicione a URL da sua API backend:
+      
         ```
-        VITE_API_URL=http://localhost:8000/api
+        VITE_API_URL=http://localhost/gardenme/backend/public/api
         ```
-        *(Ajuste a porta `8000` conforme a configuração do seu servidor PHP)*
-      * Inicie o servidor de desenvolvimento do React: `npm run dev` (ou `yarn dev`)
+    * Inicie o servidor de desenvolvimento do React: `npm run dev` (ou `yarn dev`).
 
 4.  **Acesse o Projeto:**
 
-      * Abra seu navegador e acesse a URL fornecida pelo Vite (geralmente `http://localhost:5173/`).
-      * Sua API PHP estará acessível na URL configurada (ex: `http://localhost:8000/api/plants`).
+    * Abra seu navegador e acesse a URL fornecida pelo Vite (geralmente `http://localhost:5173/`).
+    * Sua API PHP estará acessível na URL configurada (ex: `http://localhost/gardenme/backend/public/api/categorias`).
 
 -----
 

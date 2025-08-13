@@ -1,18 +1,32 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
-import appleLogo from "../../assets/apple-logo.svg";
-// import gardenMeLogo from '../assets/garden-me-logo.png';
+import appleLogo from "../assets/apple-logo.svg";
+import gardenMeLogo from "../assets/gardenme-logo.svg";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      const response = await fetch(
+        "http://localhost/gardenme/backend/public/api/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, senha: password }),
+        }
+      );
 
-    console.log("Email:", email);
-    console.log("Senha:", password);
-    alert("Fazer Login (Lógica não implementada)");
+      const text = await response.text();
+      console.log(text);
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      alert("Erro ao fazer login. Tente novamente.");
+    }
   };
 
   return (
@@ -20,11 +34,12 @@ const LoginPage: React.FC = () => {
       <div className="flex flex-col justify-center md:flex-row w-full bg-[#344E41] rounded-lg overflow-hidden h-[95vh]">
         {/* Lado Esquerdo - Logo e Mensagem */}
         <div className="bg-[#386641] md:w-1/3 flex flex-col items-center justify-center p-8 text-center h-full mr-[5rem] rounded-lg">
-          {/* <img src={gardenMeLogo} alt="Garden Me Logo" className="w-32 h-32 mb-4" /> */}
-          <div className="p-4 rounded-full mb-4">
-            <span className="text-[#A7C957] text-6xl font-bold">G</span>
-          </div>
-          <h2 className="text-4xl font-bold mb-2 text-[#A7C957]">Garden Me</h2>
+          <img
+            src={gardenMeLogo}
+            alt="Garden Me Logo"
+            className="w-90 h-90 mb-4"
+          />
+          <div className="p-4 rounded-full mb-4"></div>
           <p className="text-lg text-gray-200 mt-4">
             A natureza mais perto de você. Faça seu login e cultive sua paixão!
           </p>

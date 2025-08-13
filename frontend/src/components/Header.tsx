@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Navbar } from "../navbar/Navbar";
-import GardeningCuate from "../../assets/Gardening-cuate.svg";
-import Blooming from "../../assets/Blooming-amico.svg";
-import Personal from "../../assets/personalGrowth.svg"; 
-import Reforestation from "../../assets/Reforestation-amico.svg";
-import ReforestationCuate from "../../assets/Reforestation-cuate.svg";
-import Seeding from "../../assets/Seeding-amico.svg";
+import { Navbar } from "./Navbar";
+import GardeningCuate from "../assets/Gardening-cuate.svg";
+import Blooming from "../assets/Blooming-amico.svg";
+import Personal from "../assets/personalGrowth.svg"; 
+import Reforestation from "../assets/Reforestation-amico.svg";
+import ReforestationCuate from "../assets/Reforestation-cuate.svg";
+import Seeding from "../assets/Seeding-amico.svg";
 
 export const Header = () => {
   const images = [

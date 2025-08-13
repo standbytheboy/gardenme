@@ -20,7 +20,7 @@ class Database
     {
         if (self::$instance === null) {
             try {
-                $dsn = 'mysql:host=' . self::DB_HOST . ';port=3307;dbname=' . self::DB_NAME . ';charset=utf8';
+                $dsn = 'mysql:host=' . self::DB_HOST . ';port=3306;dbname=' . self::DB_NAME . ';charset=utf8';
 
                 self::$instance = new PDO($dsn, self::DB_USER, self::DB_PASS);
 

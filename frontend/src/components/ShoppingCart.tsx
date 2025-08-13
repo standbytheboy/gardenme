@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import CartItem from './CartItem.tsx';
-import aloeImage from "../../assets/aloe.webp";
+import aloeImage from "../assets/aloe.webp";
 
 // Interface para o tipo de item no estado do carrinho
 interface CartItemType {

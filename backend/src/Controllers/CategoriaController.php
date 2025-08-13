@@ -88,7 +88,7 @@ class CategoriaController
             echo json_encode(['mensagem' => 'O campo nome_categoria é obrigatório.']);
             return;
         }
-        
+
         $categoriaExistente = $this->categoriaDAO->buscarPorId($id);
 
         if (!$categoriaExistente) {
@@ -120,10 +120,22 @@ class CategoriaController
 
     public function deletar(int $id)
     {
+        $dadosToken = \Garden\Middleware\AuthMiddleware::verificar();
+        $idUsuarioLogado = $dadosToken->data->id_usuario;
+
+        $usuarioDAO = new \Garden\Dao\UsuarioDAO();
+        $usuario = $usuarioDAO->buscarPorId($idUsuarioLogado);
+
+        if (!$usuario || !$usuario->isAdmin()) {
+            http_response_code(403);
+            echo json_encode(['mensagem' => 'Acesso negado. Apenas administradores podem executar esta ação.']);
+            return;
+        }
+
         $categoriaDAO = new CategoriaDAO();
         $categoria = $categoriaDAO->buscarPorId($id);
 
-        if(!$categoria) {
+        if (!$categoria) {
             http_response_code(404);
             echo json_encode(['mensagem' => 'Categoria não encontrada.']);
             return;

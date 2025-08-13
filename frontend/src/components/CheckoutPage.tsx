@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import aloeImage from '../../assets/aloe.webp';
-import pixIcon from '../../assets/pix.svg';
+import { useState, useEffect } from 'react';
+import aloeImage from '../assets/aloe.webp';
+import pixIcon from '../assets/pix.svg';
 
 // Interfaces para os dados
 interface AddressType {

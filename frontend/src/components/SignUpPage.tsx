@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
-import appleLogo from "../../assets/apple-logo.svg";
+import appleLogo from "../assets/apple-logo.svg";
+import gardenMeLogo from "../assets/gardenme-logo.svg";
 
 const SignupPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -8,17 +9,34 @@ const SignupPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       alert("As senhas não coincidem!");
       return;
     }
-    // Lógica para criar a conta
-    console.log("Nome:", name);
-    console.log("Email:", email);
-    console.log("Senha:", password);
-    alert("Criar Conta (Lógica não implementada)");
+
+    try {
+      const response = await fetch("http://localhost/gardenme/backend/public/api/registrar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password, confirmPassword }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Cadastro bem-sucedido!", data.token);
+        // Armazene o token, por exemplo, em localStorage ou em um estado global
+        // Redirecione o usuário para a página inicial ou painel de controle
+      } else {
+        alert(data.mensagem); // Exibe a mensagem de erro do backend
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      alert("Erro ao fazer cadastro. Tente novamente.");
+    }
   };
 
   return (
@@ -26,11 +44,12 @@ const SignupPage: React.FC = () => {
       <div className="flex flex-col md:flex-row w-full bg-[#344E41] rounded-lg overflow-hidden h-[95vh]">
         {/* Lado Esquerdo - Logo e Mensagem */}
         <div className="bg-[#386641] md:w-1/2 flex flex-col items-center justify-center p-8 text-center h-full mr-[5rem] rounded-4xl">
-          {/* <img src={gardenMeLogo} alt="Garden Me Logo" className="w-32 h-32 mb-4" /> */}
-          <div className="p-4 rounded-full mb-4">
-            <span className="text-[#A7C957] text-6xl font-bold">G</span>
-          </div>
-          <h2 className="text-4xl font-bold mb-2 text-[#A7C957]">Garden Me</h2>
+          <img
+            src={gardenMeLogo}
+            alt="Garden Me Logo"
+            className="w-90 h-90 mb-4"
+          />
+          <div className="p-4 rounded-full mb-4"></div>
           <p className="text-lg text-gray-200 mt-4">
             Cultive sua paixão pela natureza. Crie sua conta e comece sua
             jornada verde!
@@ -105,7 +124,7 @@ const SignupPage: React.FC = () => {
           </div>
 
           <div className="flex gap-5">
-            <button className="w-full flex items-center justify-center p-3 rounded-md border border-gray-500 text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+            <button className="w-full flex items-center justify-center p-3 rounded-md border border-gray-500 text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
               <GoogleContainedFill
                 strokeWidth={2}
                 size={30}
@@ -113,7 +132,7 @@ const SignupPage: React.FC = () => {
               />
               Google
             </button>
-            <button className="w-full flex items-center justify-center p-3 rounded-md border border-gray-500 text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+            <button className="w-full flex items-center justify-center p-3 rounded-md border border-gray-500 text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
               <img src={appleLogo} alt="Apple" className="w-5 h-5 mr-2" />
               Apple
             </button>
