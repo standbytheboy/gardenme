@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../assets/apple-logo.svg";
 import gardenMeLogo from '../assets/gardenme-logo.svg';
@@ -16,9 +16,6 @@ const SignupPage: React.FC = () => {
       return;
     }
     // Lógica para criar a conta
-    console.log("Nome:", name);
-    console.log("Email:", email);
-    console.log("Senha:", password);
     alert("Criar Conta (Lógica não implementada)");
   };
 
@@ -104,7 +101,7 @@ const SignupPage: React.FC = () => {
           </div>
 
           <div className="flex gap-5">
-            <button className="w-full flex items-center justify-center p-3 rounded-md border border-gray-500 text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+            <button className="w-full flex items-center justify-center p-3 rounded-md border border-gray-500 text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
               <GoogleContainedFill
                 strokeWidth={2}
                 size={30}
@@ -112,7 +109,7 @@ const SignupPage: React.FC = () => {
               />
               Google
             </button>
-            <button className="w-full flex items-center justify-center p-3 rounded-md border border-gray-500 text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+            <button className="w-full flex items-center justify-center p-3 rounded-md border border-gray-500 text-white hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer">
               <img src={appleLogo} alt="Apple" className="w-5 h-5 mr-2" />
               Apple
             </button>

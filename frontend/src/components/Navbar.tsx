@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Search } from "akar-icons";
-import { Button } from "../loginBtn/LoginBtn";
+import { Button } from "./LoginBtn";
 
 interface NavItem {
   name: string;

@@ -1,5 +1,5 @@
 import React from 'react';
-import successIllustration from '../../assets/Reforestation-cuate.svg'; // Substitua pelo caminho da sua imagem real
+import successIllustration from '../assets/Reforestation-cuate.svg'; // Substitua pelo caminho da sua imagem real
 
 interface OrderSuccessPageProps {
   orderNumber?: string; // Opcional, caso você queira passar o número do pedido

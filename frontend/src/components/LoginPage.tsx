@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../assets/apple-logo.svg";
 import gardenMeLogo from '../assets/gardenme-logo.svg';
@@ -7,13 +7,30 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const response = await fetch('http://localhost:8000/api/login', { // Substituir a URL base pela nossa
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-    console.log("Email:", email);
-    console.log("Senha:", password);
-    alert("Fazer Login (Lógica não implementada)");
-  };
+    const data = await response.json();
+    if (response.ok) {
+      console.log('Login bem-sucedido!', data.token);
+      // Armazene o token, por exemplo, em localStorage ou em um estado global
+      // Redirecione o usuário para a página inicial ou painel de controle
+    } else {
+      alert(data.mensagem); // Exibe a mensagem de erro do backend
+    }
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    alert('Erro ao fazer login. Tente novamente.');
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#344E41] p-4 w-[100vw]">

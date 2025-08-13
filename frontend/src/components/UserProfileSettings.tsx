@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import userProfilePic from '../../assets/profile-picture.avif'; 
+import { useState } from 'react';
+import userProfilePic from '../assets/profile-picture.avif'; 
 import { Sidebar9 } from './SidebarUserSettings.tsx'; 
 
 const UserProfileSettings: React.FC = () => {
