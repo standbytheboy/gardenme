@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../assets/apple-logo.svg";
-import gardenMeLogo from '../assets/gardenme-logo.svg';
+import gardenMeLogo from "../assets/gardenme-logo.svg";
 
 const SignupPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -9,14 +9,34 @@ const SignupPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       alert("As senhas não coincidem!");
       return;
     }
-    // Lógica para criar a conta
-    alert("Criar Conta (Lógica não implementada)");
+
+    try {
+      const response = await fetch("http://localhost:8000/api/registrar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password, confirmPassword }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Cadastro bem-sucedido!", data.token);
+        // Armazene o token, por exemplo, em localStorage ou em um estado global
+        // Redirecione o usuário para a página inicial ou painel de controle
+      } else {
+        alert(data.mensagem); // Exibe a mensagem de erro do backend
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      alert("Erro ao fazer cadastro. Tente novamente.");
+    }
   };
 
   return (
@@ -24,9 +44,12 @@ const SignupPage: React.FC = () => {
       <div className="flex flex-col md:flex-row w-full bg-[#344E41] rounded-lg overflow-hidden h-[95vh]">
         {/* Lado Esquerdo - Logo e Mensagem */}
         <div className="bg-[#386641] md:w-1/2 flex flex-col items-center justify-center p-8 text-center h-full mr-[5rem] rounded-4xl">
-          <img src={gardenMeLogo} alt="Garden Me Logo" className="w-90 h-90 mb-4" />
-          <div className="p-4 rounded-full mb-4">
-          </div>
+          <img
+            src={gardenMeLogo}
+            alt="Garden Me Logo"
+            className="w-90 h-90 mb-4"
+          />
+          <div className="p-4 rounded-full mb-4"></div>
           <p className="text-lg text-gray-200 mt-4">
             Cultive sua paixão pela natureza. Crie sua conta e comece sua
             jornada verde!

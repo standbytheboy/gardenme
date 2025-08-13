@@ -3,6 +3,7 @@ SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 
 # Liga o motor de reescrita de URL do Apache
 RewriteEngine On
+RewriteBase /
 
 # Se a URL pedida NÃO for um arquivo que existe de verdade...
 RewriteCond %{REQUEST_FILENAME} !-f
