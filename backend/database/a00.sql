@@ -1,5 +1,3 @@
--- SCRIPT FINAL PARA CRIAÇÃO DO BANCO DE DADOS - PROJETO JARDIM API
-
 -- Apaga o banco de dados se ele já existir (útil para re-testar a criação)
 -- DROP DATABASE IF EXISTS jardim_db;
 

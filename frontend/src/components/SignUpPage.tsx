@@ -17,7 +17,7 @@ const SignupPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/registrar", {
+      const response = await fetch("http://localhost/gardenme/backend/public/api/registrar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

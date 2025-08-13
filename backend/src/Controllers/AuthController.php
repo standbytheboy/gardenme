@@ -1,5 +1,4 @@
 <?php
-
 namespace Garden\Controllers;
 
 use Garden\Dao\UsuarioDAO;
@@ -10,91 +9,116 @@ class AuthController
 {
     public function registrar()
     {
-        $dadosCorpo = json_decode(file_get_contents('php://input'));
+        try {
+            $input = file_get_contents('php://input');
+            $dadosCorpo = json_decode($input);
 
-        if (!isset($dadosCorpo->nome) || !isset($dadosCorpo->email) || !isset($dadosCorpo->senha)) {
-            http_response_code(400);
-            echo json_encode(['mensagem' => 'Nome, e-mail e senha são obrigatórios.']);
-            return;
-        }
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                http_response_code(400);
+                echo json_encode(['mensagem' => 'JSON inválido', 'erro' => json_last_error_msg()]);
+                error_log('JSON inválido recebido: ' . $input);
+                return;
+            }
 
-        if (filter_var($dadosCorpo->email, FILTER_VALIDATE_EMAIL) === false) {
-            http_response_code(400);
-            echo json_encode(['mensagem' => 'O formato do e-mail é inválido.']);
-            return;
-        }
+            if (!isset($dadosCorpo->nome, $dadosCorpo->email, $dadosCorpo->senha)) {
+                http_response_code(400);
+                echo json_encode(['mensagem' => 'Nome, e-mail e senha são obrigatórios.']);
+                return;
+            }
 
-        if (strlen($dadosCorpo->senha) < 6) {
-            http_response_code(400);
-            echo json_encode(['mensagem' => 'A senha deve ter no mínimo 6 caracteres.']);
-            return;
-        }
+            if (!filter_var($dadosCorpo->email, FILTER_VALIDATE_EMAIL)) {
+                http_response_code(400);
+                echo json_encode(['mensagem' => 'Formato de e-mail inválido.']);
+                return;
+            }
 
-        $usuario = new Usuario(
-            nome: $dadosCorpo->nome,
-            sobrenome: $dadosCorpo->sobrenome ?? '',
-            email: $dadosCorpo->email,
-            celular: $dadosCorpo->celular ?? null
-        );
+            if (strlen($dadosCorpo->senha) < 6) {
+                http_response_code(400);
+                echo json_encode(['mensagem' => 'Senha deve ter no mínimo 6 caracteres.']);
+                return;
+            }
 
-        $usuarioDAO = new UsuarioDAO();
-        $resultado = $usuarioDAO->criar($usuario, $dadosCorpo->senha);
+            $usuario = new Usuario(
+                nome: $dadosCorpo->nome,
+                sobrenome: $dadosCorpo->sobrenome ?? '',
+                email: $dadosCorpo->email,
+                celular: $dadosCorpo->celular ?? null
+            );
 
-        header('Content-Type: application/json');
-        if ($resultado === 'conflict') {
-            http_response_code(409);
-            echo json_encode(['mensagem' => 'Erro ao criar a categoria. O nome já está em uso.']);
-        } elseif ($resultado) {
-            http_response_code(201);
-            echo json_encode(['id_categoria' => $resultado, 'mensagem' => 'Categoria criada com sucesso.']);
-        } else {
+            $usuarioDAO = new UsuarioDAO();
+            $resultado = $usuarioDAO->criar($usuario, $dadosCorpo->senha);
+
+            if ($resultado === 'conflict') {
+                http_response_code(409);
+                echo json_encode(['mensagem' => 'Email já cadastrado.']);
+            } elseif ($resultado) {
+                http_response_code(201);
+                echo json_encode(['mensagem' => 'Usuário criado com sucesso.', 'id_usuario' => $resultado]);
+            } else {
+                http_response_code(500);
+                echo json_encode(['mensagem' => 'Erro interno ao criar usuário.']);
+            }
+
+        } catch (\Exception $e) {
+            error_log('Erro em registrar(): ' . $e->getMessage());
             http_response_code(500);
-            echo json_encode(['mensagem' => 'Erro interno ao criar a categoria.']);
+            echo json_encode(['mensagem' => 'Erro interno no servidor', 'detalhes' => $e->getMessage()]);
         }
     }
 
     public function login()
     {
-        $dadosCorpo = json_decode(file_get_contents('php://input'));
+        try {
+            $input = file_get_contents('php://input');
+            $dadosCorpo = json_decode($input);
 
-        if (!isset($dadosCorpo->email) || !isset($dadosCorpo->senha)) {
-            http_response_code(400);
-            echo json_encode(['mensagem' => 'Email e senha são obrigatórios.']);
-            return;
-        }
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                http_response_code(400);
+                echo json_encode(['mensagem' => 'JSON inválido', 'erro' => json_last_error_msg()]);
+                error_log('JSON inválido recebido: ' . $input);
+                return;
+            }
 
-        $usuarioDAO = new UsuarioDAO();
-        $usuario = $usuarioDAO->buscarPorEmail($dadosCorpo->email);
+            if (!isset($dadosCorpo->email, $dadosCorpo->senha)) {
+                http_response_code(400);
+                echo json_encode(['mensagem' => 'Email e senha obrigatórios.']);
+                return;
+            }
 
-        if ($usuario && password_verify($dadosCorpo->senha, $usuario['senha_hash'])) {
+            $usuarioDAO = new UsuarioDAO();
+            $usuario = $usuarioDAO->buscarPorEmail($dadosCorpo->email);
 
-            // $chaveSecreta = getenv('JWT_SECRET');
-            $chaveSecreta = "1CbXldbPUZBV0LRmqVt6RYnqFJTHtrYa"; // Chave colocada diretamente no código
-            $payload = [
-                'iss' => 'http://localhost/gardenme',
-                'aud' => 'http://localhost/gardenme',
-                'iat' => time(),
-                'exp' => time() + (60 * 60),
-                'data' => [
-                    'id_usuario' => $usuario['id_usuario'],
-                    'nome' => $usuario['nome'],
-                    'email' => $usuario['email']
-                ]
-            ];
+            if ($usuario && password_verify($dadosCorpo->senha, $usuario['senha_hash'])) {
 
-            $token = JWT::encode($payload, $chaveSecreta, 'HS256');
+                $chaveSecreta = getenv('JWT_SECRET') ?: "fallback_secret";
+                $payload = [
+                    'iss' => 'http://localhost/gardenme',
+                    'aud' => 'http://localhost/gardenme',
+                    'iat' => time(),
+                    'exp' => time() + 3600,
+                    'data' => [
+                        'id_usuario' => $usuario['id_usuario'],
+                        'nome' => $usuario['nome'],
+                        'email' => $usuario['email']
+                    ]
+                ];
 
-            http_response_code(200);
-            echo json_encode([
-                'mensagem' => 'Login bem-sucedido!',
-                'token' => $token
-            ]);
-        } else {
-            http_response_code(401);
-            echo json_encode(['mensagem' => 'Email ou senha inválidos.']);
+                $token = JWT::encode($payload, $chaveSecreta, 'HS256');
+
+                http_response_code(200);
+                echo json_encode(['mensagem' => 'Login bem-sucedido!', 'token' => $token]);
+
+            } else {
+                http_response_code(401);
+                echo json_encode(['mensagem' => 'Email ou senha inválidos.']);
+            }
+
+        } catch (\Exception $e) {
+            error_log('Erro em login(): ' . $e->getMessage());
+            http_response_code(500);
+            echo json_encode(['mensagem' => 'Erro interno no servidor', 'detalhes' => $e->getMessage()]);
         }
     }
-
 
     public function logout()
     {

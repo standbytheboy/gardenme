@@ -1,45 +1,45 @@
 import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../assets/apple-logo.svg";
-import gardenMeLogo from '../assets/gardenme-logo.svg';
+import gardenMeLogo from "../assets/gardenme-logo.svg";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const response = await fetch('http://localhost:8000/api/login', { // Substituir a URL base pela nossa
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        "http://localhost/gardenme/backend/public/api/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, senha: password }),
+        }
+      );
 
-    const data = await response.json();
-    if (response.ok) {
-      console.log('Login bem-sucedido!', data.token);
-      // Armazene o token, por exemplo, em localStorage ou em um estado global
-      // Redirecione o usuário para a página inicial ou painel de controle
-    } else {
-      alert(data.mensagem); // Exibe a mensagem de erro do backend
+      const text = await response.text();
+      console.log(text);
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      alert("Erro ao fazer login. Tente novamente.");
     }
-  } catch (error) {
-    console.error('Erro na requisição:', error);
-    alert('Erro ao fazer login. Tente novamente.');
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#344E41] p-4 w-[100vw]">
       <div className="flex flex-col justify-center md:flex-row w-full bg-[#344E41] rounded-lg overflow-hidden h-[95vh]">
         {/* Lado Esquerdo - Logo e Mensagem */}
         <div className="bg-[#386641] md:w-1/3 flex flex-col items-center justify-center p-8 text-center h-full mr-[5rem] rounded-lg">
-          <img src={gardenMeLogo} alt="Garden Me Logo" className="w-90 h-90 mb-4" />
-          <div className="p-4 rounded-full mb-4">
-          </div>
+          <img
+            src={gardenMeLogo}
+            alt="Garden Me Logo"
+            className="w-90 h-90 mb-4"
+          />
+          <div className="p-4 rounded-full mb-4"></div>
           <p className="text-lg text-gray-200 mt-4">
             A natureza mais perto de você. Faça seu login e cultive sua paixão!
           </p>
