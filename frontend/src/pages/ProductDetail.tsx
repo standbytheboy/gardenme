@@ -1,9 +1,9 @@
 import React from 'react';
-import { Navbar } from '../components/Navbar';
-import { Header } from '../components/Header';
-import { Accordion } from '../components/Accordion';
+import { Navbar } from '../components/Navbar.tsx';
+import { Header } from '../components/Header.tsx';
+import { Accordion } from '../components/Accordion.tsx';
 import AddedToCartCard from '../components/AddedToCart.tsx'; 
-import Footer from '../components/Footer';
+import Footer from '../components/Footer.tsx';
 
 interface AccordionItemData {
   header: string;
