@@ -42,7 +42,7 @@ export const MainPlant: React.FC = () => {
               200 pessoas plantaram essa
             </p>
           </div>
-          <p className="mb-4 text-[#F2E8CF]">{mainPlantData.description}</p>
+          <p className="mb-4 text-[#F2E8CF] w-[40rem]">{mainPlantData.description}</p>
 
           {/* Ações e Quantidade */}
           <div className="flex items-center space-x-4 mb-8">
@@ -72,7 +72,7 @@ export const MainPlant: React.FC = () => {
           <img
             src={mainPlantData.imageSrc}
             alt={mainPlantData.name}
-            className="max-w-xs lg:max-w-sm rounded-lg"
+            className="max-w-2 lg:max-w-2xs rounded-lg"
           />
         </div>
 
