@@ -1,6 +1,10 @@
 import React from "react";
 import { Accordion } from "../components/Accordion";
-import aloeImage from "../assets/aloe.webp"; // Imagem da Aloe Vera
+import aloeImage from "../assets/aloe.webp";
+
+interface MainPlantProps {
+  onAddToCartClick: () => void;
+}
 
 // Mock de dados para a planta principal e para os cards de "Mais Vendidas", "Iniciantes" e "Novidades"
 const mainPlantData = {
@@ -24,7 +28,7 @@ const accordionData = [
   },
 ];
 
-export const MainPlant: React.FC = () => {
+export const MainPlant: React.FC<MainPlantProps> = ({ onAddToCartClick }) => {
   return (
     <div>
       {/* Seção Principal da Planta */}
@@ -48,7 +52,7 @@ export const MainPlant: React.FC = () => {
           <div className="flex items-center space-x-4 mb-8">
             <span className="font-semibold text-[#A7C957]">Quantidade:</span>
             <div className="flex items-center">
-              <button className="px-3 py-1 bg-[#A7C957] text-[#386641] rounded-l-full">
+              <button className="px-3 py-1 bg-[#A7C957] text-[#386641] rounded-l-full cursor-pointer">
                 -
               </button>
               <input
@@ -57,11 +61,11 @@ export const MainPlant: React.FC = () => {
                 readOnly
                 className="w-12 text-center bg-[#A7C957] text-[#386641] p-1"
               />
-              <button className="px-3 py-1 bg-[#A7C957] text-[#386641] rounded-r-full">
+              <button className="px-3 py-1 bg-[#A7C957] text-[#386641] rounded-r-full cursor-pointer">
                 +
               </button>
             </div>
-            <button className="bg-[#A7C957] text-[#386641] px-6 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-opacity">
+            <button onClick={onAddToCartClick} className="bg-[#A7C957] text-[#386641] px-6 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-opacity cursor-pointer">
               Adicionar ao Carrinho
             </button>
           </div>
