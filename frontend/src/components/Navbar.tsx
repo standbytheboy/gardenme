@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Search } from "akar-icons";
 import { Button } from "./LoginBtn";
+import Logo from '../assets/gardenme-logo.svg'
 
 interface NavItem {
   name: string;
@@ -73,6 +75,7 @@ const SearchLupe = () => (
 export const Navbar = () => {
   const [translateX, setTranslateX] = useState<string>("0");
   const [activeItem, setActiveItem] = useState<NavItem | null>(null); // Specify state type
+  const navigate = useNavigate();
 
   const handleLinkHover = (item: NavItem | null, x: string) => {
     setActiveItem(item);
@@ -88,7 +91,7 @@ export const Navbar = () => {
           bg-[#386641]
         "
       >
-        <img src="" alt="Logo" className="mr-6 h-9 w-9" />
+        <img src={Logo} alt="Logo" className="mr-6 h-20 w-20" />
         <div className="flex items-center justify-center w-1/2 font-medium">
           <SearchLupe />
           {items.map((item) => (
@@ -118,10 +121,10 @@ export const Navbar = () => {
           </div>
         </div>
         <div className="flex justify-between">
-          <Button>
+          <Button onClick={() => navigate('/login')}>
             Login
           </Button>
-          <Button>
+          <Button onClick={() => navigate('/signup')}>
             Cadastre-se
           </Button>
         </div>

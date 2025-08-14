@@ -2,12 +2,14 @@ import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../assets/apple-logo.svg";
 import gardenMeLogo from "../assets/gardenme-logo.svg";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,9 +65,9 @@ const SignupPage: React.FC = () => {
           </h2>
           <p className="text-gray-300 text-center mb-6">
             Já tem uma conta?{" "}
-            <a href="/login" className="text-[#A7C957] hover:underline">
+            <span className="text-[#A7C957] hover:underline cursor-pointer" onClick={() => navigate('/login')}>
               Fazer Login
-            </a>
+            </span>
           </p>
 
           <form onSubmit={handleSignup} className="space-y-6">
