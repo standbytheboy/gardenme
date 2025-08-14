@@ -1,6 +1,5 @@
 -- Apaga o banco de dados se ele já existir (útil para re-testar a criação)
 -- DROP DATABASE IF EXISTS jardim_db;
-
 -- Cria o banco de dados com o conjunto de caracteres correto para português
 CREATE DATABASE IF NOT EXISTS gardenme CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
