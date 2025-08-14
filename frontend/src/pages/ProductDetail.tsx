@@ -1,49 +1,44 @@
 import React from 'react';
-import { Navbar } from '../components/Navbar.tsx';
-import { Header } from '../components/Header.tsx';
-import { Accordion } from '../components/Accordion.tsx';
-import AddedToCartCard from '../components/AddedToCart.tsx'; 
-import Footer from '../components/Footer.tsx';
+import { Navbar } from '../components/Navbar';
+import Footer from '../components/Footer';
+import { Carousel } from '../components/carousel/Carousel';
+import { MainPlant } from '../components/MainPlant';
 
-interface AccordionItemData {
-  header: string;
-  content: string;
-}
-
-const myPlantData = {
-  id: 1,
-  name: "Aloe Vera",
-  price: "$19.99",
-  // ...outras propriedades da planta
-};
-
-const Product: React.FC = () => {
-  const accordionData: AccordionItemData[] = [
-    { header: "What is TypeScript?", content: "TypeScript is a strongly typed superset of JavaScript that compiles to plain JavaScript." },
-    { header: "Why use TypeScript?", content: "TypeScript helps catch errors early, improves code readability, and provides better tooling." },
-    { header: "How to install?", content: "You can install TypeScript globally using npm: `npm install -g typescript`." },
-  ];
-
+const ProductPage: React.FC = () => {
   return (
-    // Adicionamos uma div principal com a cor de fundo para a página inteira
-    <div className="bg-gray-50 text-gray-800 min-h-screen">
-      {/* Componente de navegação, fixo no topo da página */}
+    <div className="bg-[#A7C957] text-[#386641] min-h-screen">
       <Navbar />
 
-      {/* O conteúdo principal da página */}
-      <main>
-        <Accordion items={accordionData} /> {/* Pass the 'items' prop here */}
-        <AddedToCartCard
-        productName={myPlantData.name}
-        productPrice={myPlantData.price}
-      />
+      <main className="container mx-auto p-4 pt-24">
+        <MainPlant></MainPlant>
+        {/* Seção de "Mais Vendidas" */}
+        <section className="py-12">
+          <h2 className="text-3xl font-bold text-center mb-8">Mais Vendidas</h2>
+          <Carousel></Carousel>
+          <div className='h-10'></div>
+          <Carousel></Carousel>
+        </section>
         
-        </main>
+        {/* Seção de "Melhores Para Iniciantes" */}
+        <section className="py-12">
+          <h2 className="text-3xl font-bold text-center mb-8">Melhores Para Iniciantes</h2>
+          <Carousel></Carousel>
+          <div className='h-10'></div>
+          <Carousel></Carousel>
+        </section>
 
-      {/* Rodapé da página, com informações de contato e links */}
+        {/* Seção de "Novidades" */}
+        <section className="py-12">
+          <h2 className="text-3xl font-bold text-center mb-8">Novidades</h2>
+          <Carousel></Carousel>
+          <div className='h-10'></div>
+          <Carousel></Carousel>
+        </section>
+      </main>
+
       <Footer />
     </div>
   );
 };
 
-export default Product;
+export default ProductPage;

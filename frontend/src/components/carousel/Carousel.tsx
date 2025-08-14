@@ -18,7 +18,7 @@ export const Carousel = () => {
     ];
 
     return (
-        <section className="flex justify-center items-center h-screen w-screen text-sm text-gray-900">
+        <section className="flex justify-center items-center w-screen text-sm text-gray-900">
             <Swiper
                 grabCursor={true}
                 centeredSlides={true}
