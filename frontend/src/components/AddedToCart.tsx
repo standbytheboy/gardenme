@@ -1,12 +1,10 @@
-import React from 'react';
-
-// 1. Defina a interface para as props do AddedToCartCard
+// 1. Definindo a interface para as props do AddedToCartCard
 interface AddedToCartCardProps {
-  productName: string; // Propriedade para o nome do produto
-  productPrice: string; // Propriedade para o preço do produto
+  productName: string;
+  productPrice: string;
 }
 
-// 2. Use a interface na função do componente
+// 2. Usando a interface na função do componente
 const AddedToCartCard = ({ productName, productPrice }: AddedToCartCardProps) => {
   return (
     <div className="w-[360px] h-[150px] bg-[#A7C957] rounded-xl shadow-lg shadow-black/10 mx-auto px-2 backdrop-blur-md z-50">
