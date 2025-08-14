@@ -32,8 +32,6 @@ const Product: React.FC = () => {
 
       {/* O conteúdo principal da página */}
       <main>
-        {/* Seção principal de destaque, geralmente com uma imagem grande e um título */}
-        <Header />
         <Accordion items={accordionData} /> {/* Pass the 'items' prop here */}
         <AddedToCartCard
         productName={myPlantData.name}
