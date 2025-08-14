@@ -36,7 +36,7 @@ const UserProfileSettings: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="mt-10">
       <Navbar></Navbar>
       <div className="min-h-screen flex items-center justify-center bg-[#386641] p-4 md:p-8">
         <div className="flex flex-col lg:flex-row gap-8 w-full max-w-7xl h-[80vh] rounded-lg overflow-hidden">

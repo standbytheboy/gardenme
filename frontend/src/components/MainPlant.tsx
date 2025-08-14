@@ -28,7 +28,7 @@ export const MainPlant: React.FC = () => {
   return (
     <div>
       {/* Seção Principal da Planta */}
-      <section className="bg-[#386641] p-8 flex flex-col lg:flex-row items-center gap-8 w-screen">
+      <section className="bg-[#386641] p-8 flex flex-col lg:flex-row items-center gap-8 w-screen mt-20">
         {/* Lado Esquerdo - Detalhes da Planta */}
         <div className="flex-1 text-center lg:text-left">
           <h1 className="text-4xl font-bold mb-2 text-[#A7C957]">

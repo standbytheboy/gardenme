@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import aloeImage from "../assets/aloe.webp";
 import pixIcon from "../assets/pix.svg";
 import { Navbar } from "../components/Navbar";
-import '../App.css'
+import "../App.css";
+import Footer from "../components/Footer";
 
 // Interfaces para os dados
 interface AddressType {
@@ -149,7 +150,6 @@ const CheckoutPage: React.FC = () => {
 
     return (
       <div>
-        <Navbar></Navbar>
         <div className="flex items-start bg-[#F2E8CF] p-4 rounded-4xl mb-4 relative">
           <img
             src={item.image}
@@ -200,125 +200,131 @@ const CheckoutPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#3E6F52] p-4 md:p-8 flex flex-col items-center">
-      {/* Título da Página */}
-      <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">
-        Finalizar Compra
-      </h1>
+    <div>
+      <div className="min-h-screen bg-[#3E6F52] p-4 md:p-8 flex flex-col items-center mt-21">
+        <Navbar></Navbar>
+        {/* Título da Página */}
+        <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">
+          Finalizar Compra
+        </h1>
 
-      {/* Conteúdo principal: Endereços, Pagamento, Itens, Resumo */}
-      <div className="w-full max-w-7xl flex flex-col lg:flex-row gap-8">
-        {/* Coluna da Esquerda (Endereço, Pagamento, Itens) */}
-        <div className="flex-1 flex flex-col gap-8">
-          {/* Seus Endereços */}
-          <div className="bg-[#F2E8CF] p-6 rounded-4xl">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-[#386641]">
-                Seus Endereços
-              </h2>
-              <button className="bg-transparent text-[#6CAF4B] border border-[#6CAF4B] py-2 px-4 rounded-full text-sm font-semibold hover:bg-[#A7C957] hover:text-[#386641] transition-colors duration-300">
-                Mudar Endereço
-              </button>
-            </div>
-            <p className="text-lg font-medium text-[#386641]">{address.name}</p>
-            <p className="text-gray-600">{address.details}</p>
-            <p className="text-gray-600">{address.cityStateZip}</p>
-          </div>
-
-          {/* Método de Pagamento */}
-          <div className="bg-[#F2E8CF] p-6 rounded-4xl">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-[#386641]">
-                Método de Pagamento
-              </h2>
-              <button className="bg-transparent text-[#6CAF4B] border border-[#6CAF4B] py-2 px-4 rounded-full text-sm font-semibold hover:bg-[#A7C957] hover:text-[#386641] transition-colors duration-300">
-                Mudar Pagamento
-              </button>
-            </div>
-            <div className="flex items-center">
-              {paymentMethod.icon && (
-                <img
-                  src={paymentMethod.icon}
-                  alt={paymentMethod.type}
-                  className="w-6 h-6 mr-3"
-                />
-              )}
+        {/* Conteúdo principal: Endereços, Pagamento, Itens, Resumo */}
+        <div className="w-full max-w-7xl flex flex-col lg:flex-row gap-8">
+          {/* Coluna da Esquerda (Endereço, Pagamento, Itens) */}
+          <div className="flex-1 flex flex-col gap-8">
+            {/* Seus Endereços */}
+            <div className="bg-[#F2E8CF] p-6 rounded-4xl">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-[#386641]">
+                  Seus Endereços
+                </h2>
+                <button className="bg-transparent text-[#6CAF4B] border border-[#6CAF4B] py-2 px-4 rounded-full text-sm font-semibold hover:bg-[#A7C957] hover:text-[#386641] transition-colors duration-300">
+                  Mudar Endereço
+                </button>
+              </div>
               <p className="text-lg font-medium text-[#386641]">
-                {paymentMethod.details}
+                {address.name}
               </p>
+              <p className="text-gray-600">{address.details}</p>
+              <p className="text-gray-600">{address.cityStateZip}</p>
+            </div>
+
+            {/* Método de Pagamento */}
+            <div className="bg-[#F2E8CF] p-6 rounded-4xl">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-[#386641]">
+                  Método de Pagamento
+                </h2>
+                <button className="bg-transparent text-[#6CAF4B] border border-[#6CAF4B] py-2 px-4 rounded-full text-sm font-semibold hover:bg-[#A7C957] hover:text-[#386641] transition-colors duration-300">
+                  Mudar Pagamento
+                </button>
+              </div>
+              <div className="flex items-center">
+                {paymentMethod.icon && (
+                  <img
+                    src={paymentMethod.icon}
+                    alt={paymentMethod.type}
+                    className="w-6 h-6 mr-3"
+                  />
+                )}
+                <p className="text-lg font-medium text-[#386641]">
+                  {paymentMethod.details}
+                </p>
+              </div>
+            </div>
+
+            {/* Itens do Pedido */}
+            <div className="bg-[#F2E8CF] p-6 rounded-4xl">
+              <h2 className="text-xl font-semibold text-[#386641] mb-4">
+                Seus Itens
+              </h2>
+              {orderItems.map((item) => (
+                <CheckoutItem
+                  key={item.id}
+                  item={item}
+                  onQuantityChange={handleQuantityChange}
+                  onRemove={handleRemoveItem}
+                />
+              ))}
             </div>
           </div>
 
-          {/* Itens do Pedido */}
-          <div className="bg-[#F2E8CF] p-6 rounded-4xl">
-            <h2 className="text-xl font-semibold text-[#386641] mb-4">
-              Seus Itens
-            </h2>
-            {orderItems.map((item) => (
-              <CheckoutItem
-                key={item.id}
-                item={item}
-                onQuantityChange={handleQuantityChange}
-                onRemove={handleRemoveItem}
-              />
-            ))}
-          </div>
-        </div>
+          {/* Coluna da Direita (Resumo do Pedido) */}
+          <div className="lg:w-96 bg-[#F2E8CF] p-6 rounded-4xl self-start sticky top-8">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-4 text-[#386641]">
+                Resumo do Pedido
+              </h2>
+              <div className="flex items-center border border-gray-300 rounded-full overflow-hidden mb-4">
+                <input
+                  type="text"
+                  placeholder="Cupom de Desconto"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className="flex-grow py-2 px-4 bg-transparent text-[#386641] placeholder-gray-500 focus:outline-none"
+                />
+                <button
+                  onClick={handleApplyCoupon}
+                  className="bg-[#A7C957] text-[#386641] py-2 px-4 rounded-r-full hover:bg-opacity-90 transition duration-300 text-sm font-semibold whitespace-nowrap"
+                >
+                  Aplicar
+                </button>
+              </div>
 
-        {/* Coluna da Direita (Resumo do Pedido) */}
-        <div className="lg:w-96 bg-[#F2E8CF] p-6 rounded-4xl self-start sticky top-8">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-4 text-[#386641]">
-              Resumo do Pedido
-            </h2>
-            <div className="flex items-center border border-gray-300 rounded-full overflow-hidden mb-4">
-              <input
-                type="text"
-                placeholder="Cupom de Desconto"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-                className="flex-grow py-2 px-4 bg-transparent text-[#386641] placeholder-gray-500 focus:outline-none"
-              />
-              <button
-                onClick={handleApplyCoupon}
-                className="bg-[#A7C957] text-[#386641] py-2 px-4 rounded-r-full hover:bg-opacity-90 transition duration-300 text-sm font-semibold whitespace-nowrap"
-              >
-                Aplicar
-              </button>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-gray-600">Subtotal</span>
+                <span className="font-semibold text-[#386641]">
+                  R$ {subtotal.toFixed(2).replace(".", ",")}
+                </span>
+              </div>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-gray-600">Frete</span>
+                <span className="font-semibold text-[#386641]">
+                  R$ {shippingCost.toFixed(2).replace(".", ",")}
+                </span>
+              </div>
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-gray-600">Descontos aplicados</span>
+                <span className="font-semibold text-[#E53E3E]">
+                  - R$ {discountsApplied.toFixed(2).replace(".", ",")}
+                </span>
+              </div>
+              <hr className="my-4 border-gray-300" />
+              <div className="flex justify-between items-center text-2xl font-bold mb-6 text-[#386641]">
+                <span>Total</span>
+                <span>R$ {total.toFixed(2).replace(".", ",")}</span>
+              </div>
             </div>
-
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-semibold text-[#386641]">
-                R$ {subtotal.toFixed(2).replace(".", ",")}
-              </span>
-            </div>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-gray-600">Frete</span>
-              <span className="font-semibold text-[#386641]">
-                R$ {shippingCost.toFixed(2).replace(".", ",")}
-              </span>
-            </div>
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-gray-600">Descontos aplicados</span>
-              <span className="font-semibold text-[#E53E3E]">
-                - R$ {discountsApplied.toFixed(2).replace(".", ",")}
-              </span>
-            </div>
-            <hr className="my-4 border-gray-300" />
-            <div className="flex justify-between items-center text-2xl font-bold mb-6 text-[#386641]">
-              <span>Total</span>
-              <span>R$ {total.toFixed(2).replace(".", ",")}</span>
-            </div>
+            <button
+              onClick={handleConfirmPurchase}
+              className="w-full bg-[#A7C957] text-[#386641] py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300"
+            >
+              Confirmar Compra
+            </button>
           </div>
-          <button
-            onClick={handleConfirmPurchase}
-            className="w-full bg-[#A7C957] text-[#386641] py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300"
-          >
-            Confirmar Compra
-          </button>
         </div>
       </div>
+      <Footer></Footer>
     </div>
   );
 };

@@ -92,7 +92,7 @@ const ShoppingCart: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="mt-21">
       <Navbar></Navbar>
       <div className="min-h-screen bg-[#3E6F52] p-4 md:p-8 flex flex-col items-center">
         <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">

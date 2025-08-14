@@ -11,7 +11,7 @@ const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
   orderNumber = "12345",
 }) => {
   return (
-    <div>
+    <div className="mt-21">
       <Navbar></Navbar>
       <div className="min-h-screen bg-[#344E41] text-center flex flex-col items-center justify-center p-4 md:p-8">
         <h1 className="text-4xl md:text-5xl font-bold text-[#A7C957] mb-6">
