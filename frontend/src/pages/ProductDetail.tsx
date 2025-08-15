@@ -34,6 +34,7 @@ const ProductPage: React.FC = () => {
           <h2 className="text-3xl font-bold text-center mb-8">
             Melhores Para Iniciantes
           </h2>
+          
           <Carousel></Carousel>
           <div className="h-10"></div>
           <Carousel></Carousel>

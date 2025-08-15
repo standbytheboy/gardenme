@@ -204,7 +204,7 @@ const CheckoutPage: React.FC = () => {
 
   return (
     <div>
-      <div className="min-h-screen bg-[#335A42] p-4 md:p-8 flex flex-col items-center mt-21">
+      <div className="min-h-screen bg-[#386641] p-4 md:p-8 flex flex-col items-center mt-21">
         <Navbar></Navbar>
         {/* Título da Página */}
         <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">

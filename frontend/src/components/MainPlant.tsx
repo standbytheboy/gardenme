@@ -32,13 +32,13 @@ export const MainPlant: React.FC<MainPlantProps> = ({ onAddToCartClick }) => {
   return (
     <div>
       {/* Seção Principal da Planta */}
-      <section className="bg-[#386641] p-8 flex flex-col lg:flex-row items-center gap-8 w-screen mt-20">
+      <section className="bg-[#386641] p-16 flex flex-col lg:flex-row justify-between items-center gap-8 w-screen mt-20">
         {/* Lado Esquerdo - Detalhes da Planta */}
-        <div className="flex-1 text-center lg:text-left">
-          <h1 className="text-4xl font-bold mb-2 text-[#A7C957]">
+        <div className="flex-1 text-center lg:text-left max-w-min">
+          <h1 className="text-4xl font-bold mb-2 text-[#A7C957] w-min">
             {mainPlantData.name}
           </h1>
-          <div className="flex gap-8 items-center">
+          <div className="flex gap-8 items-center w-100">
             <p className="text-3xl font-bold text-[#F2E8CF] mb-4">
               {mainPlantData.price}
             </p>
@@ -49,7 +49,7 @@ export const MainPlant: React.FC<MainPlantProps> = ({ onAddToCartClick }) => {
           <p className="mb-4 text-[#F2E8CF] w-[40rem]">{mainPlantData.description}</p>
 
           {/* Ações e Quantidade */}
-          <div className="flex items-center space-x-4 mb-8">
+          <div className="flex items-center space-x-4 mb-8 w-150">
             <span className="font-semibold text-[#A7C957]">Quantidade:</span>
             <div className="flex items-center">
               <button className="px-3 py-1 bg-[#A7C957] text-[#386641] rounded-l-full cursor-pointer">
@@ -82,18 +82,18 @@ export const MainPlant: React.FC<MainPlantProps> = ({ onAddToCartClick }) => {
 
         {/* Lado Direito - Botões de Características */}
         <div className="flex flex-col items-stretch space-y-4 flex-shrink-0">
-          <button className="bg-[#F2E8CF] text-[#386641] font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
+          <div className="bg-[#F2E8CF] text-[#386641] text-center font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
             Umidade
-          </button>
-          <button className="bg-[#F2E8CF] text-[#386641] font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
+          </div>
+          <div className="bg-[#F2E8CF] text-[#386641] text-center font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
             Tamanho
-          </button>
-          <button className="bg-[#F2E8CF] text-[#386641] font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
+          </div>
+          <div className="bg-[#F2E8CF] text-[#386641] text-center font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
             Luz
-          </button>
-          <button className="bg-[#F2E8CF] text-[#386641] font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
+          </div>
+          <div className="bg-[#F2E8CF] text-[#386641] text-center font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
             Adubação
-          </button>
+          </div>
         </div>
       </section>
       {/* Acordeão de Dicas */}

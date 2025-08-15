@@ -18,7 +18,7 @@ const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
   return (
     <div className="mt-21">
       <Navbar></Navbar>
-      <div className="min-h-screen bg-[#344E41] text-center flex flex-col items-center justify-center p-4 md:p-8">
+      <div className="min-h-[15rem] bg-[#386641] text-center flex flex-col items-center justify-center p-8 md:p-20">
         <h1 className="text-4xl md:text-5xl font-bold text-[#A7C957] mb-6">
           Pedido Realizado com Sucesso!
         </h1>

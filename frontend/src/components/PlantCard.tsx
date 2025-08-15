@@ -10,7 +10,7 @@ interface PlantCardProps {
 // 2. Use a interface na função do componente
 export function PlantCard({ plant }: PlantCardProps) {
   return (
-    <div className="flex flex-col w-[470px] h-[255px] bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-[#386641] dark:border-gray-700 p-5 mx-4">
+    <div className="flex flex-col w-[470px] h-[255px] rounded-lg shadow-sm dark:bg-[#386641] p-5 mx-4">
       <div className="flex justify-between items-center h-full">
         <div>
           <a href="#">
