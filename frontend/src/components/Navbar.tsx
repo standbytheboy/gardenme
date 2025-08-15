@@ -32,7 +32,7 @@ interface LinkProps {
   onHover: (item: NavItem | null, x: string) => void; // Function prop
 }
 
-const Link = ({ item, activeItem, onHover }: LinkProps) => {
+const Link = ({ item, onHover }: LinkProps) => {
   const linkRef = useRef<HTMLAnchorElement>(null); // Specify the ref type
 
   const handleHover = () => {
@@ -47,7 +47,6 @@ const Link = ({ item, activeItem, onHover }: LinkProps) => {
       className={`
         px-3 flex items-center cursor-pointer w-full h-[72px] text-[15px]
         text-[#a7c957] hover:text-[#a7c95790]
-        ${item?.name === activeItem?.name ? "text-[#a7c95790]" : ""}
       `}
       ref={linkRef}
       onMouseEnter={handleHover}
@@ -124,6 +123,7 @@ export const Navbar = () => {
           <Button onClick={() => navigate('/login')}>
             Login
           </Button>
+          <div className="w-5"></div>
           <Button onClick={() => navigate('/signup')}>
             Cadastre-se
           </Button>
