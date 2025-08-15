@@ -1,6 +1,8 @@
 <?php
 
-header('Content-Type: application/json');
+// A linha abaixo foi removida da versão anterior, mas ainda há uma duplicação.
+// header('Content-Type: application/json');
+
 header('Access-Control-Allow-Origin: *'); 
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');

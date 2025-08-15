@@ -17,9 +17,6 @@ class AuthController
     header('Content-Type: application/json; charset=utf-8');
 
     try {
-        // =============================
-        // 1️⃣ Captura e valida JSON
-        // =============================
         $input = file_get_contents('php://input');
         error_log("INPUT RECEBIDO: " . $input);
 
@@ -30,9 +27,7 @@ class AuthController
             throw new \Exception('JSON inválido: ' . json_last_error_msg());
         }
 
-        // =============================
-        // 2️⃣ Validação de campos obrigatórios
-        // =============================
+        // Validação de campos obrigatórios
         if (empty($dadosCorpo['nome']) || empty($dadosCorpo['email']) || empty($dadosCorpo['senha'])) {
             http_response_code(400);
             echo json_encode(['mensagem' => 'Nome, e-mail e senha são obrigatórios.']);
@@ -51,9 +46,6 @@ class AuthController
             exit;
         }
 
-        // =============================
-        // 3️⃣ Cria objeto Usuario
-        // =============================
         $usuario = new Usuario(
             nome: $dadosCorpo['nome'],
             sobrenome: $dadosCorpo['sobrenome'] ?? '',
@@ -62,9 +54,7 @@ class AuthController
             isAdmin: false
         );
 
-        // =============================
-        // 4️⃣ Tenta criar usuário no banco
-        // =============================
+        // Tenta criar usuário no banco
         $usuarioDAO = new UsuarioDAO();
         try {
             $resultado = $usuarioDAO->criar($usuario, $dadosCorpo['senha']);
@@ -79,22 +69,23 @@ class AuthController
             exit;
         }
 
-        // =============================
-        // 5️⃣ Retorno final
-        // =============================
+        // Retorno final
         if ($resultado === 'conflict') {
             http_response_code(409);
             echo json_encode(['mensagem' => 'Email já cadastrado.']);
-        } elseif ($resultado !== false && is_int($resultado)) {
+            exit;
+        } elseif ($resultado !== false) {
             http_response_code(201);
             echo json_encode([
                 'mensagem' => 'Usuário criado com sucesso.',
                 'id_usuario' => $resultado
             ]);
+            exit;
         } else {
             error_log('Falha desconhecida ao criar usuário.');
             http_response_code(500);
             echo json_encode(['mensagem' => 'Erro interno ao criar usuário.']);
+            exit;
         }
 
     } catch (\Throwable $e) {
@@ -108,8 +99,6 @@ class AuthController
 
     exit;
 }
-
-
     public function login()
     {
         try {

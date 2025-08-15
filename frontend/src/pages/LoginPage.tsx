@@ -23,6 +23,9 @@ const LoginPage: React.FC = () => {
         }
       );
 
+      if (response.ok) {
+        navigate("/");
+      }
       const text = await response.text();
       console.log(text);
     } catch (error) {
