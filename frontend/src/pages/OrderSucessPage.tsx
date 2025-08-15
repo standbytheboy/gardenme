@@ -2,14 +2,19 @@ import React from "react";
 import successIllustration from "../assets/Reforestation-cuate.svg"; // Substitua pelo caminho da sua imagem real
 import { Navbar } from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 
 interface OrderSuccessPageProps {
   orderNumber?: string; // Opcional, caso você queira passar o número do pedido
 }
 
+
 const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
   orderNumber = "12345",
 }) => {
+  
+  const navigate = useNavigate();
+
   return (
     <div className="mt-21">
       <Navbar></Navbar>
@@ -40,10 +45,10 @@ const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
         </p>
 
         <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 w-full max-w-lg">
-          <button className="flex-1 bg-[#A7C957] text-[#386641] py-3 px-6 rounded-full text-lg font-semibold hover:opacity-90 transition duration-300 shadow-lg">
+          <button onClick={() => navigate('/perfil')} className="cursor-pointer flex-1 bg-[#A7C957] text-[#386641] py-3 px-6 rounded-full text-lg font-semibold hover:opacity-90 transition duration-300 shadow-lg">
             Ver Meus Pedidos
           </button>
-          <button className="flex-1 bg-[#A7C957] text-[#386641] py-3 px-6 rounded-full text-lg font-semibold hover:opacity-90 transition duration-300 shadow-lg">
+          <button onClick={() => navigate('/plantas')} className="cursor-pointer flex-1 bg-[#A7C957] text-[#386641] py-3 px-6 rounded-full text-lg font-semibold hover:opacity-90 transition duration-300 shadow-lg">
             Continuar Comprando
           </button>
         </div>

@@ -72,7 +72,7 @@ export const PopularCategories: React.FC = () => {
   ];
 
   return (
-    <section className="bg-[#A7C957] py-16 px-4 md:px-8 flex flex-col items-center justify-center min-h-screen">
+    <section className="bg-[#A7C957] py-16 px-4 md:px-8 flex flex-col items-center justify-center min-h-[12rem]">
       
       <h2 className="text-4xl md:text-5xl font-bold text-[#386641] mb-12 text-center">
         Categorias Populares

@@ -4,6 +4,7 @@ import { Navbar } from "../components/Navbar.tsx";
 import aloeImage from "../assets/aloe.webp";
 import Footer from "../components/Footer.tsx";
 import '../App.css'
+import { useNavigate } from "react-router-dom";
 
 // Interface para o tipo de item no estado do carrinho
 interface CartItemType {
@@ -90,11 +91,12 @@ const ShoppingCart: React.FC = () => {
       )
     );
   };
+  const navigate = useNavigate(); 
 
   return (
     <div className="mt-21">
       <Navbar></Navbar>
-      <div className="min-h-screen bg-[#3E6F52] p-4 md:p-8 flex flex-col items-center">
+      <div className="min-h-[12rem] bg-[#386641] p-20 md:p-20 flex flex-col items-center">
         <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">
           Seu Carrinho
         </h1>
@@ -133,7 +135,7 @@ const ShoppingCart: React.FC = () => {
               <span>Total</span>
               <span>R$ {total.toFixed(2).replace(".", ",")}</span>
             </div>
-            <button className="w-full bg-[#A7C957] text-[#386641] py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300">
+            <button onClick={() => navigate('/checkout')} className="w-full bg-[#A7C957] text-[#386641] py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300 cursor-pointer">
               Continuar Compra
             </button>
           </div>

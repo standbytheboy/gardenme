@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 // 1. Definindo a interface para as props do AddedToCartCard
 interface AddedToCartCardProps {
   productName: string;
@@ -6,6 +8,7 @@ interface AddedToCartCardProps {
 
 // 2. Usando a interface na função do componente
 const AddedToCartCard = ({ productName, productPrice }: AddedToCartCardProps) => {
+  const navigate = useNavigate();
   return (
     <div className="w-[360px] h-[150px] bg-[#A7C957] rounded-xl shadow-lg shadow-black/10 mx-auto px-2 backdrop-blur-md z-50">
       <div className="inline-flex flex-nowrap items-center w-full">
@@ -48,7 +51,7 @@ const AddedToCartCard = ({ productName, productPrice }: AddedToCartCardProps) =>
           <div className="text-sm font-semibold text-gray-700 pb-2.5 pl-2.5">
             {productPrice}
           </div>
-          <button className="relative transition-all duration-300 ease-in-out shadow-lg shadow-black/20 py-2 px-5 bg-[#386641] rounded-full flex items-center justify-center text-white gap-2.5 font-bold border-2outline-none overflow-hidden text-base cursor-pointer h-[35px] group">
+          <button onClick={() => navigate('/carrinho')} className="relative transition-all duration-300 ease-in-out shadow-lg shadow-black/20 py-2 px-5 bg-[#386641] rounded-full flex items-center justify-center text-white gap-2.5 font-bold border-2outline-none overflow-hidden text-base cursor-pointer h-[35px] group">
             Ver Carrinho
             <svg
               className="w-6 h-6 transition-all duration-300 ease-in-out group-hover:translate-x-1"

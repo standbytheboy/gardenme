@@ -21,7 +21,7 @@ interface TestimonialCardProps {
 
   const TestimonialCard: React.FC<TestimonialCardProps> = ({ user, role, stars, text, badge }) => {
     return (
-      <div className="bg-[#386641] rounded-2xl p-6 shadow-lg flex flex-col h-full">
+      <div className="bg-[#386641] rounded-2xl p-6 shadow-lg flex flex-col h-full min-h-[30rem]">
         <div className="flex items-center mb-4">
           <div className="w-12 h-12 rounded-full bg-[#D4EDC8] mr-4 flex items-center justify-center text-[#386641] font-semibold text-lg">
             {user.charAt(0)}
@@ -50,44 +50,43 @@ export const TestimonialsCarousel: React.FC = () => {
     {
       id: 1,
       user: 'Usuário 1',
-      role: 'Estudante de Design',
-      stars: 5,
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
-      badge: 'UX/UI Design',
-    },
-    {
-      id: 2,
-      user: 'Usuário 2',
-      role: 'Estudante de Design',
-      stars: 4,
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
-      badge: 'UX/UI Design',
-    },
-    {
-      id: 3,
-      user: 'Usuário 3',
-      role: 'Estudante de Design',
-      stars: 5,
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
-      badge: 'UX/UI Design',
-    },
-    // Adicione mais depoimentos para que o carrossel funcione
-    {
-      id: 4,
-      user: 'Usuário 4',
       role: 'Amante de Plantas',
       stars: 5,
       text: 'Experiência incrível! As plantas chegaram em perfeito estado e o suporte é excelente.',
       badge: 'Jardinagem',
     },
     {
-      id: 5,
-      user: 'Usuário 5',
+      id: 2,
+      user: 'Usuário 2',
       role: 'Designer Gráfico',
       stars: 4,
       text: 'Adorei a variedade de plantas e a facilidade de navegação no site. Recomendo!',
       badge: 'Web Design',
     },
+    {
+      id: 3,
+      user: 'Usuário 3',
+      role: 'Amante de Plantas',
+      stars: 5,
+      text: 'Experiência incrível! As plantas chegaram em perfeito estado e o suporte é excelente.',
+      badge: 'Jardinagem',
+    },
+    {
+      id: 4,
+      user: 'Usuário 4',
+      role: 'Designer Gráfico',
+      stars: 4,
+      text: 'Adorei a variedade de plantas e a facilidade de navegação no site. Recomendo!',
+      badge: 'Web Design',
+    },
+    {
+      id: 5,
+      user: 'Usuário 5',
+      role: 'Amante de Plantas',
+      stars: 5,
+      text: 'Experiência incrível! As plantas chegaram em perfeito estado e o suporte é excelente.',
+      badge: 'Jardinagem',
+    }
   ];
 
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -120,7 +119,7 @@ export const TestimonialsCarousel: React.FC = () => {
   }, [testimonials.length]); // Dependência adicionada para recalcular se o número de depoimentos mudar
 
   return (
-    <section className="bg-[#A7C957] py-16 px-4 md:px-8 flex flex-col items-center justify-center min-h-screen">
+    <section className="bg-[#A7C957] py-16 px-4 md:px-8 flex flex-col items-center justify-center min-h-[12rem]">
       {/* Título da Seção */}
       <h2 className="text-4xl md:text-5xl font-bold text-[#386641] mb-2 text-center">
         Quem compra, ama!

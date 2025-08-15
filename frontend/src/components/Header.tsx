@@ -23,7 +23,7 @@ export const Header = () => {
   });
   return (
     <div className="bg-[#A7C957]">
-      <section className="flex font-sans bg-[#386641] px-50 pt-30 pb-20 rounded-bl-[3rem] rounded-br-[3rem]">
+      <section className="flex justify-center gap-20 font-sans bg-[#386641] pt-30 pb-20 rounded-bl-[3rem] rounded-br-[3rem]">
         <Navbar></Navbar>
         <div className="left">
           <h1 className="font-black text-4xl w-2xl text-[#A7C957] mt-[4rem]">

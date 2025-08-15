@@ -4,6 +4,7 @@ import pixIcon from "../assets/pix.svg";
 import { Navbar } from "../components/Navbar";
 import "../App.css";
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 
 // Interfaces para os dados
 interface AddressType {
@@ -129,9 +130,11 @@ const CheckoutPage: React.FC = () => {
     alert(`Aplicar cupom: ${couponCode}`);
   };
 
+  const navigate = useNavigate();
+
   const handleConfirmPurchase = () => {
     alert("Compra Confirmada!");
-    // Lógica para finalizar a compra (enviar para API, etc.)
+    navigate('/pedido-sucesso');
   };
 
   // Reutilizando parte da lógica do CartItem mas adaptando para a tela de checkout
@@ -201,7 +204,7 @@ const CheckoutPage: React.FC = () => {
 
   return (
     <div>
-      <div className="min-h-screen bg-[#3E6F52] p-4 md:p-8 flex flex-col items-center mt-21">
+      <div className="min-h-screen bg-[#335A42] p-4 md:p-8 flex flex-col items-center mt-21">
         <Navbar></Navbar>
         {/* Título da Página */}
         <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">
@@ -317,7 +320,7 @@ const CheckoutPage: React.FC = () => {
             </div>
             <button
               onClick={handleConfirmPurchase}
-              className="w-full bg-[#A7C957] text-[#386641] py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300"
+              className="w-full bg-[#A7C957] text-[#386641] py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300 cursor-pointer"
             >
               Confirmar Compra
             </button>
