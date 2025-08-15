@@ -35,7 +35,7 @@ const LoginPage: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#344E41] p-4 w-[100vw]">
       <div className="flex flex-col justify-center md:flex-row w-full bg-[#344E41] rounded-lg overflow-hidden h-[95vh]">
         {/* Lado Esquerdo - Logo e Mensagem */}
-        <div className="bg-[#386641] md:w-1/3 flex flex-col items-center justify-center p-8 text-center h-full mr-[5rem] rounded-lg">
+        <div className="bg-[#386641] md:w-1/2 flex flex-col items-center justify-center p-8 text-center h-full mr-[5rem] rounded-4xl">
           <img
             src={gardenMeLogo}
             alt="Garden Me Logo"
