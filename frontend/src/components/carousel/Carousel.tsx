@@ -26,13 +26,13 @@ export const Carousel = () => {
       {/* Botões customizados */}
       <div
         ref={prevRef}
-        className="absolute left-10 top-1/2 -translate-y-1/2 z-20 cursor-pointer text-3xl font-bold text-[#386641]"
+        className="absolute left-10 top-1/2 -translate-y-1/2 z-20 cursor-pointer text-3xl font-bold text-black"
       >
         ‹
       </div>
       <div
         ref={nextRef}
-        className="absolute right-10 top-1/2 -translate-y-1/2 z-20 cursor-pointer text-3xl font-bold text-[#386641]"
+        className="absolute right-10 top-1/2 -translate-y-1/2 z-20 cursor-pointer text-3xl font-bold text-black"
       >
         ›
       </div>
