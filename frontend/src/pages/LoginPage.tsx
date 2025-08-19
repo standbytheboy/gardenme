@@ -23,11 +23,12 @@ const LoginPage: React.FC = () => {
         }
       );
 
+      const data = await response.json();
       if (response.ok) {
+        localStorage.setItem('userToken', data.token)
+        localStorage.setItem('userId', data.idDoUsuario)
         navigate("/");
       }
-      const text = await response.text();
-      console.log(text);
     } catch (error) {
       console.error("Erro na requisição:", error);
       alert("Erro ao fazer login. Tente novamente.");

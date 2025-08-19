@@ -9,8 +9,7 @@ class AuthMiddleware
 {
     public static function verificar()
     {
-        // $chaveSecreta = getenv('JWT_SECRET');
-        $chaveSecreta = "1CbXldbPUZBV0LRmqVt6RYnqFJTHtrYa";
+        $chaveSecreta = getenv('JWT_SECRET') ?? "1CbXldbPUZBV0LRmqVt6RYnqFJTHtrYa";
 
         if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
             http_response_code(401);

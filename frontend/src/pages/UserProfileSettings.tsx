@@ -15,8 +15,14 @@ const UserProfileSettings: React.FC = () => {
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam."
   );
 
+  // Novos estados para a seção de segurança
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [passwordChangeMessage, setPasswordChangeMessage] = useState("");
+
   // Estado para o item de menu ativo na sidebar
-  const [activeMenuItem, setActiveMenuItem] = useState("Meus Dados"); // Mantenha este estado aqui
+  const [activeMenuItem, setActiveMenuItem] = useState("Meus Dados");
 
   const handleTrocarFoto = () => {
     alert("Funcionalidade de trocar foto.");
@@ -34,6 +40,48 @@ const UserProfileSettings: React.FC = () => {
     alert("Alterações salvas!");
     console.log({ firstName, lastName, email, country, aboutMe });
   };
+
+  // Nova função para lidar com a alteração de senha
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordChangeMessage("");
+    if (newPassword !== confirmNewPassword) {
+        setPasswordChangeMessage("As novas senhas não coincidem.");
+        return;
+    }
+    try {
+        const idDoUsuario = localStorage.getItem('userId');
+        const tokenDeAutenticacao = localStorage.getItem('userToken');
+        const response = await fetch(
+            `http://localhost/gardenme/backend/public/api/usuarios/${idDoUsuario}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${tokenDeAutenticacao}`,
+                },
+                body: JSON.stringify({
+                    senhaAtual: currentPassword,
+                    novaSenha: newPassword,
+                }),
+            }
+        );
+        const text = await response.text();
+        console.log("Resposta do servidor (texto):", text);
+
+        if (response.ok) {
+            setPasswordChangeMessage("Senha alterada com sucesso!");
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmNewPassword("");
+        } else {
+            setPasswordChangeMessage("Erro ao alterar a senha.");
+        }
+    } catch (error) {
+        console.error("Erro na requisição:", error);
+        setPasswordChangeMessage("Erro ao conectar com o servidor. Tente novamente.");
+    }
+};
 
   return (
     <div className="mt-10">
@@ -171,9 +219,75 @@ const UserProfileSettings: React.FC = () => {
                 </div>
               </form>
             )}
-
             {activeMenuItem === "Segurança" && (
-              <div className="text-lg text-white">Conteúdo de Segurança...</div>
+              <div className="flex flex-col gap-6">
+                <p className="text-lg text-[#F2E8CF]">
+                  Altere sua senha para manter sua conta segura.
+                </p>
+                <form onSubmit={handlePasswordChange} className="space-y-6">
+                  <div>
+                    <label
+                      htmlFor="currentPassword"
+                      className="text-lg text-[#A7C957]"
+                    >
+                      Senha Atual
+                    </label>
+                    <input
+                      type="password"
+                      id="currentPassword"
+                      className="w-full p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="newPassword"
+                      className="text-lg text-[#A7C957]"
+                    >
+                      Nova Senha
+                    </label>
+                    <input
+                      type="password"
+                      id="newPassword"
+                      className="w-full p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="confirmNewPassword"
+                      className="text-lg text-[#A7C957]"
+                    >
+                      Confirme a Nova Senha
+                    </label>
+                    <input
+                      type="password"
+                      id="confirmNewPassword"
+                      className="w-full p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {passwordChangeMessage && (
+                    <p className="text-sm text-center text-red-400">
+                      {passwordChangeMessage}
+                    </p>
+                  )}
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="bg-[#A7C957] text-[#386641] py-3 px-6 rounded-full font-semibold hover:opacity-90 transition-opacity"
+                    >
+                      Alterar Senha
+                    </button>
+                  </div>
+                </form>
+              </div>
             )}
             {activeMenuItem === "Endereços" && (
               <div className="text-lg text-white">Seus Endereços aqui...</div>
