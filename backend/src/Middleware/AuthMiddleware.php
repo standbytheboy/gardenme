@@ -27,7 +27,7 @@ class AuthMiddleware
             $decoded = JWT::decode($token, new Key($chaveSecreta, 'HS256'));
             return $decoded; 
         } catch (\Exception $e) {
-            return ['status' => 401, 'mensagem' => 'Acesso negado. Token inválido: Signature verification failed'];
+            return ['status' => 401, 'mensagem' => 'Acesso negado. Token inválido: Faça Login!'];
         }
     }
 }

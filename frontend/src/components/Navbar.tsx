@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search } from "akar-icons";
 import { Button } from "./LoginBtn";
 import Logo from '../assets/gardenme-logo.svg';
-import profilePicture from '../assets/profile-picture.avif'; // Adicionei um profile picture para o exemplo
+import profilePicture from '../assets/profile-picture.avif'; // profile picture para exemplo
 
 interface NavItem {
   name: string;
@@ -65,7 +65,7 @@ const SearchLupe = () => (
 export const Navbar = () => {
   const [translateX, setTranslateX] = useState<string>("0");
   const [activeItem, setActiveItem] = useState<NavItem | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Alterado para 'true' para o exemplo
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   const handleLinkHover = (item: NavItem | null, x: string) => {
@@ -85,7 +85,7 @@ export const Navbar = () => {
   return (
     <section className="font-sans">
       <nav className="fixed top-0 left-0 z-10 flex justify-between items-center px-5 h-[85px] w-full text-[#5B5968] bg-[#386641]">
-        <a onClick={() => navigate('/')}><img src={Logo} alt="Logo" className="mr-6 h-20 w-20 cursor-pointer" /></a>
+        <img src={Logo} onClick={() => navigate('/')} alt="Logo" className="mr-6 h-20 w-20 cursor-pointer" />
         <div className="flex items-center justify-center w-1/2 font-medium">
           <SearchLupe />
           {items.map((item) => (
