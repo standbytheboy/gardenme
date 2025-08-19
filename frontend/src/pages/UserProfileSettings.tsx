@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import userProfilePic from "../assets/profile-picture.avif";
 import { Sidebar9 } from "../components/SidebarUserSettings.tsx";
 import { Navbar } from "../components/Navbar.tsx";
+import AddressManager from "../components/AddressManager.tsx";
 import Footer from "../components/Footer.tsx";
 
 const UserProfileSettings: React.FC = () => {
@@ -358,7 +359,7 @@ const UserProfileSettings: React.FC = () => {
               </div>
             )}
             {activeMenuItem === "Endereços" && (
-              <div className="text-lg text-white">Seus Endereços aqui...</div>
+              <AddressManager />
             )}
             {activeMenuItem === "Meus Pedidos" && (
               <div className="text-lg text-white">Histórico de Pedidos...</div>
