@@ -4,16 +4,7 @@ import Footer from "../components/Footer";
 import { Carousel } from "../components/carousel/Carousel";
 import { MainPlant } from "../components/MainPlant";
 import AddedToCartCard from "../components/AddedToCart.tsx";
-
-// Defina uma interface para o objeto de planta para maior segurança de tipo
-interface Plant {
-  id: number;
-  name: string;
-  price: string;
-  imageSrc: string;
-  description: string;
-  rating: number;
-}
+import { Plant } from "../components/types.tsx";
 
 const ProductPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -6,16 +6,16 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/navigation";
 import "./Carousel.css";
 import { PlantCard } from "../PlantCard";
-
+import { Plant } from "../types";
 interface CarouselProps {
-  onPlantClick: (plant: any) => void;
+  onPlantClick: (plant: Plant) => void;
 }
 
 export const Carousel = ({ onPlantClick }: CarouselProps) => {
   const prevRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLDivElement>(null);
 
-  const plantCardsData = [
+  const plantCardsData: Plant[] = [
     {
       id: 1,
       name: "Samambaia",

@@ -1,3 +1,5 @@
+import { Plant } from "./types";
+
 interface PlantCardProps {
   plant: {
     id: number;
@@ -7,7 +9,7 @@ interface PlantCardProps {
     description: string;
     rating: number;
   };
-  onPlantClick: (plant: object) => void;
+  onPlantClick: (plant: Plant) => void;
 }
 
 export function PlantCard({ plant, onPlantClick }: PlantCardProps) {

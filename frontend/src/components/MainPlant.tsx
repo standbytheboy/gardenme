@@ -1,21 +1,12 @@
 import React from "react";
 import { Accordion } from "../components/Accordion";
 import aloeImage from "../assets/aloe.webp";
+import { Plant } from "./types";
 
 interface MainPlantProps {
   onAddToCartClick: () => void;
   plantData: Plant | null;
 }
-
-interface Plant {
-  id: number;
-  name: string;
-  price: string;
-  imageSrc: string;
-  description: string;
-  rating: number;
-}
-
 // Mock de dados para a planta principal e para os cards de "Mais Vendidas", "Iniciantes" e "Novidades"
 const defaultMainPlantData = {
   id: 1,
