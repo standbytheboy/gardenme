@@ -28,6 +28,12 @@ const LoginPage: React.FC = () => {
         localStorage.setItem('userToken', data.token)
         localStorage.setItem('userId', data.idDoUsuario)
         navigate("/");
+      } else {
+        if (data || data.error === 'Credenciais inválidas') {
+          alert("Credenciais incorretas. Por favor, verifique seu email e senha.");
+        } else {
+          alert("Erro ao fazer login. Tente novamente.");
+        }
       }
     } catch (error) {
       console.error("Erro na requisição:", error);
