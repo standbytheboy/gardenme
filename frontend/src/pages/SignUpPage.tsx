@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../assets/apple-logo.svg";
-import gardenMeLogo from "../assets/gardenme-logo.svg";
+import gardenMeLogo from "../assets/logos/classic-classic.png";
 import { useNavigate } from "react-router-dom";
 
 const SignupPage: React.FC = () => {
@@ -13,6 +13,11 @@ const SignupPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
+  interface ServerResponse {
+    mensagem: string;
+    // Adicione outras propriedades que o seu backend possa retornar
+    // por exemplo: status: string; sucesso: boolean;
+  }
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -39,15 +44,19 @@ const SignupPage: React.FC = () => {
         }
       );
 
-      let data: any = {};
+      let data: ServerResponse = { mensagem: "" };
       const text = await response.text();
 
       // Tenta converter em JSON, mas se falhar, mantém como string
       try {
         data = text ? JSON.parse(text) : {};
       } catch (err) {
-        console.error("Resposta não é JSON:", text);
-        data = { mensagem: text || "Resposta inesperada do servidor" };
+        if (err instanceof SyntaxError) {
+          // Isso é um erro de sintaxe, pode ser o parse do JSON falhando
+          console.error("Ocorreu um erro de sintaxe:", err.message);
+        } else if (err instanceof Error) {
+          console.error("Ocorreu um erro:", err.message);
+        }
       }
 
       if (response.ok) {
@@ -71,7 +80,7 @@ const SignupPage: React.FC = () => {
           <img
             src={gardenMeLogo}
             alt="Garden Me Logo"
-            className="w-90 h-90 mb-4"
+            className="w-[35rem] h-[35rem] mb-4"
           />
           <div className="p-4 rounded-full mb-4"></div>
           <p className="text-lg text-gray-200 mt-4">

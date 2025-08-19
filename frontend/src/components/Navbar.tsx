@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Search } from "akar-icons";
 import { Button } from "./LoginBtn";
-import Logo from '../assets/gardenme-logo.svg';
+import Logo from '../assets/logos/green-complete.png';
 import profilePicture from '../assets/profile-picture.avif'; // profile picture para exemplo
 
 interface NavItem {
@@ -85,7 +85,7 @@ export const Navbar = () => {
   return (
     <section className="font-sans">
       <nav className="fixed top-0 left-0 z-10 flex justify-between items-center px-5 h-[85px] w-full text-[#5B5968] bg-[#386641]">
-        <img src={Logo} onClick={() => navigate('/')} alt="Logo" className="mr-6 h-20 w-20 cursor-pointer" />
+        <img src={Logo} onClick={() => navigate('/')} alt="Logo" className="mr-6 h-35 w-35 cursor-pointer" />
         <div className="flex items-center justify-center w-1/2 font-medium">
           <SearchLupe />
           {items.map((item) => (
@@ -125,7 +125,7 @@ export const Navbar = () => {
           ) : (
             // Exibe os botões de Login e Cadastro se o usuário não estiver logado
             <>
-              <Button onClick={() => navigate('/login')}>Login</Button>
+              <Button onClick={() => navigate('/login')}>Entrar</Button>
               <div className="w-5"></div>
               <Button onClick={() => navigate('/signup')}>Cadastre-se</Button>
             </>

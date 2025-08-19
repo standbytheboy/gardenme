@@ -1,6 +1,6 @@
 import React from 'react';
 import { LinkedinBoxFill, InstagramFill, XFill } from 'akar-icons';
-import Logo from "../assets/gardenme-logo-footer.png"
+import Logo from "../assets/logos/green-classic.png"
 
 const Footer: React.FC = () => {
   return (

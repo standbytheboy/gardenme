@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../assets/apple-logo.svg";
-import gardenMeLogo from "../assets/gardenme-logo.svg";
+import gardenMeLogo from "../assets/logos/classic-classic.png";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
           <img
             src={gardenMeLogo}
             alt="Garden Me Logo"
-            className="w-90 h-90 mb-4"
+            className="w-[35rem] h-[35rem] mb-4"
           />
           <div className="p-4 rounded-full mb-4"></div>
           <p className="text-lg text-gray-200 mt-4">

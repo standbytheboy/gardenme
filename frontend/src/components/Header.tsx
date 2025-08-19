@@ -6,6 +6,7 @@ import Personal from "../assets/personalGrowth.svg";
 import Reforestation from "../assets/Reforestation-amico.svg";
 import ReforestationCuate from "../assets/Reforestation-cuate.svg";
 import Seeding from "../assets/Seeding-amico.svg";
+import House from "../assets/indoorPlants.svg";
 
 export const Header = () => {
   const images = [
@@ -15,6 +16,7 @@ export const Header = () => {
     Reforestation,
     ReforestationCuate,
     Seeding,
+    House
   ];
 
   const [currentImage] = useState(() => {
