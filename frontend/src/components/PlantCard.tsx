@@ -3,7 +3,9 @@ interface PlantCardProps {
     id: number;
     name: string;
     price: string;
-    // Adicionar outras propriedades da planta se você for passá-las para o PlantCard, por exemplo: imageSrc: string; description: string; rating: number;
+    imgSrc: string;
+    description: string;
+    rating: number;
   };
 }
 
@@ -14,11 +16,9 @@ export function PlantCard({ plant }: PlantCardProps) {
       <div className="flex justify-between items-center h-full">
         <div>
           <a href="#">
-            {/* Use plant.name aqui */}
             <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{plant.name}</h5>
             <p className="text-[#A7C957] w-[280px] line-clamp-4" style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none' }}>
-              {/* Aqui você pode usar plant.description se tiver uma prop para isso */}
-              Também conhecida como babosa, é uma planta suculenta amplamente utilizada por suas propriedades medicinais, cosméticas e terapêuticas.
+              {plant.description}
             </p>
           </a>
           <div className="flex items-center mt-2.5 mb-5">
@@ -44,12 +44,10 @@ export function PlantCard({ plant }: PlantCardProps) {
           </div>
         </div>
         <a href="#">
-            {/* Use plant.imageSrc aqui se você tiver */}
-          <img className="rounded-t-lg w-30 object-cover" src="src/assets/aloe.webp" alt="product image" />
+          <img className="rounded-lg w-[120px] h-[120px] object-fill" src={plant.imgSrc} alt="product image" />
         </a>
       </div>
       <div className="flex items-center justify-between">
-        {/* Use plant.price aqui */}
         <span className="text-2xl font-bold text-gray-900 dark:text-white">{plant.price}</span>
         <a href="#" className="text-[#386641] font-bold bg-[#A7C957] hover:opacity-90 focus:ring-4 focus:outline-none focus:ring-green-300 rounded-lg text-sm px-5 py-2.5 text-center">Adicionar ao Carrinho</a>
       </div>
