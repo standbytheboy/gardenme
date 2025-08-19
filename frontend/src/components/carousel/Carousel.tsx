@@ -43,9 +43,14 @@ export const Carousel = () => {
         slidesPerView={3}
         loop={true}
         modules={[EffectCoverflow, Navigation]}
-        navigation={{
-          prevEl: prevRef.current,
-          nextEl: nextRef.current,
+         onBeforeInit={(swiper) => {
+          if (typeof swiper.params.navigation !== "boolean") {
+            const navigation = swiper.params.navigation;
+            if (navigation) {
+              navigation.prevEl = prevRef.current;
+              navigation.nextEl = nextRef.current;
+            }
+          }
         }}
         className="pt-[50px] pb-[140px]"
       >
