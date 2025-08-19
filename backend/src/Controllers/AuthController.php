@@ -139,7 +139,7 @@ class AuthController
                 $token = JWT::encode($payload, $chaveSecreta, 'HS256');
 
                 http_response_code(200);
-                echo json_encode(['mensagem' => 'Login bem-sucedido!', 'token' => $token]);
+                echo json_encode(['mensagem' => 'Login bem-sucedido!', 'token' => $token, 'idDoUsuario' => $usuario['id_usuario']]);
 
             } else {
                 http_response_code(401);
