@@ -217,7 +217,7 @@ const AddressManager: React.FC = () => {
         const errorData = await response.json();
         setError(errorData.mensagem || "Não foi possível carregar os endereços.");
       }
-    } catch (err) {
+    } catch {
       setError("Erro na conexão com o servidor. Verifique o URL da API e a conexão de rede 1.");
     } finally {
       setLoading(false);
@@ -269,7 +269,7 @@ const AddressManager: React.FC = () => {
         const errorData = await response.json();
         setError(errorData.mensagem || "Erro ao salvar o endereço.");
       }
-    } catch (err) {
+    } catch {
       setError("Erro na conexão com o servidor. Verifique o URL da API e a conexão de rede 2.");
     } finally {
       setLoading(false);
@@ -306,7 +306,7 @@ const AddressManager: React.FC = () => {
         const errorData = await response.json();
         setError(errorData.mensagem || "Erro ao excluir o endereço.");
       }
-    } catch (err) {
+    } catch {
       setError("Erro na conexão com o servidor. Verifique o URL da API e a conexão de rede 3.");
     } finally {
       setLoading(false);

@@ -1,6 +1,6 @@
 import { useState } from "react";
 // Certifique-se de que a importação de akar-icons está correta (akar-icons-react é o mais comum para React)
-import { Person, LockOff, Location, Cart, Bell, Question, MoreHorizontalFill, Cross as CloseIcon, TrashCan, Plant } from 'akar-icons'; // Ou 'akar-icons-react' se for o caso
+import { Person, LockOff, Location, Cart, Question, MoreHorizontalFill, Cross as CloseIcon, TrashCan, Plant } from 'akar-icons'; // Ou 'akar-icons-react' se for o caso
 
 
 const navItems = [
@@ -9,7 +9,6 @@ const navItems = [
   { name: "Segurança", icon: LockOff },
   { name: "Endereços", icon: Location },
   { name: "Meus Pedidos", icon: Cart },
-  { name: "Notificações", icon: Bell },
   { name: "Excluir conta", icon: TrashCan },
   { name: "Suporte", icon: Question }
 ];

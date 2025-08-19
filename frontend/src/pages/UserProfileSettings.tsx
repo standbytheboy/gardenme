@@ -4,8 +4,10 @@ import { Sidebar9 } from "../components/SidebarUserSettings.tsx";
 import { Navbar } from "../components/Navbar.tsx";
 import AddressManager from "../components/AddressManager.tsx";
 import Footer from "../components/Footer.tsx";
+import { useNavigate } from "react-router-dom";
 
 const UserProfileSettings: React.FC = () => {
+  const navigate = useNavigate();
   // Estados para os dados do usuário
   const [profilePic, setProfilePic] = useState<string | null>(userProfilePic);
   const [firstName, setFirstName] = useState("");
@@ -151,6 +153,47 @@ const UserProfileSettings: React.FC = () => {
       );
     }
   };
+
+  const handleDeleteAccount = async () => {
+    // Confirmação para evitar exclusões acidentais
+    if (!window.confirm("Tem certeza que deseja excluir sua conta? Esta ação é irreversível.")) {
+        return;
+    }
+
+    const idDoUsuario = localStorage.getItem("userId");
+    const tokenDeAutenticacao = localStorage.getItem("userToken");
+
+    if (!idDoUsuario || !tokenDeAutenticacao) {
+        alert("Erro: Usuário não autenticado.");
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `http://localhost/gardenme/backend/public/api/usuarios/${idDoUsuario}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${tokenDeAutenticacao}`,
+                },
+            }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert("Conta excluída com sucesso! Você será redirecionado para a página inicial.");
+            localStorage.clear(); // Limpa o token e o ID do usuário
+            navigate("/");
+        } else {
+            alert("Erro ao excluir a conta: " + (data.mensagem || "Erro desconhecido."));
+        }
+    } catch (error) {
+        console.error("Erro na requisição:", error);
+        alert("Erro ao conectar com o servidor. Tente novamente.");
+    }
+};
 
   return (
     <div className="mt-10">
@@ -364,16 +407,19 @@ const UserProfileSettings: React.FC = () => {
             {activeMenuItem === "Meus Pedidos" && (
               <div className="text-lg text-white">Histórico de Pedidos...</div>
             )}
-            {activeMenuItem === "Notificações" && (
-              <div className="text-lg text-white">
-                Configurações de Notificações...
-              </div>
-            )}
             {activeMenuItem === "Excluir conta" && (
-              <div className="text-lg text-red-500">
-                Opções para Excluir Conta...
-              </div>
-            )}
+                        <div className="flex flex-col gap-6 items-center">
+                            <p className="text-lg text-red-400 text-center">
+                                Atenção: A exclusão da sua conta é uma ação permanente e não pode ser desfeita. Todos os seus dados, pedidos e informações serão perdidos.
+                            </p>
+                            <button
+                                onClick={handleDeleteAccount}
+                                className="bg-red-600 text-white py-3 px-6 rounded-full font-semibold hover:bg-red-700 transition-colors"
+                            >
+                                Confirmar Exclusão da Conta
+                            </button>
+                        </div>
+                    )}
             {activeMenuItem === "Suporte" && (
               <div className="text-lg text-white">
                 Entre em Contato com o Suporte...
