@@ -183,8 +183,6 @@ const AddressManager: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
 
-  const apiBaseUrl = "http://localhost/gardenme/backend/public/api";
-
   const fetchAddresses = async () => {
     setLoading(true);
     setError(null);
@@ -198,7 +196,7 @@ const AddressManager: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${apiBaseUrl}/usuarios/${userId}/enderecos`,
+        `/api/usuarios/${userId}/enderecos`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -242,7 +240,7 @@ const AddressManager: React.FC = () => {
     try {
       let response;
       if (editingAddress) {
-        response = await fetch(`${apiBaseUrl}/enderecos/${editingAddress.id}`, {
+        response = await fetch(`/api/enderecos/${editingAddress.id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -251,7 +249,7 @@ const AddressManager: React.FC = () => {
           body: JSON.stringify(addressData),
         });
       } else {
-        response = await fetch(`${apiBaseUrl}/usuarios/${userId}/enderecos`, {
+        response = await fetch(`/api/usuarios/${userId}/enderecos`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -292,7 +290,7 @@ const AddressManager: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/enderecos/${addressId}`, {
+      const response = await fetch(`/api/enderecos/${addressId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

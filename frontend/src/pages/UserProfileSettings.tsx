@@ -32,7 +32,7 @@ const UserProfileSettings: React.FC = () => {
 
       try {
         const response = await fetch(
-          `http://localhost/gardenme/backend/public/api/usuarios/${idDoUsuario}`,
+          `/api/usuarios/${idDoUsuario}`,
           {
             method: "GET",
             headers: {
@@ -104,7 +104,7 @@ const UserProfileSettings: React.FC = () => {
     }
     try {
       const response = await fetch(
-        `http://localhost/gardenme/backend/public/api/usuarios/${idDoUsuario}`,
+        `/api/usuarios/${idDoUsuario}`,
         {
           method: "PUT",
           headers: {
@@ -174,7 +174,7 @@ const UserProfileSettings: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost/gardenme/backend/public/api/usuarios/${idDoUsuario}`,
+        `/api/usuarios/${idDoUsuario}`,
         {
           method: "DELETE",
           headers: {

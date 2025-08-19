@@ -3,8 +3,18 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({  
-	plugins: [
-		react(),
-		tailwindcss()
-	],
+    plugins: [
+        react(),
+        tailwindcss()
+    ],
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost/gardenme/backend/public',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, '/api')
+        }
+      }
+    }
 })

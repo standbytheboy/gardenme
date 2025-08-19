@@ -28,7 +28,7 @@ const SignupPage: React.FC = () => {
 
     try {
       const response = await fetch(
-        "http://localhost/gardenme/backend/public/api/registrar",
+        "api/registrar",
         {
           method: "POST",
           headers: {

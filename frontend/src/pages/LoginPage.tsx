@@ -13,7 +13,7 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "http://localhost/gardenme/backend/public/api/login",
+        "/api/login",
         {
           method: "POST",
           headers: {
