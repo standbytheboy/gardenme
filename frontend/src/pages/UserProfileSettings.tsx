@@ -49,9 +49,13 @@ const UserProfileSettings: React.FC = () => {
         setPasswordChangeMessage("As novas senhas não coincidem.");
         return;
     }
+    const idDoUsuario = localStorage.getItem('userId');
+    const tokenDeAutenticacao = localStorage.getItem('userToken');
+    if (!idDoUsuario || !tokenDeAutenticacao) {
+        setPasswordChangeMessage("Erro: ID de usuário ou token não encontrado. Por favor, faça login novamente.");
+        return;
+    }
     try {
-        const idDoUsuario = localStorage.getItem('userId');
-        const tokenDeAutenticacao = localStorage.getItem('userToken');
         const response = await fetch(
             `http://localhost/gardenme/backend/public/api/usuarios/${idDoUsuario}`,
             {
@@ -66,8 +70,11 @@ const UserProfileSettings: React.FC = () => {
                 }),
             }
         );
-        const text = await response.text();
-        console.log("Resposta do servidor (texto):", text);
+
+const responseText = await response.text();
+        
+        console.log("Status da Resposta:", response.status);
+        console.log("Corpo completo da resposta (texto):", responseText);
 
         if (response.ok) {
             setPasswordChangeMessage("Senha alterada com sucesso!");
@@ -75,7 +82,18 @@ const UserProfileSettings: React.FC = () => {
             setNewPassword("");
             setConfirmNewPassword("");
         } else {
-            setPasswordChangeMessage("Erro ao alterar a senha.");
+            // Tenta parsear a resposta como JSON se não for ok
+            try {
+                const data = JSON.parse(responseText);
+                if (data && data.mensagem) {
+                    setPasswordChangeMessage(data.mensagem);
+                } else {
+                    setPasswordChangeMessage("Erro ao alterar a senha. Resposta do servidor desconhecida.");
+                }
+            } catch (jsonError) {
+                // Se a resposta não for um JSON válido, exibe o texto completo
+                setPasswordChangeMessage(`Erro ao alterar a senha. Resposta inesperada do servidor: ${responseText}`);
+            }
         }
     } catch (error) {
         console.error("Erro na requisição:", error);
