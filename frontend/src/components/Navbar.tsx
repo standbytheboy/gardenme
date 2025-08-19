@@ -2,12 +2,13 @@ import { useRef, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Search } from "akar-icons";
 import { Button } from "./LoginBtn";
-import Logo from '../assets/gardenme-logo.svg'
+import Logo from '../assets/gardenme-logo.svg';
+import profilePicture from '../assets/profile-picture.avif'; // Adicionei um profile picture para o exemplo
 
 interface NavItem {
   name: string;
-  link?: string; // link principal opcional
-  items?: { name: string; link: string }[]; // sub-itens com link
+  link?: string;
+  items?: { name: string; link: string }[];
 }
 
 const items: NavItem[] = [
@@ -65,11 +66,21 @@ const SearchLupe = () => (
 export const Navbar = () => {
   const [translateX, setTranslateX] = useState<string>("0");
   const [activeItem, setActiveItem] = useState<NavItem | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Alterado para 'true' para o exemplo
   const navigate = useNavigate();
 
   const handleLinkHover = (item: NavItem | null, x: string) => {
     setActiveItem(item);
     setTranslateX(x);
+  };
+  
+  const handleProfileClick = () => {
+    navigate('/perfil');
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    navigate('/');
   };
 
   return (
@@ -104,9 +115,22 @@ export const Navbar = () => {
           </div>
         </div>
         <div className="flex justify-between">
-          <Button onClick={() => navigate('/login')}>Login</Button>
-          <div className="w-5"></div>
-          <Button onClick={() => navigate('/signup')}>Cadastre-se</Button>
+          {isLoggedIn ? (
+            // Exibe o ícone de perfil se o usuário estiver logado
+            <div className="flex items-center space-x-4">
+              <button onClick={handleProfileClick} className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#a7c957] hover:border-[#386641] transition-colors cursor-pointer">
+                <img src={profilePicture} alt="Profile" className="w-full h-full object-cover" />
+              </button>
+              <button onClick={handleLogout} className="text-[#a7c957] font-semibold hover:underline">Sair</button>
+            </div>
+          ) : (
+            // Exibe os botões de Login e Cadastro se o usuário não estiver logado
+            <>
+              <Button onClick={() => navigate('/login')}>Login</Button>
+              <div className="w-5"></div>
+              <Button onClick={() => navigate('/signup')}>Cadastre-se</Button>
+            </>
+          )}
         </div>
       </nav>
     </section>
