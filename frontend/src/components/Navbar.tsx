@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { Search } from "akar-icons";
 import { Button } from "./LoginBtn";
+import { Search } from "akar-icons";
 import Logo from '../assets/logos/green-complete.png';
-import profilePicture from '../assets/profile-picture.avif'; // profile picture para exemplo
+import profilePicture from '../assets/profile-picture.avif';
 
 interface NavItem {
   name: string;
@@ -52,7 +52,7 @@ const Link = ({ item, onHover }: LinkProps) => {
 
 const SearchLupe = () => (
   <div className="relative mr-20 w-[150rem]">
-    <Search strokeWidth={2} size={20} className="absolute top-1/2 left-3 -translate-y-1/2 text-[#F2E8CF]" />
+    <Search className="absolute top-1/2 left-3 -translate-y-1/2 text-[#F2E8CF] w-5 h-5" />
     <input
       type="text"
       placeholder="Pesquisar"
@@ -68,6 +68,31 @@ export const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
+  // useEffect para verificar o status de login quando o componente é montado
+  useEffect(() => {
+    const userToken = localStorage.getItem('userToken');
+    const userId = localStorage.getItem('userId');
+    if (userToken && userId) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+
+    // event listener para reagir a mudanças no localStorage
+    const handleStorageChange = () => {
+      const updatedToken = localStorage.getItem('userToken');
+      const updatedUserId = localStorage.getItem('userId');
+      setIsLoggedIn(!!updatedToken && !!updatedUserId);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    // Remover o event listener na desmontagem do componente
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
   const handleLinkHover = (item: NavItem | null, x: string) => {
     setActiveItem(item);
     setTranslateX(x);
@@ -78,6 +103,9 @@ export const Navbar = () => {
   };
 
   const handleLogout = () => {
+    // Remover o token e o ID do usuário do localStorage
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('userId');
     setIsLoggedIn(false);
     navigate('/');
   };
