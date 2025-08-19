@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import userProfilePic from "../assets/profile-picture.avif";
 import { Sidebar9 } from "../components/SidebarUserSettings.tsx";
 import { Navbar } from "../components/Navbar.tsx";
@@ -7,15 +7,57 @@ import Footer from "../components/Footer.tsx";
 const UserProfileSettings: React.FC = () => {
   // Estados para os dados do usuário
   const [profilePic, setProfilePic] = useState<string | null>(userProfilePic);
-  const [firstName, setFirstName] = useState("Fulano");
-  const [lastName, setLastName] = useState("Silva");
-  const [email, setEmail] = useState("fulano@email.com");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [country, setCountry] = useState("Brasil");
   const [aboutMe, setAboutMe] = useState(
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam."
   );
 
-  // Novos estados para a seção de segurança
+  // lógica para mostrar os dados do usuário
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const idDoUsuario = localStorage.getItem("userId");
+      const tokenDeAutenticacao = localStorage.getItem("userToken");
+
+      if (!idDoUsuario || !tokenDeAutenticacao) {
+        // Se o token ou ID não existirem, o usuário não está logado.
+        console.error("Usuário não autenticado.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `http://localhost/gardenme/backend/public/api/usuarios/${idDoUsuario}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenDeAutenticacao}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          const userData = await response.json();
+          // Atualiza os estados do componente com os dados recebidos da API
+          setFirstName(userData.nome);
+          setLastName(userData.sobrenome);
+          setEmail(userData.email);
+        } else {
+          console.error("Erro ao buscar dados do usuário:", response.status);
+        }
+      } catch (error) {
+        console.error("Erro na requisição de dados do usuário:", error);
+      }
+    };
+
+    // Chame a função de busca de dados apenas quando o componente for montado
+    fetchUserData();
+  }, []); // O array vazio de dependências garante que a função é executada apenas uma vez
+
+  // Estados para a seção de segurança
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -46,60 +88,68 @@ const UserProfileSettings: React.FC = () => {
     e.preventDefault();
     setPasswordChangeMessage("");
     if (newPassword !== confirmNewPassword) {
-        setPasswordChangeMessage("As novas senhas não coincidem.");
-        return;
+      setPasswordChangeMessage("As novas senhas não coincidem.");
+      return;
     }
-    const idDoUsuario = localStorage.getItem('userId');
-    const tokenDeAutenticacao = localStorage.getItem('userToken');
+    const idDoUsuario = localStorage.getItem("userId");
+    const tokenDeAutenticacao = localStorage.getItem("userToken");
     if (!idDoUsuario || !tokenDeAutenticacao) {
-        setPasswordChangeMessage("Erro: ID de usuário ou token não encontrado. Por favor, faça login novamente.");
-        return;
+      setPasswordChangeMessage(
+        "Erro: ID de usuário ou token não encontrado. Por favor, faça login novamente."
+      );
+      return;
     }
     try {
-        const response = await fetch(
-            `http://localhost/gardenme/backend/public/api/usuarios/${idDoUsuario}`,
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${tokenDeAutenticacao}`,
-                },
-                body: JSON.stringify({
-                    senhaAtual: currentPassword,
-                    novaSenha: newPassword,
-                }),
-            }
-        );
-
-const responseText = await response.text();
-        
-        console.log("Status da Resposta:", response.status);
-        console.log("Corpo completo da resposta (texto):", responseText);
-
-        if (response.ok) {
-            setPasswordChangeMessage("Senha alterada com sucesso!");
-            setCurrentPassword("");
-            setNewPassword("");
-            setConfirmNewPassword("");
-        } else {
-            // Tenta parsear a resposta como JSON se não for ok
-            try {
-                const data = JSON.parse(responseText);
-                if (data && data.mensagem) {
-                    setPasswordChangeMessage(data.mensagem);
-                } else {
-                    setPasswordChangeMessage("Erro ao alterar a senha. Resposta do servidor desconhecida.");
-                }
-            } catch (jsonError) {
-                // Se a resposta não for um JSON válido, exibe o texto completo
-                setPasswordChangeMessage(`Erro ao alterar a senha. Resposta inesperada do servidor: ${responseText}`);
-            }
+      const response = await fetch(
+        `http://localhost/gardenme/backend/public/api/usuarios/${idDoUsuario}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenDeAutenticacao}`,
+          },
+          body: JSON.stringify({
+            senhaAtual: currentPassword,
+            novaSenha: newPassword,
+          }),
         }
+      );
+
+      const responseText = await response.text();
+
+      console.log("Status da Resposta:", response.status);
+      console.log("Corpo completo da resposta (texto):", responseText);
+
+      if (response.ok) {
+        setPasswordChangeMessage("Senha alterada com sucesso!");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmNewPassword("");
+      } else {
+        // Tenta parsear a resposta como JSON se não for ok
+        try {
+          const data = JSON.parse(responseText);
+          if (data && data.mensagem) {
+            setPasswordChangeMessage(data.mensagem);
+          } else {
+            setPasswordChangeMessage(
+              "Erro ao alterar a senha. Resposta do servidor desconhecida."
+            );
+          }
+        } catch {
+          // Se a resposta não for um JSON válido, exibe o texto completo
+          setPasswordChangeMessage(
+            `Erro ao alterar a senha. Resposta inesperada do servidor: ${responseText}`
+          );
+        }
+      }
     } catch (error) {
-        console.error("Erro na requisição:", error);
-        setPasswordChangeMessage("Erro ao conectar com o servidor. Tente novamente.");
+      console.error("Erro na requisição:", error);
+      setPasswordChangeMessage(
+        "Erro ao conectar com o servidor. Tente novamente."
+      );
     }
-};
+  };
 
   return (
     <div className="mt-10">
