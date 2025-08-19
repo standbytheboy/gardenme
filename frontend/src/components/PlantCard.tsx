@@ -3,16 +3,20 @@ interface PlantCardProps {
     id: number;
     name: string;
     price: string;
-    imgSrc: string;
+    imageSrc: string;
     description: string;
     rating: number;
   };
+  onPlantClick: (plant: object) => void;
 }
 
-// 2. Use a interface na função do componente
-export function PlantCard({ plant }: PlantCardProps) {
+export function PlantCard({ plant, onPlantClick }: PlantCardProps) {
   return (
-    <div className="flex flex-col w-[470px] h-[255px] rounded-lg shadow-sm dark:bg-[#386641] p-5 mx-4">
+    <div
+      className="flex flex-col w-[470px] h-[255px] rounded-lg shadow-sm dark:bg-[#386641] p-5 mx-4 cursor-pointer"
+      // Adiciona o evento de clique
+      onClick={() => onPlantClick(plant)}
+    >
       <div className="flex justify-between items-center h-full">
         <div>
           <a href="#">
@@ -44,7 +48,7 @@ export function PlantCard({ plant }: PlantCardProps) {
           </div>
         </div>
         <a href="#">
-          <img className="rounded-lg w-[120px] h-[120px] object-fill" src={plant.imgSrc} alt="product image" />
+          <img className="rounded-lg w-[120px] h-[120px] object-fill" src={plant.imageSrc} alt="product image" />
         </a>
       </div>
       <div className="flex items-center justify-between">

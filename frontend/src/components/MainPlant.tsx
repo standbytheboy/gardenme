@@ -4,16 +4,24 @@ import aloeImage from "../assets/aloe.webp";
 
 interface MainPlantProps {
   onAddToCartClick: () => void;
+  plantData: Plant | null;
+}
+
+interface Plant {
+  id: number;
+  name: string;
+  price: string;
+  imageSrc: string;
+  description: string;
+  rating: number;
 }
 
 // Mock de dados para a planta principal e para os cards de "Mais Vendidas", "Iniciantes" e "Novidades"
-const mainPlantData = {
+const defaultMainPlantData = {
   id: 1,
   name: "Aloevera",
   price: "R$ 59,99",
-  description:
-    "Também conhecida como babosa, é uma planta suculenta amplamente utilizada por suas propriedades medicinais, cosméticas e terapêuticas.",
-  // Suponha que você tenha uma propriedade de imagem na interface da planta
+  description: "Também conhecida como babosa, é uma planta suculenta amplamente utilizada por suas propriedades medicinais, cosméticas e terapêuticas.",
   imageSrc: aloeImage,
 };
 
@@ -28,25 +36,30 @@ const accordionData = [
   },
 ];
 
-export const MainPlant: React.FC<MainPlantProps> = ({ onAddToCartClick }) => {
+export const MainPlant: React.FC<MainPlantProps> = ({
+  onAddToCartClick,
+  plantData,
+}) => {
+  const currentPlant = plantData || defaultMainPlantData;
+
   return (
     <div>
       {/* Seção Principal da Planta */}
       <section className="bg-[#386641] p-16 flex flex-col lg:flex-row justify-between items-center gap-8 w-screen mt-20">
         {/* Lado Esquerdo - Detalhes da Planta */}
         <div className="flex-1 text-center lg:text-left max-w-min">
-          <h1 className="text-4xl font-bold mb-2 text-[#A7C957] w-min">
-            {mainPlantData.name}
+          <h1 className="text-4xl font-bold mb-2 text-[#A7C957] w-min-[10rem]">
+            {currentPlant.name}
           </h1>
           <div className="flex gap-8 items-center w-100">
             <p className="text-3xl font-bold text-[#F2E8CF] mb-4">
-              {mainPlantData.price}
+              {currentPlant.price}
             </p>
             <p className="text-sm text-[#F2E8CF] mb-4">
               200 pessoas plantaram essa
             </p>
           </div>
-          <p className="mb-4 text-[#F2E8CF] w-[40rem]">{mainPlantData.description}</p>
+          <p className="mb-4 text-[#F2E8CF] w-[30rem]">{currentPlant.description}</p>
 
           {/* Ações e Quantidade */}
           <div className="flex items-center space-x-4 mb-8 w-150">
@@ -74,9 +87,9 @@ export const MainPlant: React.FC<MainPlantProps> = ({ onAddToCartClick }) => {
         {/* Lado Central - Imagem da Planta */}
         <div className="flex justify-center flex-shrink-0">
           <img
-            src={mainPlantData.imageSrc}
-            alt={mainPlantData.name}
-            className="max-w-2 lg:max-w-2xs rounded-lg"
+            src={currentPlant.imageSrc}
+            alt={currentPlant.name}
+            className="w-[20rem] h-[25rem] object-cover rounded-lg"
           />
         </div>
 
