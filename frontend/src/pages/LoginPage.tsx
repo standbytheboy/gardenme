@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../assets/apple-logo.svg";
-import gardenMeLogo from "../assets/gardenme-logo.svg";
+import gardenMeLogo from "../assets/logos/classic-classic.png";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "http://localhost/gardenme/backend/public/api/login",
+        "/api/login",
         {
           method: "POST",
           headers: {
@@ -21,8 +23,18 @@ const LoginPage: React.FC = () => {
         }
       );
 
-      const text = await response.text();
-      console.log(text);
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('userToken', data.token)
+        localStorage.setItem('userId', data.idDoUsuario)
+        navigate("/");
+      } else {
+        if (data || data.error === 'Credenciais inválidas') {
+          alert("Credenciais incorretas. Por favor, verifique seu email e senha.");
+        } else {
+          alert("Erro ao fazer login. Tente novamente.");
+        }
+      }
     } catch (error) {
       console.error("Erro na requisição:", error);
       alert("Erro ao fazer login. Tente novamente.");
@@ -33,11 +45,11 @@ const LoginPage: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#344E41] p-4 w-[100vw]">
       <div className="flex flex-col justify-center md:flex-row w-full bg-[#344E41] rounded-lg overflow-hidden h-[95vh]">
         {/* Lado Esquerdo - Logo e Mensagem */}
-        <div className="bg-[#386641] md:w-1/3 flex flex-col items-center justify-center p-8 text-center h-full mr-[5rem] rounded-lg">
+        <div className="bg-[#386641] md:w-1/2 flex flex-col items-center justify-center p-8 text-center h-full mr-[5rem] rounded-4xl">
           <img
             src={gardenMeLogo}
             alt="Garden Me Logo"
-            className="w-90 h-90 mb-4"
+            className="w-[35rem] h-[35rem] mb-4"
           />
           <div className="p-4 rounded-full mb-4"></div>
           <p className="text-lg text-gray-200 mt-4">
@@ -52,9 +64,9 @@ const LoginPage: React.FC = () => {
           </h2>
           <p className="text-gray-300 text-center mb-6">
             Não tem uma conta?{" "}
-            <a href="/signup" className="text-[#A7C957] hover:underline">
+            <span className="text-[#A7C957] hover:underline cursor-pointer" onClick={() => navigate('/signup')}>
               Cadastre-se
-            </a>
+            </span>
           </p>
 
           <form onSubmit={handleLogin} className="space-y-6">

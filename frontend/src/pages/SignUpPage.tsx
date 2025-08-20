@@ -1,37 +1,70 @@
 import { useState } from "react";
 import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../assets/apple-logo.svg";
-import gardenMeLogo from "../assets/gardenme-logo.svg";
+import gardenMeLogo from "../assets/logos/classic-classic.png";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage: React.FC = () => {
   const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [numberPhone, setNumberPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
+  interface ServerResponse {
+    mensagem: string;
+    // Adicione outras propriedades que o seu backend possa retornar
+    // por exemplo: status: string; sucesso: boolean;
+  }
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       alert("As senhas não coincidem!");
       return;
     }
 
     try {
-      const response = await fetch("http://localhost/gardenme/backend/public/api/registrar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password, confirmPassword }),
-      });
+      const response = await fetch(
+        "api/registrar",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nome: name,
+            sobrenome: lastName,
+            email,
+            celular: numberPhone,
+            senha: password,
+          }),
+        }
+      );
 
-      const data = await response.json();
+      let data: ServerResponse = { mensagem: "" };
+      const text = await response.text();
+
+      // Tenta converter em JSON, mas se falhar, mantém como string
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (err) {
+        if (err instanceof SyntaxError) {
+          // Isso é um erro de sintaxe, pode ser o parse do JSON falhando
+          console.error("Ocorreu um erro de sintaxe:", err.message);
+        } else if (err instanceof Error) {
+          console.error("Ocorreu um erro:", err.message);
+        }
+      }
+
       if (response.ok) {
-        console.log("Cadastro bem-sucedido!", data.token);
-        // Armazene o token, por exemplo, em localStorage ou em um estado global
-        // Redirecione o usuário para a página inicial ou painel de controle
+        alert("Cadastro realizado com sucesso!");
+        navigate("/login");
       } else {
-        alert(data.mensagem); // Exibe a mensagem de erro do backend
+        // Se o back-end retornou uma mensagem, mostra, senão mostra texto cru
+        alert("Erro: " + (data.mensagem || text));
       }
     } catch (error) {
       console.error("Erro na requisição:", error);
@@ -47,7 +80,7 @@ const SignupPage: React.FC = () => {
           <img
             src={gardenMeLogo}
             alt="Garden Me Logo"
-            className="w-90 h-90 mb-4"
+            className="w-[35rem] h-[35rem] mb-4"
           />
           <div className="p-4 rounded-full mb-4"></div>
           <p className="text-lg text-gray-200 mt-4">
@@ -63,19 +96,30 @@ const SignupPage: React.FC = () => {
           </h2>
           <p className="text-gray-300 text-center mb-6">
             Já tem uma conta?{" "}
-            <a href="/login" className="text-[#A7C957] hover:underline">
+            <span
+              className="text-[#A7C957] hover:underline cursor-pointer"
+              onClick={() => navigate("/login")}
+            >
               Fazer Login
-            </a>
+            </span>
           </p>
 
           <form onSubmit={handleSignup} className="space-y-6">
-            <div>
+            <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Seu Nome Completo"
+                placeholder="Primeiro Nome"
                 className="w-full p-3 rounded-md bg-[rgba(0,0,0,0.30)] text-white placeholder-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Sobrenome"
+                className="w-full p-3 rounded-md bg-[rgba(0,0,0,0.30)] text-white placeholder-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 required
               />
             </div>
@@ -86,6 +130,16 @@ const SignupPage: React.FC = () => {
                 className="w-full p-3 rounded-md bg-[rgba(0,0,0,0.30)] text-white placeholder-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                placeholder="Seu Celular"
+                className="w-full p-3 rounded-md bg-[rgba(0,0,0,0.30)] text-white placeholder-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                value={numberPhone}
+                onChange={(e) => setNumberPhone(e.target.value)}
                 required
               />
             </div>

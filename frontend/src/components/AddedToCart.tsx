@@ -1,18 +1,19 @@
-import React from 'react';
+import { useNavigate } from "react-router-dom";
 
-// 1. Defina a interface para as props do AddedToCartCard
+// 1. Definindo a interface para as props do AddedToCartCard
 interface AddedToCartCardProps {
-  productName: string; // Propriedade para o nome do produto
-  productPrice: string; // Propriedade para o preço do produto
+  productName: string;
+  productPrice: string;
 }
 
-// 2. Use a interface na função do componente
+// 2. Usando a interface na função do componente
 const AddedToCartCard = ({ productName, productPrice }: AddedToCartCardProps) => {
+  const navigate = useNavigate();
   return (
-    <div className="w-[360px] h-[150px] bg-white/10 rounded-xl shadow-lg shadow-black/10 mx-auto px-2 backdrop-blur-md z-50">
+    <div className="w-[360px] h-[150px] bg-[#A7C957] rounded-xl shadow-lg shadow-black/10 mx-auto px-2 backdrop-blur-md z-50">
       <div className="inline-flex flex-nowrap items-center w-full">
         <div className="w-1/5">
-          <div className="bg-black/10 w-12 h-12 rounded-full text-center p-3 mx-auto">
+          <div className="bg-[#] w-12 h-12 rounded-full text-center p-3 mx-auto">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="20"
@@ -28,7 +29,7 @@ const AddedToCartCard = ({ productName, productPrice }: AddedToCartCardProps) =>
         <div className="w-4/5">
           <div className="inline-flex flex-nowrap items-baseline w-full">
             <span className="w-[95%] text-base font-semibold text-gray-800 pt-5 pl-2.5">
-              Added to cart!
+              Adicionado ao Carrinho!
             </span>
             <span className="w-[5%] text-right pr-7">
               <svg
@@ -50,8 +51,8 @@ const AddedToCartCard = ({ productName, productPrice }: AddedToCartCardProps) =>
           <div className="text-sm font-semibold text-gray-700 pb-2.5 pl-2.5">
             {productPrice}
           </div>
-          <button className="relative transition-all duration-300 ease-in-out shadow-lg shadow-black/20 py-2 px-5 bg-black rounded-full flex items-center justify-center text-white gap-2.5 font-bold border-2 border-white/30 outline-none overflow-hidden text-base cursor-pointer h-[35px] group">
-            View cart
+          <button onClick={() => navigate('/carrinho')} className="relative transition-all duration-300 ease-in-out shadow-lg shadow-black/20 py-2 px-5 bg-[#386641] rounded-full flex items-center justify-center text-white gap-2.5 font-bold border-2outline-none overflow-hidden text-base cursor-pointer h-[35px] group">
+            Ver Carrinho
             <svg
               className="w-6 h-6 transition-all duration-300 ease-in-out group-hover:translate-x-1"
               viewBox="0 0 24 24"

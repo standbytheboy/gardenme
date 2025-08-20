@@ -34,7 +34,7 @@ class UsuarioController
         }
     }
 
-    public function atualizar(int $id, object $dadosToken)
+       public function atualizar(int $id, object $dadosToken)
     {
         $idUsuarioLogado = $dadosToken->data->id_usuario;
 
@@ -53,14 +53,41 @@ class UsuarioController
         }
 
         $usuarioDAO = new UsuarioDAO();
-        $usuario = $usuarioDAO->buscarPorId($id);
+        $usuarioExistente = $usuarioDAO->buscarPorId($id);
 
-        if (!$usuario) {
+        if (!$usuarioExistente) {
             http_response_code(404);
             echo json_encode(['mensagem' => 'Usuário não encontrado.']);
             return;
         }
+        
+        // Lógica de alteração de senha
+        if (isset($dadosCorpo['senhaAtual'], $dadosCorpo['novaSenha'])) {
+            // Busca a senha hash do usuário no banco de dados para verificação
+            $usuarioComSenha = $usuarioDAO->buscarPorEmail($usuarioExistente->getEmail());
 
+            if (!password_verify($dadosCorpo['senhaAtual'], $usuarioComSenha['senha_hash'])) {
+                http_response_code(401);
+                echo json_encode(['mensagem' => 'A senha atual está incorreta.']);
+                return;
+            }
+            
+            // Criptografa a nova senha e adiciona aos dados para atualização
+            $dadosCorpo['senha'] = $dadosCorpo['novaSenha'];
+            unset($dadosCorpo['senhaAtual']);
+            unset($dadosCorpo['novaSenha']);
+        }
+
+        // Se o email for atualizado, verifica se já existe
+        if (isset($dadosCorpo['email'])) {
+             $usuarioComEmailExistente = $usuarioDAO->buscarPorEmail($dadosCorpo['email']);
+             if ($usuarioComEmailExistente && (int)$usuarioComEmailExistente['id_usuario'] !== (int)$id) {
+                 http_response_code(409);
+                 echo json_encode(['mensagem' => 'O e-mail fornecido já está em uso.']);
+                 return;
+             }
+        }
+        
         $resultado = $usuarioDAO->atualizar($id, $dadosCorpo);
 
         header('Content-Type: application/json');

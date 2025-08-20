@@ -4,7 +4,7 @@ import { ActionBtn } from './ActionBtn';
 
 export const WhyPlantWithUs: React.FC = () => {
   return (
-    <section className="bg-[#386641] py-16 px-4 md:px-8 flex items-center justify-center min-h-[600px] md:min-h-screen">
+    <section className="bg-[#386641] py-16 px-4 md:px-8 flex items-center justify-center min-h-[600px] md:min-h-[800px]">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
         {/* Lado Esquerdo - Ilustração */}
         <div className="md:w-1/2 flex justify-center order-2 md:order-1"> {/* order para mobile primeiro */}

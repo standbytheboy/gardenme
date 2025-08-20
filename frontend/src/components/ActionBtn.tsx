@@ -11,7 +11,7 @@ export const ActionBtn: React.FC<ButtonProps> = ({ children, onClick }) => {
     <button
       className="
         group flex justify-center items-center text-[#386641] bg-[#F2E8CF]
-        rounded-full hover:opacity-90 hover:border-none p-[5px] pl-[2rem]
+        rounded-full hover:opacity-90 hover:border-none p-[5px] pl-[2rem] cursor-pointer
       "
       onClick={onClick}
     >

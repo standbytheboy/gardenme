@@ -51,7 +51,7 @@ const AccordionItem: FC<AccordionItemProps> = ({ handleToggle, active, item, ind
             : { height: 0 }
         }
       >
-        <p className="px-5 pb-2.5 leading-relaxed text-sm m-0 opacity-65 cursor-pointer">
+        <p className="px-5 pb-2.5 leading-relaxed text-sm m-0 opacity-65 cursor-pointer text-[#F2E8CF]">
           {content}
         </p>
       </div>

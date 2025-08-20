@@ -15,7 +15,33 @@ class UsuarioDAO
     {
         $this->conn = Database::getInstance();
     }
+    public function criar(Usuario $usuario, string $senhaPura): int|string|false
+    {
+        try {
+            $sql = 'INSERT INTO usuario (nome, sobrenome, email, celular, senha_hash, is_admin)
+                    VALUES (:nome, :sobrenome, :email, :celular, :senha_hash, :is_admin)';
+            
+            $stmt = $this->conn->prepare($sql);
 
+            $senhaCriptografada = password_hash($senhaPura, PASSWORD_ARGON2ID);
+
+            $stmt->bindValue(':nome', $usuario->getNome());
+            $stmt->bindValue(':sobrenome', $usuario->getSobrenome());
+            $stmt->bindValue(':email', $usuario->getEmail());
+            $stmt->bindValue(':celular', $usuario->getCelular());
+            $stmt->bindValue(':senha_hash', $senhaCriptografada);
+            $stmt->bindValue(':is_admin', $usuario->isAdmin());
+            
+            $stmt->execute();
+            return $this->conn->lastInsertId();
+        } catch (\PDOException $e) {
+            if ($e->getCode() === '23000') {
+                return 'conflict';
+            }
+            return false;
+        }
+    }
+    
     public function buscarPorEmail(string $email): ?array
     {
         try {
@@ -46,32 +72,6 @@ class UsuarioDAO
         }
     }
 
-    public function criar(Usuario $usuario, string $senhaPura): int|false
-    {
-        try {
-            $sql = 'INSERT INTO usuario (nome, sobrenome, email, celular, senha_hash, is_admin)
-                    VALUES (:nome, :sobrenome, :email, :celular, :senha_hash, :is_admin)';
-            
-            $stmt = $this->conn->prepare($sql);
-
-            $senhaCriptografada = password_hash($senhaPura, PASSWORD_ARGON2ID);
-
-            $stmt->bindValue(':nome', $usuario->getNome());
-            $stmt->bindValue(':sobrenome', $usuario->getSobrenome());
-            $stmt->bindValue(':email', $usuario->getEmail());
-            $stmt->bindValue(':celular', $usuario->getCelular());
-            $stmt->bindValue(':senha_hash', $senhaCriptografada);
-            $stmt->bindValue(':is_admin', $usuario->isAdmin());
-            
-            $stmt->execute();
-            return $this->conn->lastInsertId();
-        } catch (\PDOException $e) {
-            if ($e->getCode() === '23000') {
-                return 'conflict';
-            }
-            return false;
-        }
-    }
 
     private function mapUsuario(array $dados): Usuario
     {

@@ -9,13 +9,10 @@ class AuthMiddleware
 {
     public static function verificar()
     {
-        // $chaveSecreta = getenv('JWT_SECRET');
-        $chaveSecreta = "1CbXldbPUZBV0LRmqVt6RYnqFJTHtrYa";
+        $chaveSecreta = getenv('JWT_SECRET') ?: "fallback_secret";
 
         if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            http_response_code(401);
-            echo json_encode(['mensagem' => 'Acesso negado. Token não fornecido.']);
-            exit();
+            return ['status' => 401, 'mensagem' => 'Acesso negado. Token não fornecido.'];
         }
 
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
@@ -23,18 +20,14 @@ class AuthMiddleware
         $token = $arr[1] ?? '';
 
         if (!$token) {
-            http_response_code(401);
-            echo json_encode(['mensagem' => 'Acesso negado. Token malformado.']);
-            exit();
+            return ['status' => 401, 'mensagem' => 'Acesso negado. Token malformado.'];
         }
 
         try {
             $decoded = JWT::decode($token, new Key($chaveSecreta, 'HS256'));
             return $decoded; 
         } catch (\Exception $e) {
-            http_response_code(401);
-            echo json_encode(['mensagem' => 'Acesso negado. Token inválido: ' . $e->getMessage()]);
-            exit();
+            return ['status' => 401, 'mensagem' => 'Acesso negado. Token inválido: Faça Login!'];
         }
     }
 }

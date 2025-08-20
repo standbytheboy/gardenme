@@ -88,7 +88,7 @@ Certifique-se de ter instalado em sua máquina:
         JWT_SECRET=sua-chave-secreta-aqui
         ```
     * Certifique-se de que seu servidor web está configurado para apontar para a pasta `backend/public` e que as regras de reescrita de URL (`.htaccess`) estão ativas para o PHP.
-    * Inicie o servidor web (por exemplo, Apache). O arquivo `Database.php` aponta para `localhost` na porta `3307`, então ajuste conforme a sua configuração de MySQL.
+    * Inicie o servidor web (por exemplo, Apache). O arquivo `Database.php` aponta para `localhost` na porta `3306`, então ajuste conforme a sua configuração de MySQL.
 
 3.  **Configurar o Frontend (React):**
 

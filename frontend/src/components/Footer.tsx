@@ -1,5 +1,6 @@
 import React from 'react';
 import { LinkedinBoxFill, InstagramFill, XFill } from 'akar-icons';
+import Logo from "../assets/logos/green-classic.png"
 
 const Footer: React.FC = () => {
   return (
@@ -9,10 +10,7 @@ const Footer: React.FC = () => {
         <div className="flex flex-col items-start md:items-start mb-8 md:mb-0">
           <div className="flex items-center mb-4">
             {/* Logo BG: #D4EDC8, Logo Text: #3E6F52 */}
-            <div className="bg-[#D4EDC8] p-3 rounded-full mr-2">
-              <span className="text-[#3E6F52] font-bold text-xl">G</span>
-            </div>
-            <span className="text-[#A7C957] font-bold text-2xl">Garden Me</span>
+              <img src={Logo} alt="Logo GardenMe" width="150px"/>
           </div>
           <div className="flex space-x-3 mr-40">
             {/* Ícones do LinkedIn: Borda #D4EDC8, Hover BG #D4EDC8, Hover Text #3E6F52 */}

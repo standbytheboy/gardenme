@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Edit as EditIcon, ArrowRight as ArrowRightIcon } from 'akar-icons';
 import { ActionBtn } from './ActionBtn';
 
@@ -10,9 +11,10 @@ interface CategoryCardProps {
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ icon: IconComponent, title, description }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();    
 
   return (
-    <div
+    <div onClick={() => navigate('/plantas')}
       className="relative bg-[#F2E8CF] rounded-xl p-6 shadow-md flex flex-col items-start text-left cursor-pointer overflow-hidden transform transition-transform duration-300 hover:-translate-y-1"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -23,8 +25,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ icon: IconComponent, title,
       </div>
       {/* Conteúdo do Card */}
       <div className="flex flex-col flex-grow items-center justify-center p-4">
-        <h3 className="text-xl font-bold text-[#386641] mb-2 text-center">{title}</h3>
-        <p className="text-sm text-[#386641] text-center">{description}</p>
+        <h3 className="text-xl font-bold text-[#386641] mb-2 w-full">{title}</h3>
+        <p className="text-sm text-[#386641] m-auto">{description}</p>
       </div>
 
       {/* Overlay e Ícone de Seta no Hover */}
@@ -41,7 +43,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ icon: IconComponent, title,
 
 
 export const PopularCategories: React.FC = () => {
-    
+  const navigate = useNavigate();    
   const categories = [
     {
       id: 1,
@@ -63,14 +65,14 @@ export const PopularCategories: React.FC = () => {
     },
     {
       id: 4,
-      title: 'UX/UI Design',
-      description: 'Aprenda do básico ao avançado sobre conceitos de User Experience e User Interface, criando wireframes, desenhando protótipos, entre outras coisas.',
+      title: 'Promoções',
+      description: 'As plantas mais vendidas pelos melhores preços.',
       icon: EditIcon,
     },
   ];
 
   return (
-    <section className="bg-[#A7C957] py-16 px-4 md:px-8 flex flex-col items-center justify-center min-h-screen">
+    <section className="bg-[#A7C957] py-16 px-4 md:px-8 flex flex-col items-center justify-center min-h-[12rem]">
       
       <h2 className="text-4xl md:text-5xl font-bold text-[#386641] mb-12 text-center">
         Categorias Populares
@@ -87,7 +89,7 @@ export const PopularCategories: React.FC = () => {
         ))}
       </div>
 
-      <ActionBtn>Todas as Categorias</ActionBtn>
+      <ActionBtn onClick={() => navigate('/plantas')}>Todas as Categorias</ActionBtn>
     </section>
   );
 };

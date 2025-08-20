@@ -1,19 +1,14 @@
 <?php
 
-header('Content-Type: application/json');
-echo json_encode(['mensagem' => 'Tudo OK']);
-
-header('Access-Control-Allow-Origin: *'); 
+header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Responder requisições OPTIONS imediatamente
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit();
 }
 
-// Content-Type JSON
 header('Content-Type: application/json');
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -22,12 +17,10 @@ try {
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
     $dotenv->load();
 } catch (\Dotenv\Exception\InvalidPathException $e) {
-    // Se falhar, tenta um caminho absoluto, que é mais garantido
     try {
         $dotenv = Dotenv\Dotenv::createImmutable('C:/xampp/htdocs/gardenme/backend/');
         $dotenv->load();
     } catch (\Exception $ex) {
-        // Se ainda assim falhar, mostra um erro claro e para
         die("Erro crítico: não foi possível carregar o arquivo .env. Verifique o caminho e as permissões. Erro: " . $ex->getMessage());
     }
 }
@@ -42,15 +35,10 @@ use Garden\Controllers\EnderecoController;
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
 
-$basePath = '/gardenme/backend/public'; 
-
-if ($method === 'OPTIONS') {
-    http_response_code(204);
-    exit();
-}
-
+$basePath = '/gardenme/backend/public';
 $route = str_replace($basePath, '', $path);
-$controller = null; 
+$controller = null;
+$dadosToken = null;
 
 if ($route === '/api/registrar' && $method === 'POST') {
     (new AuthController())->registrar();
@@ -66,14 +54,38 @@ if ($route === '/api/logout' && $method === 'POST') {
     exit();
 }
 
+// Roteamento que exige autenticação
+$requiresAuth = [
+    '#^/api/dicas$#' => ['POST'],
+    '#^/api/dicas/(\d+)$#' => ['PUT', 'DELETE'],
+    '#^/api/usuarios/(\d+)/enderecos$#' => ['GET', 'POST'],
+    '#^/api/enderecos/(\d+)$#' => ['PUT', 'DELETE'],
+    '#^/api/usuarios/(\d+)$#' => ['GET', 'PUT', 'DELETE'],
+    '#^/api/categorias/(\d+)$#' => ['DELETE']
+];
+
+foreach ($requiresAuth as $pattern => $methods) {
+    if (preg_match($pattern, $route, $matches) && in_array($method, $methods)) {
+        $authResult = AuthMiddleware::verificar();
+        // Verifica se o resultado é um array (indicando um erro) antes de tentar acessar 'status'
+        if (is_array($authResult) && isset($authResult['status'])) {
+            http_response_code($authResult['status']);
+            echo json_encode(['mensagem' => $authResult['mensagem']]);
+            exit();
+        }
+        $dadosToken = $authResult;
+        break; 
+    }
+}
+
+
 if (preg_match('#^/api/categorias(/(\d+))?$#', $route, $matches)) {
     $id = $matches[2] ?? null;
     $controller = new CategoriaController();
-    
     if ($id) {
         if ($method === 'GET') $controller->detalhar($id);
         if ($method === 'PUT') $controller->atualizar($id);
-        if ($method === 'DELETE') $controller->deletar($id);
+        if ($method === 'DELETE' && $dadosToken) $controller->deletar($id, $dadosToken);
     } else {
         if ($method === 'GET') $controller->listar();
         if ($method === 'POST') $controller->criar();
@@ -84,68 +96,50 @@ if (preg_match('#^/api/categorias(/(\d+))?$#', $route, $matches)) {
 if (preg_match('#^/api/dicas(/(\d+))?$#', $route, $matches)) {
     $id = $matches[2] ?? null;
     $controller = new DicasController();
-
-    if ($id) { 
+    if ($id) {
         if ($method === 'GET') $controller->detalhar($id);
-
-        if ($method === 'PUT') {
-            AuthMiddleware::verificar(); 
-            $controller->atualizar($id);
-        }
-        if ($method === 'DELETE') {
-            AuthMiddleware::verificar();
-            $controller->deletar($id);
-        }
-    } else { 
+        if ($method === 'PUT' && $dadosToken) $controller->atualizar($id, $dadosToken);
+        if ($method === 'DELETE' && $dadosToken) $controller->deletar($id, $dadosToken);
+    } else {
         if ($method === 'GET') $controller->listar();
-        
-        if ($method === 'POST') {
-            AuthMiddleware::verificar(); 
-            $controller->criar();
-        }
+        if ($method === 'POST' && $dadosToken) $controller->criar($dadosToken);
     }
     exit();
 }
 
 if (preg_match('#^/api/usuarios/(\d+)/enderecos$#', $route, $matches)) {
-    $dadosToken = AuthMiddleware::verificar();
     $id_usuario = (int)$matches[1];
     $controller = new EnderecoController();
-
-    if ($method === 'GET') {
+    if ($method === 'GET' && $dadosToken) {
         $controller->listarPorUsuario($id_usuario, $dadosToken);
     }
-    if ($method === 'POST') {
+    if ($method === 'POST' && $dadosToken) {
         $controller->criar($id_usuario, $dadosToken);
     }
     exit();
 }
 
 if (preg_match('#^/api/enderecos/(\d+)$#', $route, $matches)) {
-    $dadosToken = AuthMiddleware::verificar();
     $id_endereco = (int)$matches[1];
     $controller = new EnderecoController();
-
-    if ($method === 'PUT') {
+    if ($method === 'PUT' && $dadosToken) {
         $controller->atualizar($id_endereco, $dadosToken);
     }
-    if ($method === 'DELETE') {
+    if ($method === 'DELETE' && $dadosToken) {
         $controller->deletar($id_endereco, $dadosToken);
     }
     exit();
 }
 
 if (preg_match('#^/api/usuarios/(\d+)$#', $route, $matches)) {
-    $dadosToken = AuthMiddleware::verificar(); 
     $id = (int)$matches[1];
     $controller = new UsuarioController();
-
-    if ($method === 'GET') $controller->buscar($id, $dadosToken);
-    if ($method === 'PUT') $controller->atualizar($id, $dadosToken);
-    if ($method === 'DELETE') $controller->deletar($id, $dadosToken);
-    
+    if ($method === 'GET' && $dadosToken) $controller->buscar($id, $dadosToken);
+    if ($method === 'PUT' && $dadosToken) $controller->atualizar($id, $dadosToken);
+    if ($method === 'DELETE' && $dadosToken) $controller->deletar($id, $dadosToken);
     exit();
 }
 
 http_response_code(404);
 echo json_encode(['mensagem' => 'Endpoint não encontrado']);
+exit();
