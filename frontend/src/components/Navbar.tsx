@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Button } from "./LoginBtn";
 import { Search } from "akar-icons";
-import Logo from '../assets/logos/classic-classic.png';
+import Logo from '../assets/logos/green-complete.png';
 import profilePlaceholder from '../assets/profile-picture-placeholder.jpg';
 import { isLoggedIn, getProfilePictureUrl, logout } from "../utils/authUtils";
 
@@ -103,7 +103,7 @@ export const Navbar = () => {
     <section className="font-sans">
       <nav className="fixed top-0 left-0 z-10 flex justify-between items-center px-5 h-[85px] w-full text-[#5B5968] bg-[#386641]">
         <a onClick={() => navigate('/')}>
-          <img src={Logo} alt="Logo" className="mr-6 h-20 w-20 cursor-pointer" />
+          <img src={Logo} alt="Logo" className="mr-6 h-35 w-35 cursor-pointer" />
         </a>
         <div className="flex items-center justify-center w-1/2 font-medium">
           <SearchLupe />
