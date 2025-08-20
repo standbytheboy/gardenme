@@ -2,8 +2,9 @@ import { useRef, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Button } from "./LoginBtn";
 import { Search } from "akar-icons";
-import Logo from '../assets/logos/green-complete.png';
-import profilePicture from '../assets/profile-picture.avif';
+import Logo from '../assets/logos/classic-classic.png';
+import profilePlaceholder from '../assets/profile-picture.avif';
+import { isLoggedIn, getProfilePictureUrl, logout } from "../utils/authUtils";
 
 interface NavItem {
   name: string;
@@ -65,31 +66,22 @@ const SearchLupe = () => (
 export const Navbar = () => {
   const [translateX, setTranslateX] = useState<string>("0");
   const [activeItem, setActiveItem] = useState<NavItem | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+  const [userProfilePic, setUserProfilePic] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // useEffect para verificar o status de login quando o componente é montado
   useEffect(() => {
-    const userToken = localStorage.getItem('userToken');
-    const userId = localStorage.getItem('userId');
-    if (userToken && userId) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-
-    // event listener para reagir a mudanças no localStorage
-    const handleStorageChange = () => {
-      const updatedToken = localStorage.getItem('userToken');
-      const updatedUserId = localStorage.getItem('userId');
-      setIsLoggedIn(!!updatedToken && !!updatedUserId);
+    const updateAuthStatus = () => {
+      setUserIsLoggedIn(isLoggedIn());
+      setUserProfilePic(getProfilePictureUrl() || profilePlaceholder);
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    updateAuthStatus();
 
-    // Remover o event listener na desmontagem do componente
+    window.addEventListener('storage', updateAuthStatus);
+
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('storage', updateAuthStatus);
     };
   }, []);
 
@@ -97,23 +89,22 @@ export const Navbar = () => {
     setActiveItem(item);
     setTranslateX(x);
   };
-  
+
   const handleProfileClick = () => {
     navigate('/perfil');
   };
 
   const handleLogout = () => {
-    // Remover o token e o ID do usuário do localStorage
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('userId');
-    setIsLoggedIn(false);
+    logout();
     navigate('/');
   };
 
   return (
     <section className="font-sans">
       <nav className="fixed top-0 left-0 z-10 flex justify-between items-center px-5 h-[85px] w-full text-[#5B5968] bg-[#386641]">
-        <img src={Logo} onClick={() => navigate('/')} alt="Logo" className="mr-6 h-35 w-35 cursor-pointer" />
+        <a onClick={() => navigate('/')}>
+          <img src={Logo} alt="Logo" className="mr-6 h-20 w-20 cursor-pointer" />
+        </a>
         <div className="flex items-center justify-center w-1/2 font-medium">
           <SearchLupe />
           {items.map((item) => (
@@ -142,18 +133,16 @@ export const Navbar = () => {
           </div>
         </div>
         <div className="flex justify-between">
-          {isLoggedIn ? (
-            // Exibe o ícone de perfil se o usuário estiver logado
+          {userIsLoggedIn ? (
             <div className="flex items-center space-x-4">
               <button onClick={handleProfileClick} className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#a7c957] hover:border-[#386641] transition-colors cursor-pointer">
-                <img src={profilePicture} alt="Profile" className="w-full h-full object-cover" />
+                <img src={userProfilePic || profilePlaceholder} alt="Profile" className="w-full h-full object-cover" />
               </button>
               <button onClick={handleLogout} className="text-[#a7c957] font-semibold hover:underline">Sair</button>
             </div>
           ) : (
-            // Exibe os botões de Login e Cadastro se o usuário não estiver logado
             <>
-              <Button onClick={() => navigate('/login')}>Entrar</Button>
+              <Button onClick={() => navigate('/login')}>Login</Button>
               <div className="w-5"></div>
               <Button onClick={() => navigate('/signup')}>Cadastre-se</Button>
             </>
