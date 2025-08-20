@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import userProfilePic from "../assets/profile-picture.avif";
+import userProfilePic from "../assets/profile-picture-placeholder.jpg";
 import { Sidebar9 } from "../components/SidebarUserSettings.tsx";
 import { Navbar } from "../components/Navbar.tsx";
 import AddressManager from "../components/AddressManager.tsx";

@@ -87,7 +87,7 @@ if (preg_match('#^/api/categorias(/(\d+))?$#', $route, $matches)) {
     if ($id) {
         if ($method === 'GET') $controller->detalhar($id);
         if ($method === 'PUT') $controller->atualizar($id);
-        if ($method === 'DELETE' && $dadosToken) $controller->deletar($id, $dadosToken);
+        if ($method === 'DELETE' && $dadosToken) $controller->deletar($id);
     } else {
         if ($method === 'GET') $controller->listar();
         if ($method === 'POST') $controller->criar();
@@ -100,11 +100,11 @@ if (preg_match('#^/api/dicas(/(\d+))?$#', $route, $matches)) {
     $controller = new DicasController();
     if ($id) {
         if ($method === 'GET') $controller->detalhar($id);
-        if ($method === 'PUT' && $dadosToken) $controller->atualizar($id, $dadosToken);
-        if ($method === 'DELETE' && $dadosToken) $controller->deletar($id, $dadosToken);
+        if ($method === 'PUT' && $dadosToken) $controller->atualizar($id);
+        if ($method === 'DELETE' && $dadosToken) $controller->deletar($id);
     } else {
         if ($method === 'GET') $controller->listar();
-        if ($method === 'POST' && $dadosToken) $controller->criar($dadosToken);
+        if ($method === 'POST' && $dadosToken) $controller->criar();
     }
     exit();
 }

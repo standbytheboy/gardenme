@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from "./LoginBtn";
 import { Search } from "akar-icons";
 import Logo from '../assets/logos/classic-classic.png';
-import profilePlaceholder from '../assets/profile-picture.avif';
+import profilePlaceholder from '../assets/profile-picture-placeholder.jpg';
 import { isLoggedIn, getProfilePictureUrl, logout } from "../utils/authUtils";
 
 interface NavItem {
