@@ -1,8 +1,5 @@
 <?php
-
-
 namespace Garden\DAO; 
-
 use PDO;
 use Garden\Core\Database;
 use Garden\Models\Usuario; 
@@ -72,7 +69,6 @@ class UsuarioDAO
         }
     }
 
-
     private function mapUsuario(array $dados): Usuario
     {
         return new Usuario(
@@ -136,6 +132,31 @@ class UsuarioDAO
             if ($e->getCode() === '23000') {
                 return 'conflict';
             }
+            return false;
+        }
+    }
+
+    public function atualizarCaminhoFotoPerfil(int $id, string $caminho): bool
+    {
+        try {
+            $sql = 'UPDATE usuario SET caminho_foto_perfil = :caminho WHERE id_usuario = :id';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':caminho', $caminho);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (\PDOException $e) {
+            return false;
+        }
+    }
+
+    public function removerCaminhoFotoPerfil(int $id): bool
+    {
+        try {
+            $sql = 'UPDATE usuario SET caminho_foto_perfil = NULL WHERE id_usuario = :id';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (\PDOException $e) {
             return false;
         }
     }

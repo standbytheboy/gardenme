@@ -10,6 +10,7 @@ class Usuario extends Entidade
     private string $email;
     private ?string $celular;
     private bool $isAdmin;
+    private ?string $caminhoFotoPerfil;
 
     public function __construct(
         ?int $id = null,
@@ -19,7 +20,8 @@ class Usuario extends Entidade
         string $sobrenome = '',
         string $email = '',
         ?string $celular = null,
-        bool $isAdmin = false
+        bool $isAdmin = false,
+        ?string $caminhoFotoPerfil = null
     ) {
         parent::__construct($id, $criadoEm, $atualizacaoEm);
         $this->nome = $nome;
@@ -27,6 +29,7 @@ class Usuario extends Entidade
         $this->email = $email;
         $this->celular = $celular;
         $this->isAdmin = $isAdmin;
+        $this->caminhoFotoPerfil = $caminhoFotoPerfil;
     }
 
     public function getNome(): string
@@ -51,5 +54,9 @@ class Usuario extends Entidade
     public function isAdmin(): bool
     {
         return $this->isAdmin;
+    }
+    public function getCaminhoFotoPerfil(): ?string
+    {
+        return $this->caminhoFotoPerfil;
     }
 }
