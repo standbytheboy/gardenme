@@ -55,7 +55,7 @@ class UsuarioDAO
     public function buscarPorId(int $id): ?Usuario
     {
         try {
-            $sql = 'SELECT id_usuario, nome, sobrenome, email, celular, criado_em, atualizado_em, is_admin FROM usuario WHERE id_usuario = :id';
+            $sql = 'SELECT id_usuario, nome, sobrenome, email, celular, criado_em, atualizado_em, is_admin, caminho_foto_perfil FROM usuario WHERE id_usuario = :id';
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();

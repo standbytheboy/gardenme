@@ -1,15 +1,20 @@
-import { useState, useEffect } from "react";
-import userProfilePic from "../assets/profile-picture.avif";
+import { useState, useEffect, useRef } from "react";
+import userProfilePic from "../assets/profile-picture-placeholder.jpg";
 import { Sidebar9 } from "../components/SidebarUserSettings.tsx";
 import { Navbar } from "../components/Navbar.tsx";
 import AddressManager from "../components/AddressManager.tsx";
 import Footer from "../components/Footer.tsx";
 import { useNavigate } from "react-router-dom";
+import { getProfilePictureUrl, logout } from "../utils/authUtils";
 
 const UserProfileSettings: React.FC = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Estados para os dados do usuário
-  const [profilePic, setProfilePic] = useState<string | null>(userProfilePic);
+  const [profilePic, setProfilePic] = useState<string | null>(
+    getProfilePictureUrl() || userProfilePic
+  );
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -17,48 +22,6 @@ const UserProfileSettings: React.FC = () => {
   const [aboutMe, setAboutMe] = useState(
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam."
   );
-
-  // lógica para mostrar os dados do usuário
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const idDoUsuario = localStorage.getItem("userId");
-      const tokenDeAutenticacao = localStorage.getItem("userToken");
-
-      if (!idDoUsuario || !tokenDeAutenticacao) {
-        // Se o token ou ID não existirem, o usuário não está logado.
-        console.error("Usuário não autenticado.");
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `/api/usuarios/${idDoUsuario}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${tokenDeAutenticacao}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const userData = await response.json();
-          // Atualiza os estados do componente com os dados recebidos da API
-          setFirstName(userData.nome);
-          setLastName(userData.sobrenome);
-          setEmail(userData.email);
-        } else {
-          console.error("Erro ao buscar dados do usuário:", response.status);
-        }
-      } catch (error) {
-        console.error("Erro na requisição de dados do usuário:", error);
-      }
-    };
-
-    // Chame a função de busca de dados apenas quando o componente for montado
-    fetchUserData();
-  }, []); // O array vazio de dependências garante que a função é executada apenas uma vez
 
   // Estados para a seção de segurança
   const [currentPassword, setCurrentPassword] = useState("");
@@ -69,24 +32,159 @@ const UserProfileSettings: React.FC = () => {
   // Estado para o item de menu ativo na sidebar
   const [activeMenuItem, setActiveMenuItem] = useState("Meus Dados");
 
+  // useEffect para buscar dados do usuário
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const idDoUsuario = localStorage.getItem("userId");
+      const tokenDeAutenticacao = localStorage.getItem("userToken");
+
+      if (!idDoUsuario || !tokenDeAutenticacao) {
+        console.error("Usuário não autenticado.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/usuarios/${idDoUsuario}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenDeAutenticacao}`,
+          },
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setFirstName(userData.nome);
+          setLastName(userData.sobrenome);
+          setEmail(userData.email);
+
+          if (userData.caminho_foto_perfil) {
+            localStorage.setItem(
+              "userProfilePic",
+              userData.caminho_foto_perfil
+            );
+            setProfilePic(getProfilePictureUrl());
+          }
+        } else {
+          console.error("Erro ao buscar dados do usuário:", response.status);
+        }
+      } catch (error) {
+        console.error("Erro na requisição de dados do usuário:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // useEffect para atualizar a foto sempre que voltar para a página ou quando localStorage mudar
+  useEffect(() => {
+    const updatePhoto = () => {
+      setProfilePic(getProfilePictureUrl() || userProfilePic);
+    };
+
+    window.addEventListener("focus", updatePhoto);
+    window.addEventListener("storage", updatePhoto);
+
+    return () => {
+      window.removeEventListener("focus", updatePhoto);
+      window.removeEventListener("storage", updatePhoto);
+    };
+  }, []);
+
+  // Função para lidar com a troca de foto (upload)
   const handleTrocarFoto = () => {
-    alert("Funcionalidade de trocar foto.");
+    fileInputRef.current?.click();
   };
 
-  const handleExcluirFoto = () => {
-    if (window.confirm("Deseja realmente excluir a foto de perfil?")) {
-      setProfilePic(null);
-      alert("Foto excluída!");
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const idDoUsuario = localStorage.getItem("userId");
+    const tokenDeAutenticacao = localStorage.getItem("userToken");
+
+    if (!idDoUsuario || !tokenDeAutenticacao) {
+      alert("Erro: Usuário não autenticado.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("profile_picture", file);
+
+    try {
+      const response = await fetch(`/api/usuarios/${idDoUsuario}/foto`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${tokenDeAutenticacao}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Foto de perfil atualizada com sucesso!");
+        // Salva apenas o caminho do arquivo no localStorage
+        localStorage.setItem("userProfilePic", data.caminho);
+        setProfilePic(getProfilePictureUrl()); // Usa a função utilitária para pegar a URL com timestamp
+      } else {
+        alert(
+          "Erro ao trocar a foto: " + (data.mensagem || "Erro desconhecido.")
+        );
+      }
+    } catch (error) {
+      console.error("Erro na requisição de upload:", error);
+      alert("Erro ao conectar com o servidor. Tente novamente.");
+    }
+  };
+
+  // Função para lidar com a exclusão da foto
+  const handleExcluirFoto = async () => {
+    if (!window.confirm("Deseja realmente excluir a foto de perfil?")) {
+      return;
+    }
+
+    const idDoUsuario = localStorage.getItem("userId");
+    const tokenDeAutenticacao = localStorage.getItem("userToken");
+
+    if (!idDoUsuario || !tokenDeAutenticacao) {
+      alert("Erro: Usuário não autenticado.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/usuarios/${idDoUsuario}/foto`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenDeAutenticacao}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Foto excluída!");
+        localStorage.removeItem("userProfilePic");
+        setProfilePic(null); // Limpa a foto de perfil no estado
+      } else {
+        alert(
+          "Erro ao excluir a foto: " + (data.mensagem || "Erro desconhecido.")
+        );
+      }
+    } catch (error) {
+      console.error("Erro na requisição de exclusão:", error);
+      alert("Erro ao conectar com o servidor. Tente novamente.");
     }
   };
 
   const handleSalvarAlteracoes = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Alterações salvas!");
-    console.log({ firstName, lastName, email, country, aboutMe });
+    alert("Funcionalidade Salvar Alterações não implementada.");
   };
 
-  // Nova função para lidar com a alteração de senha
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasswordChangeMessage("");
@@ -103,23 +201,19 @@ const UserProfileSettings: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch(
-        `/api/usuarios/${idDoUsuario}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenDeAutenticacao}`,
-          },
-          body: JSON.stringify({
-            senhaAtual: currentPassword,
-            novaSenha: newPassword,
-          }),
-        }
-      );
+      const response = await fetch(`/api/usuarios/${idDoUsuario}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenDeAutenticacao}`,
+        },
+        body: JSON.stringify({
+          senhaAtual: currentPassword,
+          novaSenha: newPassword,
+        }),
+      });
 
       const responseText = await response.text();
-
       console.log("Status da Resposta:", response.status);
       console.log("Corpo completo da resposta (texto):", responseText);
 
@@ -129,7 +223,6 @@ const UserProfileSettings: React.FC = () => {
         setNewPassword("");
         setConfirmNewPassword("");
       } else {
-        // Tenta parsear a resposta como JSON se não for ok
         try {
           const data = JSON.parse(responseText);
           if (data && data.mensagem) {
@@ -140,7 +233,6 @@ const UserProfileSettings: React.FC = () => {
             );
           }
         } catch {
-          // Se a resposta não for um JSON válido, exibe o texto completo
           setPasswordChangeMessage(
             `Erro ao alterar a senha. Resposta inesperada do servidor: ${responseText}`
           );
@@ -155,7 +247,6 @@ const UserProfileSettings: React.FC = () => {
   };
 
   const handleDeleteAccount = async () => {
-    // Confirmação para evitar exclusões acidentais
     if (
       !window.confirm(
         "Tem certeza que deseja excluir sua conta? Esta ação é irreversível."
@@ -173,16 +264,13 @@ const UserProfileSettings: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        `/api/usuarios/${idDoUsuario}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenDeAutenticacao}`,
-          },
-        }
-      );
+      const response = await fetch(`/api/usuarios/${idDoUsuario}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenDeAutenticacao}`,
+        },
+      });
 
       const data = await response.json();
 
@@ -190,7 +278,7 @@ const UserProfileSettings: React.FC = () => {
         alert(
           "Conta excluída com sucesso! Você será redirecionado para a página inicial."
         );
-        localStorage.clear(); // Limpa o token e o ID do usuário
+        logout(); // Usa a função de utilidade para limpar e notificar
         navigate("/");
       } else {
         alert(
@@ -232,6 +320,13 @@ const UserProfileSettings: React.FC = () => {
                       } // Placeholder se não houver foto
                       alt="Foto de perfil"
                       className="w-18 h-18 rounded-full object-cover"
+                    />
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      className="hidden"
+                      accept="image/*"
                     />
                     <button
                       type="button"
