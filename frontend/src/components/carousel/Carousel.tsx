@@ -19,7 +19,7 @@ interface ProdutoBackend {
   nome_categoria: string;
   nome_produto: string;
   descricao: string;
-  preco: string;
+  preco: number;
   imagem_url?: string;
   criado_em: string;
   atualizado_em: string;
@@ -42,10 +42,11 @@ export const Carousel = ({ onPlantClick }: CarouselProps) => {
         const plants: Plant[] = data.map((p) => ({
           id: Number(p.id_produto),
           name: p.nome_produto,
-          price: `R$ ${Number(p.preco).toFixed(2)}`,
+          price: Number(p.preco),
           imageSrc: p.imagem_url || "https://via.placeholder.com/300x250",
           description: p.descricao,
-          rating: 4.5, // padrão, se não tiver rating no backend
+          rating: 4.5,
+          quantity: 0
         }));
 
         setPlantCardsData(plants);

@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import CartItem from "../components/CartItem.tsx";
 import { Navbar } from "../components/Navbar.tsx";
-import aloeImage from "../assets/aloe.webp";
 import Footer from "../components/Footer.tsx";
 import '../App.css'
 import { useNavigate } from "react-router-dom";
 
-// Interface para o tipo de item no estado do carrinho
 interface CartItemType {
   id: string;
   name: string;
@@ -17,78 +15,32 @@ interface CartItemType {
 }
 
 const ShoppingCart: React.FC = () => {
-  // Estado para os itens do carrinho
-  const [cartItems, setCartItems] = useState<CartItemType[]>([
-    {
-      id: "1",
-      name: "Aloevera",
-      kit: "Kit Completo",
-      price: 59.99,
-      quantity: 2,
-      image: aloeImage,
-    },
-    {
-      id: "2",
-      name: "Aloevera",
-      kit: "Kit Completo",
-      price: 59.99,
-      quantity: 1,
-      image: aloeImage,
-    },
-    {
-      id: "3",
-      name: "Aloevera",
-      kit: "Kit Completo",
-      price: 59.99,
-      quantity: 1,
-      image: aloeImage,
-    },
-    {
-      id: "4",
-      name: "Aloevera",
-      kit: "Kit Completo",
-      price: 59.99,
-      quantity: 1,
-      image: aloeImage,
-    },
-    {
-      id: "5",
-      name: "Aloevera",
-      kit: "Kit Completo",
-      price: 59.99,
-      quantity: 1,
-      image: aloeImage,
-    },
-  ]);
-
-  const [subtotal, setSubtotal] = useState(0);
-  const [discountsApplied, setDiscountsApplied] = useState(0); // Exemplo de desconto
+  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
   const [total, setTotal] = useState(0);
+  const [subtotal, setSubtotal] = useState(0);
+  const [discountsApplied] = useState(0);
 
-  // Efeito para recalcular subtotal, desconto e total sempre que os itens do carrinho mudarem
   useEffect(() => {
-    const newSubtotal = cartItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    );
+    // Carrega o carrinho do localStorage ao iniciar
+    const storedCart = localStorage.getItem('cartItems');
+    if (storedCart) {
+      setCartItems(JSON.parse(storedCart));
+    }
+  }, []);
+
+  // Efeito para recalcular sempre que os itens do carrinho mudarem
+  useEffect(() => {
+    const newSubtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
     setSubtotal(newSubtotal);
-
-    // Lógica de desconto - para o exemplo, vamos simular um desconto fixo
-    // No seu layout, o desconto é R$ -59,99. Se o subtotal for R$ 119.98,
-    // o desconto de R$ 59.99 o leva a R$ 59.99.
-    // Vamos fazer um desconto que "zeraria" alguns itens, como no exemplo
-    const simulatedDiscount = newSubtotal > 59.99 ? 59.99 : 0;
-    setDiscountsApplied(simulatedDiscount);
-
-    setTotal(newSubtotal - simulatedDiscount);
+    setTotal(newSubtotal); // Simplificado, você pode adicionar a lógica de frete e desconto aqui
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // Função para mudar a quantidade de um item
   const handleQuantityChange = (id: string, newQuantity: number) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
+    setCartItems((prevItems) => 
+      prevItems.map((item) => 
         item.id === id ? { ...item, quantity: newQuantity } : item
-      )
+      ).filter(item => item.quantity > 0) // Remove o item se a quantidade for 0
     );
   };
   const navigate = useNavigate(); 

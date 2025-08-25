@@ -169,6 +169,18 @@ if (preg_match('#^/api/produtos(/(\d+))?$#', $route, $matches)) {
     exit();
 }
 
+if ($route === '/api/pedidos' && $method === 'POST') {
+    $authResult = AuthMiddleware::verificar();
+    if (is_array($authResult) && isset($authResult['status'])) {
+        http_response_code($authResult['status']);
+        echo json_encode(['mensagem' => $authResult['mensagem']]);
+        exit();
+    }
+    $dadosToken = $authResult;
+    (new \Garden\Controllers\OrdemDePedidoController())->criar($dadosToken);
+    exit();
+}
+
 http_response_code(404);
 echo json_encode(['mensagem' => 'Endpoint não encontrado']);
 exit();

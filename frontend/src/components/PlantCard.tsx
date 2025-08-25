@@ -4,10 +4,11 @@ interface PlantCardProps {
   plant: {
     id: number;
     name: string;
-    price: string;
+    price: number;
     imageSrc: string;
     description: string;
     rating: number;
+    quantity: number;
   };
   onPlantClick: (plant: Plant) => void;
 }

@@ -52,34 +52,7 @@ const CheckoutPage: React.FC = () => {
       quantity: 2,
       image: aloeImage,
       deliveryDateRange: "07 - 17/Jul",
-    },
-    {
-      id: "2",
-      name: "Aloevera",
-      kit: "Kit Completo",
-      price: 59.99,
-      quantity: 2,
-      image: aloeImage,
-      deliveryDateRange: "07 - 17/Jul",
-    },
-    {
-      id: "3",
-      name: "Aloevera",
-      kit: "Kit Completo",
-      price: 59.99,
-      quantity: 2,
-      image: aloeImage,
-      deliveryDateRange: "07 - 17/Jul",
-    },
-    {
-      id: "4",
-      name: "Aloevera",
-      kit: "Kit Completo",
-      price: 59.99,
-      quantity: 2,
-      image: aloeImage,
-      deliveryDateRange: "07 - 17/Jul",
-    },
+    }
   ]);
 
   const [couponCode, setCouponCode] = useState("");
@@ -132,9 +105,53 @@ const CheckoutPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleConfirmPurchase = () => {
-    alert("Compra Confirmada!");
-    navigate('/pedido-sucesso');
+  const handleConfirmPurchase = async () => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("userToken");
+
+    if (!userId || !token) {
+      alert("Por favor, faça login para finalizar a compra.");
+      return;
+    }
+
+    // Lógica para obter o endereço selecionado (supondo que você já implementou isso)
+    const idEndereco = 1; // Exemplo, você precisa selecionar o ID do endereço do usuário
+
+    // Mapeia os itens do carrinho para o formato esperado pelo backend
+    const itemsParaBackend = orderItems.map(item => ({
+      id_produto: item.id,
+      quantidade: item.quantity,
+      preco_unitario: item.price
+    }));
+
+    try {
+      const response = await fetch(`/api/pedidos`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          id_endereco: idEndereco,
+          itens: itemsParaBackend,
+          pagamento_metodo: paymentMethod.type
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Compra Confirmada!");
+        // Limpa o carrinho no localStorage após o sucesso
+        localStorage.removeItem('cartItems');
+        // Redireciona para a página de sucesso, passando o ID do pedido
+        navigate(`/pedido-sucesso?orderId=${data.id_pedido}`); 
+      } else {
+        alert(`Erro ao finalizar a compra: ${data.mensagem || 'Erro desconhecido'}`);
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      alert("Erro ao conectar com o servidor. Tente novamente.");
+    }
   };
 
   // Reutilizando parte da lógica do CartItem mas adaptando para a tela de checkout

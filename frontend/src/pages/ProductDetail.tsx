@@ -1,37 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar } from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Carousel } from "../components/carousel/Carousel";
 import { MainPlant } from "../components/MainPlant";
-import AddedToCartCard from "../components/AddedToCart.tsx";
-import { Plant } from "../components/types.tsx";
+import AddedToCartCard from "../components/AddedToCart";
+import { Plant } from "../components/types";
+import { useNavigate } from "react-router-dom";
 
 const ProductPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // Adiciona o novo estado para a planta principal.
   const [mainPlant, setMainPlant] = useState<Plant | null>(null);
+  const [cart, setCart] = useState<Plant[]>([]);
+  const navigate = useNavigate();
+
+  // Carrega o carrinho do localStorage quando o componente monta
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cartItems");
+    if (storedCart) {
+      setCart(JSON.parse(storedCart));
+    }
+  }, []);
 
   const handleAddToCartClick = () => {
-    setIsModalOpen(true);
+    if (mainPlant) {
+      const updatedCart = [...cart];
+      const existingItem = updatedCart.find(item => item.id === mainPlant.id);
+
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        updatedCart.push({ ...mainPlant, quantity: 1 });
+      }
+
+      setCart(updatedCart);
+      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+      setIsModalOpen(true);
+    }
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const handleCloseModal = () => setIsModalOpen(false);
 
-  // Nova função para lidar com o clique em uma planta do carrossel
-  const handlePlantClick = (plant: Plant) => {
-    setMainPlant(plant);
-  };
+  const handlePlantClick = (plant: Plant) => setMainPlant(plant);
 
   return (
     <div className="bg-[#A7C957] text-[#386641] min-h-screen">
       <Navbar />
-
       <main className="container">
-        {/* Passa a planta selecionada para o MainPlant */}
         <MainPlant plantData={mainPlant} onAddToCartClick={handleAddToCartClick} />
-        {/* Passa a função de clique para o Carousel */}
+
+        {/* Seções do carrossel */}
         <section className="py-12 w-screen">
           <h2 className="text-3xl font-bold text-center mb-8">Mais Vendidas</h2>
           <Carousel onPlantClick={handlePlantClick} />
@@ -40,9 +57,7 @@ const ProductPage: React.FC = () => {
         </section>
 
         <section className="py-12 w-screen">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Melhores Para Iniciantes
-          </h2>
+          <h2 className="text-3xl font-bold text-center mb-8">Melhores Para Iniciantes</h2>
           <Carousel onPlantClick={handlePlantClick} />
           <div className="h-10"></div>
           <Carousel onPlantClick={handlePlantClick} />
@@ -55,19 +70,27 @@ const ProductPage: React.FC = () => {
           <Carousel onPlantClick={handlePlantClick} />
         </section>
       </main>
-      {isModalOpen && (
+
+      {isModalOpen && mainPlant && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000050]"
           onClick={handleCloseModal}
         >
-          <div onClick={(e) => e.stopPropagation()}>
+          <div onClick={e => e.stopPropagation()}>
             <AddedToCartCard
-              productName={"Aloevera"}
-              productPrice={"R$ 59,99"}
+              productName={mainPlant.name}
+              productPrice={`R$ ${mainPlant.price.toFixed(2).replace(".", ",")}`}
             />
+            <button
+              className="mt-4 w-full bg-[#386641] text-white py-2 rounded-full hover:bg-opacity-90"
+              onClick={() => navigate("/carrinho")}
+            >
+              Ir para o Carrinho
+            </button>
           </div>
         </div>
       )}
+
       <Footer />
     </div>
   );
