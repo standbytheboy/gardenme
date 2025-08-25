@@ -23,3 +23,5 @@ class Categoria extends Entidade
         return $this->nomeCategoria;
     }
 }
+
+// teste
