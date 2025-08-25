@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import CartItem from "../components/CartItem.tsx";
 import { Navbar } from "../components/Navbar.tsx";
 import Footer from "../components/Footer.tsx";
-import '../App.css'
+import "../App.css";
 import { useNavigate } from "react-router-dom";
 
 interface CartItemType {
@@ -15,35 +15,39 @@ interface CartItemType {
 }
 
 const ShoppingCart: React.FC = () => {
-  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
+  const [cartItems, setCartItems] = useState<CartItemType[]>(() => {
+    const storedCart = localStorage.getItem("cartItems");
+    return storedCart ? JSON.parse(storedCart) : [];
+  });
   const [total, setTotal] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
   const [discountsApplied] = useState(0);
 
   useEffect(() => {
-    // Carrega o carrinho do localStorage ao iniciar
-    const storedCart = localStorage.getItem('cartItems');
-    if (storedCart) {
-      setCartItems(JSON.parse(storedCart));
-    }
-  }, []);
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   // Efeito para recalcular sempre que os itens do carrinho mudarem
   useEffect(() => {
-    const newSubtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const newSubtotal = cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
     setSubtotal(newSubtotal);
     setTotal(newSubtotal); // Simplificado, você pode adicionar a lógica de frete e desconto aqui
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
-    setCartItems((prevItems) => 
-      prevItems.map((item) => 
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      ).filter(item => item.quantity > 0) // Remove o item se a quantidade for 0
+    setCartItems((prev) =>
+      prev
+        .map((item) =>
+          item.id === id ? { ...item, quantity: newQuantity } : item
+        )
+        .filter((item) => item.quantity > 0)
     );
   };
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   return (
     <div className="mt-21">
@@ -87,7 +91,10 @@ const ShoppingCart: React.FC = () => {
               <span>Total</span>
               <span>R$ {total.toFixed(2).replace(".", ",")}</span>
             </div>
-            <button onClick={() => navigate('/checkout')} className="w-full bg-[#A7C957] text-[#386641] py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300 cursor-pointer">
+            <button
+              onClick={() => navigate("/checkout")}
+              className="w-full bg-[#A7C957] text-[#386641] py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300 cursor-pointer"
+            >
               Continuar Compra
             </button>
           </div>

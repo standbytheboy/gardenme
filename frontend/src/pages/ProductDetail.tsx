@@ -5,13 +5,15 @@ import { Carousel } from "../components/carousel/Carousel";
 import { MainPlant } from "../components/MainPlant";
 import AddedToCartCard from "../components/AddedToCart";
 import { Plant } from "../components/types";
-import { useNavigate } from "react-router-dom";
 
 const ProductPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mainPlant, setMainPlant] = useState<Plant | null>(null);
-  const [cart, setCart] = useState<Plant[]>([]);
-  const navigate = useNavigate();
+  // salvando os dados do produto no localStorage
+  const [cart, setCart] = useState<Plant[]>(() => {
+    const storedCart = localStorage.getItem("cartItems");
+    return storedCart ? JSON.parse(storedCart) : [];
+  });
 
   // Carrega o carrinho do localStorage quando o componente monta
   useEffect(() => {
@@ -24,7 +26,7 @@ const ProductPage: React.FC = () => {
   const handleAddToCartClick = () => {
     if (mainPlant) {
       const updatedCart = [...cart];
-      const existingItem = updatedCart.find(item => item.id === mainPlant.id);
+      const existingItem = updatedCart.find((item) => item.id === mainPlant.id);
 
       if (existingItem) {
         existingItem.quantity += 1;
@@ -46,7 +48,10 @@ const ProductPage: React.FC = () => {
     <div className="bg-[#A7C957] text-[#386641] min-h-screen">
       <Navbar />
       <main className="container">
-        <MainPlant plantData={mainPlant} onAddToCartClick={handleAddToCartClick} />
+        <MainPlant
+          plantData={mainPlant}
+          onAddToCartClick={handleAddToCartClick}
+        />
 
         {/* Seções do carrossel */}
         <section className="py-12 w-screen">
@@ -57,7 +62,9 @@ const ProductPage: React.FC = () => {
         </section>
 
         <section className="py-12 w-screen">
-          <h2 className="text-3xl font-bold text-center mb-8">Melhores Para Iniciantes</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">
+            Melhores Para Iniciantes
+          </h2>
           <Carousel onPlantClick={handlePlantClick} />
           <div className="h-10"></div>
           <Carousel onPlantClick={handlePlantClick} />
@@ -76,17 +83,13 @@ const ProductPage: React.FC = () => {
           className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000050]"
           onClick={handleCloseModal}
         >
-          <div onClick={e => e.stopPropagation()}>
+          <div onClick={(e) => e.stopPropagation()}>
             <AddedToCartCard
               productName={mainPlant.name}
-              productPrice={`R$ ${mainPlant.price.toFixed(2).replace(".", ",")}`}
+              productPrice={`R$ ${mainPlant.price
+                .toFixed(2)
+                .replace(".", ",")}`}
             />
-            <button
-              className="mt-4 w-full bg-[#386641] text-white py-2 rounded-full hover:bg-opacity-90"
-              onClick={() => navigate("/carrinho")}
-            >
-              Ir para o Carrinho
-            </button>
           </div>
         </div>
       )}

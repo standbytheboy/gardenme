@@ -31,13 +31,13 @@ interface OrderItemType {
 
 const CheckoutPage: React.FC = () => {
   // Estado para os dados mockados
-  const [address, setAddress] = useState<AddressType>({
+  const [address] = useState<AddressType>({
     name: "Lucas Morais da Silva",
     details: "Endereço do Usuário Aqui",
     cityStateZip: "Cidade, Estado e Cep",
   });
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>({
+  const [paymentMethod] = useState<PaymentMethodType>({
     type: "Pix",
     details: "Pix", // Poderia ser o CPF/CNPJ para PIX ou outros detalhes
     icon: pixIcon,
@@ -57,7 +57,7 @@ const CheckoutPage: React.FC = () => {
 
   const [couponCode, setCouponCode] = useState("");
   const [subtotal, setSubtotal] = useState(0);
-  const [shippingCost, setShippingCost] = useState(9.99); // Frete fixo para exemplo
+  const [shippingCost] = useState(9.99); // Frete fixo para exemplo
   const [discountsApplied, setDiscountsApplied] = useState(0);
   const [total, setTotal] = useState(0);
 
