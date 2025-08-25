@@ -9,39 +9,35 @@ import { Plant } from "../components/types";
 const ProductPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mainPlant, setMainPlant] = useState<Plant | null>(null);
-  // salvando os dados do produto no localStorage
+
+  // Estado do carrinho persistido
   const [cart, setCart] = useState<Plant[]>(() => {
     const storedCart = localStorage.getItem("cartItems");
     return storedCart ? JSON.parse(storedCart) : [];
   });
 
-  // Carrega o carrinho do localStorage quando o componente monta
+  // Atualiza localStorage sempre que o carrinho mudar
   useEffect(() => {
-    const storedCart = localStorage.getItem("cartItems");
-    if (storedCart) {
-      setCart(JSON.parse(storedCart));
-    }
-  }, []);
+    localStorage.setItem("cartItems", JSON.stringify(cart));
+  }, [cart]);
 
   const handleAddToCartClick = () => {
-    if (mainPlant) {
-      const updatedCart = [...cart];
-      const existingItem = updatedCart.find((item) => item.id === mainPlant.id);
+    if (!mainPlant) return;
 
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        updatedCart.push({ ...mainPlant, quantity: 1 });
-      }
+    const updatedCart = [...cart];
+    const existingItem = updatedCart.find(item => item.id === mainPlant.id);
 
-      setCart(updatedCart);
-      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-      setIsModalOpen(true);
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      updatedCart.push({ ...mainPlant, quantity: 1 });
     }
+
+    setCart(updatedCart);
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => setIsModalOpen(false);
-
   const handlePlantClick = (plant: Plant) => setMainPlant(plant);
 
   return (

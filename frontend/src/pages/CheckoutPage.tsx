@@ -29,6 +29,15 @@ interface OrderItemType {
   deliveryDateRange: string; // Ex: '07 - 17/Jul'
 }
 
+interface CartItemType {
+  id: string;
+  name: string;
+  kit: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
 const CheckoutPage: React.FC = () => {
   // Estado para os dados mockados
   const [address] = useState<AddressType>({
@@ -52,7 +61,7 @@ const CheckoutPage: React.FC = () => {
       quantity: 2,
       image: aloeImage,
       deliveryDateRange: "07 - 17/Jul",
-    }
+    },
   ]);
 
   const [couponCode, setCouponCode] = useState("");
@@ -60,6 +69,10 @@ const CheckoutPage: React.FC = () => {
   const [shippingCost] = useState(9.99); // Frete fixo para exemplo
   const [discountsApplied, setDiscountsApplied] = useState(0);
   const [total, setTotal] = useState(0);
+  const [cartItems, setCartItems] = useState<CartItemType[]>(() => {
+      const storedCart = localStorage.getItem("cartItems");
+      return storedCart ? JSON.parse(storedCart) : [];
+    });
 
   // Efeito para recalcular subtotal, desconto, frete e total
   useEffect(() => {
@@ -76,14 +89,17 @@ const CheckoutPage: React.FC = () => {
     setTotal(newSubtotal + shippingCost - currentDiscount);
   }, [orderItems, shippingCost, discountsApplied]);
 
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
   const handleQuantityChange = (id: string, newQuantity: number) => {
-    setOrderItems(
-      (prevItems) =>
-        prevItems
-          .map((item) =>
-            item.id === id ? { ...item, quantity: newQuantity } : item
-          )
-          .filter((item) => item.quantity > 0) // Remove item se a quantidade chegar a 0
+    setCartItems((prev) =>
+      prev
+        .map((item) =>
+          item.id === id ? { ...item, quantity: newQuantity } : item
+        )
+        .filter((item) => item.quantity > 0)
     );
   };
 
@@ -118,35 +134,37 @@ const CheckoutPage: React.FC = () => {
     const idEndereco = 1; // Exemplo, você precisa selecionar o ID do endereço do usuário
 
     // Mapeia os itens do carrinho para o formato esperado pelo backend
-    const itemsParaBackend = orderItems.map(item => ({
+    const itemsParaBackend = orderItems.map((item) => ({
       id_produto: item.id,
       quantidade: item.quantity,
-      preco_unitario: item.price
+      preco_unitario: item.price,
     }));
 
     try {
       const response = await fetch(`/api/pedidos`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           id_endereco: idEndereco,
           itens: itemsParaBackend,
-          pagamento_metodo: paymentMethod.type
-        })
+          pagamento_metodo: paymentMethod.type,
+        }),
       });
 
       const data = await response.json();
       if (response.ok) {
         alert("Compra Confirmada!");
         // Limpa o carrinho no localStorage após o sucesso
-        localStorage.removeItem('cartItems');
+        localStorage.removeItem("cartItems");
         // Redireciona para a página de sucesso, passando o ID do pedido
-        navigate(`/pedido-sucesso?orderId=${data.id_pedido}`); 
+        navigate(`/pedido-sucesso?orderId=${data.id_pedido}`);
       } else {
-        alert(`Erro ao finalizar a compra: ${data.mensagem || 'Erro desconhecido'}`);
+        alert(
+          `Erro ao finalizar a compra: ${data.mensagem || "Erro desconhecido"}`
+        );
       }
     } catch (error) {
       console.error("Erro na requisição:", error);
