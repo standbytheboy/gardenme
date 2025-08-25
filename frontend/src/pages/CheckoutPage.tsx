@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import aloeImage from "../assets/aloe.webp";
 import pixIcon from "../assets/pix.svg";
 import { Navbar } from "../components/Navbar";
 import "../App.css";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { Plant } from "../components/types";
 
 // Interfaces para os dados
 interface AddressType {
@@ -15,31 +15,16 @@ interface AddressType {
 
 interface PaymentMethodType {
   type: string;
-  details: string; // Ex: 'Pix'
-  icon?: string; // URL ou importação de um ícone
+  details: string;
+  icon?: string;
 }
 
-interface OrderItemType {
-  id: string;
-  name: string;
-  kit: string;
-  price: number;
-  quantity: number;
-  image: string;
-  deliveryDateRange: string; // Ex: '07 - 17/Jul'
-}
-
-interface CartItemType {
-  id: string;
-  name: string;
-  kit: string;
-  price: number;
-  quantity: number;
-  image: string;
+// O OrderItemType agora usa a interface Plant
+interface OrderItemType extends Plant {
+  deliveryDateRange: string;
 }
 
 const CheckoutPage: React.FC = () => {
-  // Estado para os dados mockados
   const [address] = useState<AddressType>({
     name: "Lucas Morais da Silva",
     details: "Endereço do Usuário Aqui",
@@ -48,52 +33,42 @@ const CheckoutPage: React.FC = () => {
 
   const [paymentMethod] = useState<PaymentMethodType>({
     type: "Pix",
-    details: "Pix", // Poderia ser o CPF/CNPJ para PIX ou outros detalhes
+    details: "Pix",
     icon: pixIcon,
   });
 
-  const [orderItems, setOrderItems] = useState<OrderItemType[]>([
-    {
-      id: "1",
-      name: "Aloevera",
-      kit: "Kit Completo",
-      price: 59.99,
-      quantity: 2,
-      image: aloeImage,
-      deliveryDateRange: "07 - 17/Jul",
-    },
-  ]);
+  // Estado para os itens do carrinho, agora carregados do localStorage
+  const [cartItems, setCartItems] = useState<Plant[]>([]);
 
   const [couponCode, setCouponCode] = useState("");
   const [subtotal, setSubtotal] = useState(0);
   const [shippingCost] = useState(9.99); // Frete fixo para exemplo
-  const [discountsApplied, setDiscountsApplied] = useState(0);
+  const [discountsApplied] = useState(0); // Removido setDiscountsApplied pois não estava em uso
   const [total, setTotal] = useState(0);
-  const [cartItems, setCartItems] = useState<CartItemType[]>(() => {
-      const storedCart = localStorage.getItem("cartItems");
-      return storedCart ? JSON.parse(storedCart) : [];
-    });
 
-  // Efeito para recalcular subtotal, desconto, frete e total
+  // Carrega os itens do carrinho do localStorage e calcula os totais
   useEffect(() => {
-    const newSubtotal = orderItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,
+    const storedCart = localStorage.getItem("cartItems");
+    if (storedCart) {
+      const items = JSON.parse(storedCart) as Plant[];
+      setCartItems(items);
+    }
+  }, []);
+  
+  // Recalcula os totais sempre que o carrinho mudar
+  useEffect(() => {
+    const newSubtotal = cartItems.reduce(
+      (acc, item) => acc + (item.price as number) * item.quantity,
       0
     );
     setSubtotal(newSubtotal);
 
-    // Lógica de desconto - Simular desconto de 59.99 como na imagem
-    const currentDiscount = 59.99; // Assume que 59.99 é um desconto fixo
-    setDiscountsApplied(currentDiscount);
-
+    const currentDiscount = 0;
+    
     setTotal(newSubtotal + shippingCost - currentDiscount);
-  }, [orderItems, shippingCost, discountsApplied]);
+  }, [cartItems, shippingCost]);
 
-  useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  const handleQuantityChange = (id: string, newQuantity: number) => {
+  const handleQuantityChange = (id: number, newQuantity: number) => {
     setCartItems((prev) =>
       prev
         .map((item) =>
@@ -103,19 +78,16 @@ const CheckoutPage: React.FC = () => {
     );
   };
 
-  // --- MODIFICAÇÃO AQUI: Adicionando a verificação de exclusão ---
-  const handleRemoveItem = (id: string, itemName: string) => {
+  const handleRemoveItem = (id: number, itemName: string) => {
     const confirmRemoval = window.confirm(
       `Deseja realmente excluir "${itemName}" do seu pedido?`
     );
     if (confirmRemoval) {
-      setOrderItems((prevItems) => prevItems.filter((item) => item.id !== id));
+      setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     }
   };
-  // ----------------------------------------------------------------
 
   const handleApplyCoupon = () => {
-    // Lógica para aplicar cupom
     alert(`Aplicar cupom: ${couponCode}`);
   };
 
@@ -124,17 +96,15 @@ const CheckoutPage: React.FC = () => {
   const handleConfirmPurchase = async () => {
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("userToken");
-
+    
     if (!userId || !token) {
       alert("Por favor, faça login para finalizar a compra.");
       return;
     }
 
-    // Lógica para obter o endereço selecionado (supondo que você já implementou isso)
-    const idEndereco = 1; // Exemplo, você precisa selecionar o ID do endereço do usuário
+    const idEndereco = 1; 
 
-    // Mapeia os itens do carrinho para o formato esperado pelo backend
-    const itemsParaBackend = orderItems.map((item) => ({
+    const itemsParaBackend = cartItems.map((item) => ({
       id_produto: item.id,
       quantidade: item.quantity,
       preco_unitario: item.price,
@@ -157,9 +127,7 @@ const CheckoutPage: React.FC = () => {
       const data = await response.json();
       if (response.ok) {
         alert("Compra Confirmada!");
-        // Limpa o carrinho no localStorage após o sucesso
         localStorage.removeItem("cartItems");
-        // Redireciona para a página de sucesso, passando o ID do pedido
         navigate(`/pedido-sucesso?orderId=${data.id_pedido}`);
       } else {
         alert(
@@ -172,12 +140,11 @@ const CheckoutPage: React.FC = () => {
     }
   };
 
-  // Reutilizando parte da lógica do CartItem mas adaptando para a tela de checkout
   const CheckoutItem: React.FC<{
     item: OrderItemType;
-    onQuantityChange: (id: string, newQuantity: number) => void;
-    onRemove: (id: string, itemName: string) => void; // Atualizado para passar o nome do item
-  }> = ({ item, onQuantityChange, onRemove }) => {
+    onQuantityChange: (id: number, newQuantity: number) => void;
+    onRemove: (id: number, itemName: string) => void;
+  }> = ({ item, onQuantityChange}) => {
     const handleDecrease = () => {
       onQuantityChange(item.id, item.quantity - 1);
     };
@@ -190,18 +157,17 @@ const CheckoutPage: React.FC = () => {
       <div>
         <div className="flex items-start bg-[#F2E8CF] p-4 rounded-4xl mb-4 relative">
           <img
-            src={item.image}
+            src={item.imageSrc}
             alt={item.name}
             className="w-16 h-16 object-cover rounded-md mr-4"
           />
           <div className="flex-grow">
             <p className="font-semibold text-lg text-[#386641]">{item.name}</p>
-            <p className="text-sm text-gray-500">{item.kit}</p>
+            <p className="text-sm text-gray-500">Kit Completo</p>
             <p className="text-sm text-gray-500 mt-1">
-              Previsão de Entrega: {item.deliveryDateRange}
+              Previsão de Entrega: 07 - 17/Jul
             </p>
             <div className="flex items-center mt-3">
-              {/* Botões de quantidade: BG #D4EDC8, Botões internos BG #6CAF4B, Texto #FFFFFF, Quantidade #333333 */}
               <div className="flex items-center bg-[#A7C957] rounded-full p-1 mr-4">
                 <button
                   onClick={handleDecrease}
@@ -219,15 +185,13 @@ const CheckoutPage: React.FC = () => {
                   +
                 </button>
               </div>
-              {/* Preço total do item: #333333 */}
               <div className="text-xl font-bold text-[#386641] whitespace-nowrap">
-                R$ {(item.price * item.quantity).toFixed(2).replace(".", ",")}
+                R$ {((item.price as number) * item.quantity).toFixed(2).replace(".", ",")}
               </div>
             </div>
           </div>
-          {/* Botão Excluir - CHAMANDO COM O NOME DO ITEM AGORA */}
           <button
-            onClick={() => onRemove(item.id, item.name)} // Passando item.name para a função onRemove
+            onClick={() => handleRemoveItem(item.id, item.name)}
             className="absolute top-4 right-4 text-sm text-red-500 hover:text-red-700 font-semibold"
           >
             Excluir
@@ -236,21 +200,17 @@ const CheckoutPage: React.FC = () => {
       </div>
     );
   };
-
+  
   return (
     <div>
       <div className="min-h-screen bg-[#386641] p-4 md:p-8 flex flex-col items-center mt-21">
         <Navbar></Navbar>
-        {/* Título da Página */}
         <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">
           Finalizar Compra
         </h1>
 
-        {/* Conteúdo principal: Endereços, Pagamento, Itens, Resumo */}
         <div className="w-full max-w-7xl flex flex-col lg:flex-row gap-8">
-          {/* Coluna da Esquerda (Endereço, Pagamento, Itens) */}
           <div className="flex-1 flex flex-col gap-8">
-            {/* Seus Endereços */}
             <div className="bg-[#F2E8CF] p-6 rounded-4xl">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-[#386641]">
@@ -267,7 +227,6 @@ const CheckoutPage: React.FC = () => {
               <p className="text-gray-600">{address.cityStateZip}</p>
             </div>
 
-            {/* Método de Pagamento */}
             <div className="bg-[#F2E8CF] p-6 rounded-4xl">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-[#386641]">
@@ -291,23 +250,20 @@ const CheckoutPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Itens do Pedido */}
             <div className="bg-[#F2E8CF] p-6 rounded-4xl">
               <h2 className="text-xl font-semibold text-[#386641] mb-4">
                 Seus Itens
               </h2>
-              {orderItems.map((item) => (
+              {cartItems.map((item) => (
                 <CheckoutItem
                   key={item.id}
-                  item={item}
+                  item={item as unknown as OrderItemType}
                   onQuantityChange={handleQuantityChange}
                   onRemove={handleRemoveItem}
                 />
               ))}
             </div>
           </div>
-
-          {/* Coluna da Direita (Resumo do Pedido) */}
           <div className="lg:w-96 bg-[#F2E8CF] p-6 rounded-4xl self-start sticky top-8">
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-4 text-[#386641]">
