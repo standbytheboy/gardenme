@@ -20,6 +20,7 @@ interface ProdutoBackend {
   nome_produto: string;
   descricao: string;
   preco: string;
+  imagem_url?: string;
   criado_em: string;
   atualizado_em: string;
 }
@@ -42,7 +43,7 @@ export const Carousel = ({ onPlantClick }: CarouselProps) => {
           id: Number(p.id_produto),
           name: p.nome_produto,
           price: `R$ ${Number(p.preco).toFixed(2)}`,
-          imageSrc: "", // coloque a URL da imagem se tiver no backend
+          imageSrc: p.imagem_url || "https://via.placeholder.com/300x250",
           description: p.descricao,
           rating: 4.5, // padrão, se não tiver rating no backend
         }));

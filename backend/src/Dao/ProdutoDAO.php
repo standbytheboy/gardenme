@@ -24,6 +24,7 @@ class ProdutoDAO
                     p.descricao,
                     p.preco,
                     p.criado_em,
+                    p.imagem_url,
                     p.atualizado_em
                 FROM produtos p
                 JOIN categorias c ON p.id_categoria = c.id_categoria
@@ -43,6 +44,7 @@ class ProdutoDAO
                     p.descricao,
                     p.preco,
                     p.criado_em,
+                    p.imagem_url,
                     p.atualizado_em
                 FROM produtos p
                 JOIN categorias c ON p.id_categoria = c.id_categoria
@@ -71,7 +73,8 @@ class ProdutoDAO
             'id_categoria' => $produto['id_categoria'],
             'nome_produto' => $produto['nome_produto'],
             'descricao'    => $produto['descricao'] ?? '',
-            'preco'        => $produto['preco']
+            'preco'        => $produto['preco'],
+            'imagem_url'        => $produto['imagem_url'] ?? ''
         ]);
 
         return $ok ? $this->conn->lastInsertId() : false;
@@ -98,7 +101,8 @@ class ProdutoDAO
             'nome_produto' => $produto['nome_produto'],
             'descricao'    => $produto['descricao'] ?? '',
             'preco'        => $produto['preco'],
-            'id'           => $id
+            'id'           => $id,
+            'imagem_url'        => $produto['imagem_url'] ?? ''
         ]);
     }
 

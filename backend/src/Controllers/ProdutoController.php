@@ -38,9 +38,9 @@ class ProdutoController
         $dadosCorpo = json_decode(file_get_contents('php://input'), true);
 
         $erros = [];
-        if (empty($dadosCorpo['nome_produto'])) $erros[] = 'nome_produto é obrigatório.';
-        if (!isset($dadosCorpo['preco']) || !is_numeric($dadosCorpo['preco'])) $erros[] = 'preco é obrigatório e deve ser numérico.';
-        if (!isset($dadosCorpo['id_categoria']) || !is_numeric($dadosCorpo['id_categoria'])) $erros[] = 'id_categoria é obrigatório e deve ser um inteiro.';
+        if (empty($dadosCorpo['nome_produto'])) $erros[] = 'O nome do produto é obrigatório.';
+        if (!isset($dadosCorpo['preco']) || !is_numeric($dadosCorpo['preco'])) $erros[] = 'O preço é obrigatório e deve ser numérico.';
+        if (!isset($dadosCorpo['id_categoria']) || !is_numeric($dadosCorpo['id_categoria'])) $erros[] = 'Inserir a categoria é obrigatório e deve ser um inteiro.';
 
         if (!empty($erros)) {
             http_response_code(400);

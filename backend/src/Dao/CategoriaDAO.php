@@ -92,7 +92,7 @@ class CategoriaDAO {
             $sql = 'DELETE FROM categorias WHERE id_categoria = :id';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
             return $stmt->rowCount() > 0;
