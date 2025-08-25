@@ -155,6 +155,20 @@ if (preg_match('#^/api/usuarios/(\d+)/foto$#', $route, $matches)) {
     exit();
 }
 
+if (preg_match('#^/api/produtos(/(\d+))?$#', $route, $matches)) {
+    $id = $matches[2] ?? null;
+    $controller = new \Garden\Controllers\ProdutoController();
+    if ($id) {
+        if ($method === 'GET') $controller->detalhar((int)$id);
+        if ($method === 'PUT') $controller->atualizar((int)$id);
+        if ($method === 'DELETE') $controller->deletar((int)$id);
+    } else {
+        if ($method === 'GET') $controller->listar();
+        if ($method === 'POST') $controller->criar();
+    }
+    exit();
+}
+
 http_response_code(404);
 echo json_encode(['mensagem' => 'Endpoint não encontrado']);
 exit();

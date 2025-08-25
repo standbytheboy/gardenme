@@ -1,10 +1,8 @@
 <?php
 
-namespace Garden\Dao;
+namespace Garden\DAO;
 
 use PDO;
-use Garden\Core\Database;
-use Garden\Models\Produto; // Certifique-se de que este Model exista
 
 class ProdutoDAO
 {
@@ -12,111 +10,102 @@ class ProdutoDAO
 
     public function __construct()
     {
-        $this->conn = Database::getInstance();
+        $this->conn = new PDO("mysql:host=localhost;dbname=gardenme;charset=utf8mb4", "root", "");
+        $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
     public function listarTodos(): array
     {
-        try {
-            $sql = 'SELECT * FROM produtos ORDER BY nome_produto ASC';
-            $stmt = $this->conn->query($sql);
-            $stmt->execute();
-            
-            $listaDeDados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $produtos = [];
-            
-            foreach ($listaDeDados as $dados) {
-                $produtos[] = $this->mapProduto($dados);
-            }
-            return $produtos;
-        } catch (\PDOException $e) {
-            return [];
-        }
+        $sql = "SELECT 
+                    p.id_produto,
+                    p.id_categoria,
+                    c.nome_categoria,
+                    p.nome_produto,
+                    p.descricao,
+                    p.preco,
+                    p.criado_em,
+                    p.atualizado_em
+                FROM produtos p
+                JOIN categorias c ON p.id_categoria = c.id_categoria
+                ORDER BY p.id_produto ASC";
+
+        $stmt = $this->conn->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function buscarPorId(int $id): ?Produto
+    public function buscarPorId(int $id): ?array
     {
-        try {
-            $sql = 'SELECT * FROM produtos WHERE id_produto = :id';
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-            $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+        $sql = "SELECT 
+                    p.id_produto,
+                    p.id_categoria,
+                    c.nome_categoria,
+                    p.nome_produto,
+                    p.descricao,
+                    p.preco,
+                    p.criado_em,
+                    p.atualizado_em
+                FROM produtos p
+                JOIN categorias c ON p.id_categoria = c.id_categoria
+                WHERE p.id_produto = :id";
 
-            return $dados ? $this->mapProduto($dados) : null;
-        } catch (\PDOException $e) {
-            return null;
-        }
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['id' => $id]);
+
+        $produto = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $produto ?: null;
     }
 
-    public function criar(Produto $produto): int|false|string
+    public function criar(array $produto): int|string|false
     {
-        try {
-            $sql = 'INSERT INTO produtos (id_categoria, nome_produto, descricao_texto, preco) 
-                    VALUES (:id_categoria, :nome_produto, :descricao_texto, :preco)';
-            
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':id_categoria', $produto->getIdCategoria(), PDO::PARAM_INT);
-            $stmt->bindValue(':nome_produto', $produto->getNomeProduto());
-            $stmt->bindValue(':descricao_texto', $produto->getDescricaoTexto());
-            $stmt->bindValue(':preco', $produto->getPreco());
-            
-            $stmt->execute();
-            return (int) $this->conn->lastInsertId();
-        } catch (\PDOException $e) {
-            if ($e->getCode() === '23000') {
-                return 'conflict';
-            }
-            return false;
+        $check = $this->conn->prepare("SELECT id_produto FROM produtos WHERE nome_produto = :nome");
+        $check->execute(['nome' => $produto['nome_produto']]);
+        if ($check->fetch()) {
+            return 'conflict';
         }
+
+        $sql = "INSERT INTO produtos (id_categoria, nome_produto, descricao, preco)
+                VALUES (:id_categoria, :nome_produto, :descricao, :preco)";
+
+        $stmt = $this->conn->prepare($sql);
+        $ok = $stmt->execute([
+            'id_categoria' => $produto['id_categoria'],
+            'nome_produto' => $produto['nome_produto'],
+            'descricao'    => $produto['descricao'] ?? '',
+            'preco'        => $produto['preco']
+        ]);
+
+        return $ok ? $this->conn->lastInsertId() : false;
     }
 
-    public function atualizar(Produto $produto): bool|string
+    public function atualizar(int $id, array $produto): bool|string
     {
-        try {
-            $sql = 'UPDATE produtos SET id_categoria = :id_categoria, nome_produto = :nome_produto, descricao_texto = :descricao_texto, preco = :preco 
-                    WHERE id_produto = :id';
-            
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':id_categoria', $produto->getIdCategoria(), PDO::PARAM_INT);
-            $stmt->bindValue(':nome_produto', $produto->getNomeProduto());
-            $stmt->bindValue(':descricao_texto', $produto->getDescricaoTexto());
-            $stmt->bindValue(':preco', $produto->getPreco());
-            $stmt->bindValue(':id', $produto->getId(), PDO::PARAM_INT);
-
-            return $stmt->execute();
-        } catch (\PDOException $e) {
-            if ($e->getCode() === '23000') {
-                return 'conflict';
-            }
-            return false;
+        $check = $this->conn->prepare("SELECT id_produto FROM produtos WHERE nome_produto = :nome AND id_produto != :id");
+        $check->execute(['nome' => $produto['nome_produto'], 'id' => $id]);
+        if ($check->fetch()) {
+            return 'conflict';
         }
+
+        $sql = "UPDATE produtos 
+                SET id_categoria = :id_categoria,
+                    nome_produto = :nome_produto,
+                    descricao = :descricao,
+                    preco = :preco
+                WHERE id_produto = :id";
+
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            'id_categoria' => $produto['id_categoria'],
+            'nome_produto' => $produto['nome_produto'],
+            'descricao'    => $produto['descricao'] ?? '',
+            'preco'        => $produto['preco'],
+            'id'           => $id
+        ]);
     }
 
     public function deletar(int $id): bool
     {
-        try {
-            $sql = 'DELETE FROM produtos WHERE id_produto = :id';
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-            return $stmt->rowCount() > 0;
-        } catch (\PDOException $e) {
-            return false;
-        }
-    }
-
-    private function mapProduto(array $dados): Produto
-    {
-        // Esta implementação depende da sua classe Model Produto
-        return new Produto(
-            id: $dados['id_produto'],
-            idCategoria: $dados['id_categoria'],
-            nomeProduto: $dados['nome_produto'],
-            descricaoTexto: $dados['descricao_texto'],
-            preco: $dados['preco'],
-            criadoEm: $dados['criado_em'],
-            atualizacaoEm: $dados['atualizado_em']
-        );
+        $sql = "DELETE FROM produtos WHERE id_produto = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute(['id' => $id]);
     }
 }
