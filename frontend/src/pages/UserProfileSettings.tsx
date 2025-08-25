@@ -28,6 +28,7 @@ const UserProfileSettings: React.FC = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [passwordChangeMessage, setPasswordChangeMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   // Estado para o item de menu ativo na sidebar
   const [activeMenuItem, setActiveMenuItem] = useState("Meus Dados");
@@ -188,13 +189,18 @@ const UserProfileSettings: React.FC = () => {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasswordChangeMessage("");
+    setIsError(false);
+
     if (newPassword !== confirmNewPassword) {
+      setIsError(true);
       setPasswordChangeMessage("As novas senhas não coincidem.");
       return;
     }
+
     const idDoUsuario = localStorage.getItem("userId");
     const tokenDeAutenticacao = localStorage.getItem("userToken");
     if (!idDoUsuario || !tokenDeAutenticacao) {
+      setIsError(true);
       setPasswordChangeMessage(
         "Erro: ID de usuário ou token não encontrado. Por favor, faça login novamente."
       );
@@ -218,6 +224,7 @@ const UserProfileSettings: React.FC = () => {
       console.log("Corpo completo da resposta (texto):", responseText);
 
       if (response.ok) {
+        setIsError(false);
         setPasswordChangeMessage("Senha alterada com sucesso!");
         setCurrentPassword("");
         setNewPassword("");
@@ -226,19 +233,23 @@ const UserProfileSettings: React.FC = () => {
         try {
           const data = JSON.parse(responseText);
           if (data && data.mensagem) {
+            setIsError(true);
             setPasswordChangeMessage(data.mensagem);
           } else {
+            setIsError(true);
             setPasswordChangeMessage(
               "Erro ao alterar a senha. Resposta do servidor desconhecida."
             );
           }
         } catch {
+          setIsError(true);
           setPasswordChangeMessage(
             `Erro ao alterar a senha. Resposta inesperada do servidor: ${responseText}`
           );
         }
       }
     } catch (error) {
+      setIsError(true);
       console.error("Erro na requisição:", error);
       setPasswordChangeMessage(
         "Erro ao conectar com o servidor. Tente novamente."
@@ -489,7 +500,11 @@ const UserProfileSettings: React.FC = () => {
                     />
                   </div>
                   {passwordChangeMessage && (
-                    <p className="text-sm text-center text-red-400">
+                    <p
+                      className={`text-lg text-center ${
+                        isError ? "text-red-400" : "text-green-400"
+                      }`}
+                    >
                       {passwordChangeMessage}
                     </p>
                   )}
