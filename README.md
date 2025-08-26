@@ -34,20 +34,63 @@ Este projeto foi construído utilizando uma stack moderna e robusta, demonstrand
 
 ## 🚀 Como Rodar o Projeto
 
-Para configurar e rodar o **GardenMe** localmente, siga os passos abaixo:
+Você pode rodar o projeto de duas maneiras: localmente (manual) ou com Docker (recomendado).
 
-### **Pré-requisitos**
+### **Método 1: Rodando com Docker (Recomendado)**
 
-Certifique-se de ter instalado em sua máquina:
+Este método é mais simples, pois o Docker gerencia todo o ambiente necessário (PHP, Node.js, MySQL, etc.).
 
-* **PHP** (versão 8.0+)
-* **Composer** (gerenciador de dependências PHP)
-* **MySQL Server**
-* **Node.js** (versão 18+)
-* **npm** ou **Yarn**
-* Um servidor web como **Apache** ou **Nginx** (XAMPP/WAMP/MAMP são recomendados para Windows/macOS)
+#### **Pré-requisitos**
 
-### **Passos**
+  * **Git**
+  * **Docker** e **Docker Compose**
+
+#### **Passos**
+
+1.  **Clone o Repositório:**
+
+    ```bash
+    git clone https://github.com/standbytheboy/gardenme
+    cd gardenme
+    ```
+
+2.  **Configure as Variáveis de Ambiente:**
+    Crie um arquivo chamado `.env` dentro da pasta `backend` e adicione o seguinte conteúdo. Certifique-se de usar uma chave secreta forte.
+
+    ```
+    DB_HOST=db
+    DB_NAME=gardenme
+    DB_USER=root
+    DB_PASS=root
+    JWT_SECRET=sua-chave-secreta-forte-aqui
+    ```
+
+3.  **Construa e Inicie os Contêineres:**
+    Na raiz do projeto, execute o comando:
+
+    ```bash
+    docker-compose up -d --build
+    ```
+
+    Aguarde o processo ser finalizado. O Docker irá construir as imagens, baixar o MySQL e iniciar todos os serviços.
+
+4.  **Acesse o Projeto:**
+
+      * **Frontend:** `http://localhost:5173/`
+      * **API (via proxy):** O frontend já está configurado para se comunicar com a API.
+      * **Banco de Dados:** Acessível em `localhost:3306` para clientes de banco de dados.
+
+### **Método 2: Rodando Localmente (Manual)**
+
+#### **Pré-requisitos**
+
+  * **PHP** (versão 8.0+)
+  * **Composer**
+  * **MySQL Server**
+  * **Node.js** (versão 18+) e **npm**
+  * Um servidor web como **Apache** ou **Nginx** (XAMPP/WAMP/MAMP são recomendados).
+
+#### **Passos**
 
 1.  **Clone o Repositório:**
 
@@ -58,28 +101,11 @@ Certifique-se de ter instalado em sua máquina:
 
 2.  **Configurar o Backend (PHP):**
 
-    * Navegue até a pasta `backend`: `cd backend`
-    * Instale as dependências do PHP: `composer install`, `composer require vlucas/phpdotenv` e `composer require firebase/php-jwt`
-    * Cole o seguinte conteúdo no seu arquivo `composer.json`:
-      
-       ```
-        {
-          "name": "user/backend",
-          "autoload": {
-              "psr-4": {
-                  "Garden\\": "src/"
-              }
-          },
-          "require": {
-              "vlucas/phpdotenv": "^5.6",
-              "firebase/php-jwt": "^6.11"
-          }
-       }
-
-        ```
-    * Crie o banco de dados `gardenme` no seu MySQL.
-    * Importe os esquemas do banco de dados executando os arquivos SQL na ordem correta: `a00.sql`, `a01.sql`, `a02.sql`.
-    * Crie um arquivo `.env` na raiz da pasta `backend` com a seguinte variável de ambiente para a autenticação JWT, e configuração do Banco de Dados:
+      * Navegue até a pasta `backend`: `cd backend`
+      * Instale as dependências do PHP: `composer install`
+      * Crie o banco de dados `gardenme` no seu MySQL.
+      * Importe os esquemas do banco de dados executando os arquivos SQL da pasta `backend/database` na ordem correta (`a00.sql`, `a01.sql`, etc.).
+      * Crie um arquivo `.env` na raiz da pasta `backend` com as credenciais do seu banco de dados local:
         ```
         DB_HOST=127.0.0.1
         DB_NAME=gardenme
@@ -87,31 +113,24 @@ Certifique-se de ter instalado em sua máquina:
         DB_PASS=
         JWT_SECRET=sua-chave-secreta-aqui
         ```
-    * Certifique-se de que seu servidor web está configurado para apontar para a pasta `backend/public` e que as regras de reescrita de URL (`.htaccess`) estão ativas para o PHP.
-    * Inicie o servidor web (por exemplo, Apache). O arquivo `Database.php` aponta para `localhost` na porta `3306`, então ajuste conforme a sua configuração de MySQL.
+      * Configure seu servidor web (Apache/Nginx) para apontar a raiz do seu site para a pasta `backend/public`.
 
 3.  **Configurar o Frontend (React):**
 
-    * Volte para a pasta raiz do projeto e navegue até a pasta `frontend`: `cd ../frontend`
-    * Instale as dependências: `npm install` (ou `yarn install`).
-    * Crie um arquivo `.env` na raiz da pasta `frontend` e adicione a URL da sua API backend:
-      
-        ```
-        VITE_API_URL=http://localhost/gardenme/backend/public/api
-        ```
-    * Inicie o servidor de desenvolvimento do React: `npm run dev` (ou `yarn dev`).
+      * Em um novo terminal, navegue até a pasta `frontend`: `cd frontend`
+      * Instale as dependências: `npm install`.
+      * Inicie o servidor de desenvolvimento: `npm run dev`.
 
 4.  **Acesse o Projeto:**
 
-    * Abra seu navegador e acesse a URL fornecida pelo Vite (geralmente `http://localhost:5173/`).
-    * Sua API PHP estará acessível na URL configurada (ex: `http://localhost/gardenme/backend/public/api/categorias`).
+      * Abra seu navegador e acesse a URL fornecida pelo Vite (geralmente `http://localhost:5173/`).
 
 -----
 
 ## 👥 **Estrutura do Banco de Dados**
-![Tabelas Do Banco](./backend/database/gardenme.png)
 
------ 
+-----
+
 ## 👥 **Equipe de Desenvolvimento**
 
 Este projeto foi desenvolvido como parte do Projeto Integrador do Senac por:

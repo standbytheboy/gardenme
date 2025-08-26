@@ -1,0 +1,50 @@
+services:
+  # Serviço do Banco de Dados MySQL
+  db:
+    image: mysql:8.0
+    container_name: gardenme_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: gardenme
+      MYSQL_ROOT_PASSWORD: root # Use senhas mais seguras em produção
+    volumes:
+      - ./backend/database:/docker-entrypoint-initdb.d # Executa os scripts SQL na inicialização
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  # Serviço do Backend PHP
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gardenme_backend
+    restart: unless-stopped
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - "8080:80" # Mapeia a porta do container para a porta 8080 da sua máquina
+    depends_on:
+      - db
+    environment:
+      # As variáveis de ambiente do seu .env do backend
+      DB_HOST: db # O nome do serviço do banco de dados
+      DB_NAME: gardenme
+      DB_USER: root
+      DB_PASS: root
+      JWT_SECRET: sua-chave-secreta-aqui
+
+  # Serviço do Frontend React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gardenme_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80" # Mapeia a porta do Nginx para a porta 5173 da sua máquina
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
