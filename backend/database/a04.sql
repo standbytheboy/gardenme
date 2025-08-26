@@ -1,5 +1,3 @@
-SELECT * FROM gardenme.status;
-
 use gardenme;
 
 insert status (descricao, criado_em, atualizado_em) values 
