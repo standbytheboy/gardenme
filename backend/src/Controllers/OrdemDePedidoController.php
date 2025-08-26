@@ -4,6 +4,7 @@ namespace Garden\Controllers;
 
 use Garden\DAO\OrdemDePedidoDAO;
 use Garden\DAO\ItensDoPedidoDAO;
+use Garden\DAO\ProdutoDAO;
 use Garden\Models\OrdemDePedido;
 use Garden\Models\ItensDoPedido;
 use Garden\Middleware\AuthMiddleware;
@@ -12,11 +13,13 @@ class OrdemDePedidoController
 {
     private OrdemDePedidoDAO $ordemDePedidoDAO;
     private ItensDoPedidoDAO $itensDoPedidoDAO;
+    private ProdutoDAO $produtoDAO;
 
     public function __construct()
     {
         $this->ordemDePedidoDAO = new OrdemDePedidoDAO();
         $this->itensDoPedidoDAO = new ItensDoPedidoDAO();
+        $this->produtoDAO = new ProdutoDAO();
     }
 
     public function listarMeusPedidos()
@@ -79,19 +82,8 @@ class OrdemDePedidoController
         ]);
     }
     
-    public function criar()
+    public function criar(object $dadosToken)
     {
-        // Bloco de verificação de autenticação
-        $resultadoAuth = AuthMiddleware::verificar();
-        if (isset($resultadoAuth['status']) && $resultadoAuth['status'] === 401) {
-            http_response_code(401);
-            header('Content-Type: application/json');
-            echo json_encode(['mensagem' => $resultadoAuth['mensagem']]);
-            return;
-        }
-        $dadosToken = $resultadoAuth;
-        // Fim do bloco de verificação
-
         $idUsuario = $dadosToken->data->id_usuario;
         $dadosCorpo = json_decode(file_get_contents('php://input'));
 
@@ -100,10 +92,19 @@ class OrdemDePedidoController
             echo json_encode(['mensagem' => 'Dados incompletos para criar o pedido.']);
             return;
         }
+        
+        $precoTotalCalculado = 0.0;
+        $valorFreteCalculado = 15.0; // Valor de frete fixo, mas pode ser calculado
 
-        // Em um caso real, o cálculo do total e frete seria feito aqui no backend
-        $precoTotalCalculado = 100.0; 
-        $valorFreteCalculado = 15.0;
+        foreach ($dadosCorpo->itens as $item) {
+            $produto = $this->produtoDAO->buscarPorId($item->id_produto);
+            if (!$produto) {
+                http_response_code(404);
+                echo json_encode(['mensagem' => "Produto com ID {$item->id_produto} não encontrado."]);
+                return;
+            }
+            $precoTotalCalculado += $produto->getPreco() * $item->quantidade;
+        }
 
         $novoPedido = new OrdemDePedido(
             idUsuario: $idUsuario,

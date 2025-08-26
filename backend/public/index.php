@@ -31,7 +31,21 @@ use Garden\Controllers\AuthController;
 use Garden\Controllers\UsuarioController;
 use Garden\Controllers\DicasController;
 use Garden\Controllers\EnderecoController;
-use Garden\Controllers\FotoController; // Novo controller para foto
+use Garden\Controllers\FotoController;
+use Garden\Controllers\ProdutoController;
+// Certifique-se de ter um controlador para pedidos ou use a lógica inline.
+
+// **Movido para o topo para que fiquem disponíveis para todas as rotas**
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASSWORD', '');
+define('DB_NAME', 'gardenme');
+
+function sendResponse($status, $message, $data = []) {
+    http_response_code($status);
+    echo json_encode(['message' => $message, 'data' => $data]);
+    exit;
+}
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
@@ -69,7 +83,6 @@ $requiresAuth = [
 foreach ($requiresAuth as $pattern => $methods) {
     if (preg_match($pattern, $route, $matches) && in_array($method, $methods)) {
         $authResult = AuthMiddleware::verificar();
-        // Verifica se o resultado é um array (indicando um erro) antes de tentar acessar 'status'
         if (is_array($authResult) && isset($authResult['status'])) {
             http_response_code($authResult['status']);
             echo json_encode(['mensagem' => $authResult['mensagem']]);
@@ -79,7 +92,6 @@ foreach ($requiresAuth as $pattern => $methods) {
         break; 
     }
 }
-
 
 if (preg_match('#^/api/categorias(/(\d+))?$#', $route, $matches)) {
     $id = $matches[2] ?? null;
@@ -142,7 +154,6 @@ if (preg_match('#^/api/usuarios/(\d+)$#', $route, $matches)) {
     exit();
 }
 
-// Novos blocos de roteamento para as fotos
 if (preg_match('#^/api/usuarios/(\d+)/foto$#', $route, $matches)) {
     $id_usuario = (int)$matches[1];
     $controller = new FotoController();
@@ -157,7 +168,7 @@ if (preg_match('#^/api/usuarios/(\d+)/foto$#', $route, $matches)) {
 
 if (preg_match('#^/api/produtos(/(\d+))?$#', $route, $matches)) {
     $id = $matches[2] ?? null;
-    $controller = new \Garden\Controllers\ProdutoController();
+    $controller = new ProdutoController();
     if ($id) {
         if ($method === 'GET') $controller->detalhar((int)$id);
         if ($method === 'PUT') $controller->atualizar((int)$id);
@@ -169,7 +180,9 @@ if (preg_match('#^/api/produtos(/(\d+))?$#', $route, $matches)) {
     exit();
 }
 
+// **A sua nova lógica de pedido integrada ao roteador**
 if ($route === '/api/pedidos' && $method === 'POST') {
+    // A autenticação deve ser tratada aqui
     $authResult = AuthMiddleware::verificar();
     if (is_array($authResult) && isset($authResult['status'])) {
         http_response_code($authResult['status']);
@@ -177,10 +190,62 @@ if ($route === '/api/pedidos' && $method === 'POST') {
         exit();
     }
     $dadosToken = $authResult;
-    (new \Garden\Controllers\OrdemDePedidoController())->criar($dadosToken);
+
+    // Recebe e decodifica o payload JSON
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        sendResponse(400, 'Erro ao decodificar JSON: ' . json_last_error_msg());
+    }
+
+    // A lógica de criação do pedido
+    try {
+        $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->beginTransaction();
+
+        $stmt = $pdo->prepare("
+            INSERT INTO ordem_de_pedido (id_usuario, id_endereco, id_status, preco_total, valor_frete, pagamento_metodo, pagamento_status) 
+            VALUES (:id_usuario, :id_endereco, :id_status, :preco_total, :valor_frete, :pagamento_metodo, :pagamento_status)
+        ");
+
+        $stmt->bindParam(':id_usuario', $data['id_usuario']);
+        $stmt->bindParam(':id_endereco', $data['id_endereco']);
+        $stmt->bindParam(':id_status', $data['id_status']);
+        $stmt->bindParam(':preco_total', $data['preco_total']);
+        $stmt->bindParam(':valor_frete', $data['valor_frete']);
+        $stmt->bindParam(':pagamento_metodo', $data['pagamento_metodo']);
+        $stmt->bindParam(':pagamento_status', $data['pagamento_status']);
+        $stmt->execute();
+        
+        $id_pedido = $pdo->lastInsertId();
+
+        $stmt_items = $pdo->prepare("
+            INSERT INTO itens_do_pedido (id_pedido, id_produto, quantidade, preco_unitario) 
+            VALUES (:id_pedido, :id_produto, :quantidade, :preco_unitario)
+        ");
+
+        foreach ($data['itens'] as $item) {
+            $stmt_items->bindParam(':id_pedido', $id_pedido);
+            $stmt_items->bindParam(':id_produto', $item['id_produto']);
+            $stmt_items->bindParam(':quantidade', $item['quantidade']);
+            $stmt_items->bindParam(':preco_unitario', $item['preco_unitario']);
+            $stmt_items->execute();
+        }
+
+        $pdo->commit();
+        sendResponse(201, 'Pedido criado com sucesso.', ['id_pedido' => $id_pedido]);
+
+    } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        sendResponse(500, 'Erro ao criar o pedido: ' . $e->getMessage());
+    }
     exit();
 }
 
+// Se nenhuma rota corresponder, retorne 404.
 http_response_code(404);
 echo json_encode(['mensagem' => 'Endpoint não encontrado']);
 exit();

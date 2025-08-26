@@ -1,35 +1,32 @@
-import { useState, useEffect } from "react";
-import pixIcon from "../assets/pix.svg";
-import { Navbar } from "../components/Navbar";
-import "../App.css";
-import Footer from "../components/Footer";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plant } from "../components/types";
+import { Navbar } from "../components/Navbar";
+import Footer from "../components/Footer";
+import CheckoutItem from "../components/CheckoutItem";
+import pixIcon from "../assets/pix.svg";
+import { Plant } from "src/components/types";
 
-// Interfaces para os dados
 interface AddressType {
+  id: number;
   name: string;
   details: string;
   cityStateZip: string;
 }
 
-interface PaymentMethodType {
-  type: string;
-  details: string;
-  icon?: string;
-}
+const CheckoutPage = () => {
+  const navigate = useNavigate();
 
-// O OrderItemType agora usa a interface Plant
-interface OrderItemType extends Plant {
-  deliveryDateRange: string;
-}
+  const [addresses, setAddresses] = useState<AddressType[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<AddressType | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [cartItems, setCartItems] = useState<Plant[]>([]);
+  const [couponCode, setCouponCode] = useState("");
 
-const CheckoutPage: React.FC = () => {
-  const [address] = useState<AddressType>({
-    name: "Lucas Morais da Silva",
-    details: "Endereço do Usuário Aqui",
-    cityStateZip: "Cidade, Estado e Cep",
-  });
+  interface PaymentMethodType {
+    type: string;
+    details: string;
+    icon?: string;
+  }
 
   const [paymentMethod] = useState<PaymentMethodType>({
     type: "Pix",
@@ -37,36 +34,130 @@ const CheckoutPage: React.FC = () => {
     icon: pixIcon,
   });
 
-  // Estado para os itens do carrinho, agora carregados do localStorage
-  const [cartItems, setCartItems] = useState<Plant[]>([]);
+  // Busca endereços do usuário
+  const fetchUserAddresses = async () => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("userToken");
 
-  const [couponCode, setCouponCode] = useState("");
-  const [subtotal, setSubtotal] = useState(0);
-  const [shippingCost] = useState(9.99); // Frete fixo para exemplo
-  const [discountsApplied] = useState(0); // Removido setDiscountsApplied pois não estava em uso
-  const [total, setTotal] = useState(0);
+    if (!userId || !token) return;
 
-  // Carrega os itens do carrinho do localStorage e calcula os totais
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cartItems");
-    if (storedCart) {
-      const items = JSON.parse(storedCart) as Plant[];
-      setCartItems(items);
+    try {
+      const response = await fetch(`/api/usuarios/${userId}/enderecos`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        console.error("Erro ao buscar endereços:", await response.text());
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Endereços recebidos:", data);
+      setAddresses(data);
+
+      if (data.length > 0) {
+        setSelectedAddress(data[0]); // seleciona o primeiro por padrão
+      }
+    } catch (err) {
+      console.error(err);
     }
-  }, []);
-  
-  // Recalcula os totais sempre que o carrinho mudar
+  };
+
   useEffect(() => {
-    const newSubtotal = cartItems.reduce(
-      (acc, item) => acc + (item.price as number) * item.quantity,
+    fetchUserAddresses();
+
+    const storedCart = localStorage.getItem("cartItems");
+    if (storedCart) setCartItems(JSON.parse(storedCart) as Plant[]);
+  }, []);
+
+  // Função para confirmar a compra
+  const handleConfirmPurchase = async () => {
+    const token = localStorage.getItem("userToken");
+    if (!token) {
+      alert("Você precisa estar logado para finalizar a compra.");
+      navigate("/login");
+      setIsProcessing(false);
+      return;
+    }
+
+    if (isProcessing) return;
+    setIsProcessing(true);
+
+    try {
+      if (!selectedAddress) {
+        alert("Selecione um endereço para continuar.");
+        setIsProcessing(false);
+        return;
+      }
+
+      const orderPayload = {
+        id_usuario: Number(localStorage.getItem("userId")),
+        id_endereco: selectedAddress.id,
+        id_status: 1,
+        preco_total: total,
+        valor_frete: shippingCost,
+        pagamento_metodo: paymentMethod.type,
+        pagamento_status: "pendente",
+        codigo_rastreio: null,
+        itens: cartItems.map((item) => ({
+          id_produto: item.id,
+          quantidade: item.quantity,
+          preco_unitario: item.price,
+        })),
+      };
+
+      console.log("Dados do pedido prontos para envio:", orderPayload);
+
+      const response = await fetch("api/pedidos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(orderPayload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(
+          `Erro ao finalizar a compra: ${data.message || "Erro desconhecido"}`
+        );
+        return;
+      }
+
+      console.log("Pedido ID:", data.data.id_pedido);
+      alert("Compra finalizada com sucesso!");
+      navigate(`/pedido-sucesso`);
+    } catch (error) {
+      console.error("Erro de conexão ou ao processar a resposta:", error);
+      alert(
+        "Erro ao processar a compra. Verifique sua conexão e tente novamente."
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Lógica de cálculo centralizada
+  const { subtotal, shippingCost, discountsApplied, total } = useMemo(() => {
+    const calculatedSubtotal = cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
       0
     );
-    setSubtotal(newSubtotal);
+    const calculatedShippingCost = 25.0; // Frete fixo
+    const calculatedDiscounts = couponCode === "MEUDESCONTO" ? 10.0 : 0;
 
-    const currentDiscount = 0;
-    
-    setTotal(newSubtotal + shippingCost - currentDiscount);
-  }, [cartItems, shippingCost]);
+    const calculatedTotal =
+      calculatedSubtotal + calculatedShippingCost - calculatedDiscounts;
+
+    return {
+      subtotal: calculatedSubtotal,
+      shippingCost: calculatedShippingCost,
+      discountsApplied: calculatedDiscounts,
+      total: calculatedTotal,
+    };
+  }, [cartItems, couponCode]);
 
   const handleQuantityChange = (id: number, newQuantity: number) => {
     setCartItems((prev) =>
@@ -78,163 +169,77 @@ const CheckoutPage: React.FC = () => {
     );
   };
 
-  const handleRemoveItem = (id: number, itemName: string) => {
-    const confirmRemoval = window.confirm(
-      `Deseja realmente excluir "${itemName}" do seu pedido?`
-    );
-    if (confirmRemoval) {
-      setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  const handleRemoveItem = (id: number, name: string) => {
+    if (window.confirm(`Tem certeza que deseja remover ${name} do carrinho?`)) {
+      setCartItems((currentItems) =>
+        currentItems.filter((item) => item.id !== id)
+      );
     }
   };
 
   const handleApplyCoupon = () => {
-    alert(`Aplicar cupom: ${couponCode}`);
+    alert(`Cupom ${couponCode} aplicado!`);
   };
 
-  const navigate = useNavigate();
-
-  const handleConfirmPurchase = async () => {
-    const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("userToken");
-    
-    if (!userId || !token) {
-      alert("Por favor, faça login para finalizar a compra.");
-      return;
-    }
-
-    const idEndereco = 1; 
-
-    const itemsParaBackend = cartItems.map((item) => ({
-      id_produto: item.id,
-      quantidade: item.quantity,
-      preco_unitario: item.price,
-    }));
-
-    try {
-      const response = await fetch(`/api/pedidos`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          id_endereco: idEndereco,
-          itens: itemsParaBackend,
-          pagamento_metodo: paymentMethod.type,
-        }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        alert("Compra Confirmada!");
-        localStorage.removeItem("cartItems");
-        navigate(`/pedido-sucesso?orderId=${data.id_pedido}`);
-      } else {
-        alert(
-          `Erro ao finalizar a compra: ${data.mensagem || "Erro desconhecido"}`
-        );
-      }
-    } catch (error) {
-      console.error("Erro na requisição:", error);
-      alert("Erro ao conectar com o servidor. Tente novamente.");
-    }
-  };
-
-  const CheckoutItem: React.FC<{
-    item: OrderItemType;
-    onQuantityChange: (id: number, newQuantity: number) => void;
-    onRemove: (id: number, itemName: string) => void;
-  }> = ({ item, onQuantityChange}) => {
-    const handleDecrease = () => {
-      onQuantityChange(item.id, item.quantity - 1);
-    };
-
-    const handleIncrease = () => {
-      onQuantityChange(item.id, item.quantity + 1);
-    };
-
-    return (
-      <div>
-        <div className="flex items-start bg-[#F2E8CF] p-4 rounded-4xl mb-4 relative">
-          <img
-            src={item.imageSrc}
-            alt={item.name}
-            className="w-16 h-16 object-cover rounded-md mr-4"
-          />
-          <div className="flex-grow">
-            <p className="font-semibold text-lg text-[#386641]">{item.name}</p>
-            <p className="text-sm text-gray-500">Kit Completo</p>
-            <p className="text-sm text-gray-500 mt-1">
-              Previsão de Entrega: 07 - 17/Jul
-            </p>
-            <div className="flex items-center mt-3">
-              <div className="flex items-center bg-[#A7C957] rounded-full p-1 mr-4">
-                <button
-                  onClick={handleDecrease}
-                  className="bg-[#A7C957] text-[#386641] w-8 h-8 rounded-full flex items-center justify-center text-xl font-bold"
-                >
-                  -
-                </button>
-                <span className="mx-3 text-lg font-semibold text-[#386641]">
-                  {item.quantity}
-                </span>
-                <button
-                  onClick={handleIncrease}
-                  className="bg-[#A7C957] text-[#386641] w-8 h-8 rounded-full flex items-center justify-center text-xl font-bold"
-                >
-                  +
-                </button>
-              </div>
-              <div className="text-xl font-bold text-[#386641] whitespace-nowrap">
-                R$ {((item.price as number) * item.quantity).toFixed(2).replace(".", ",")}
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={() => handleRemoveItem(item.id, item.name)}
-            className="absolute top-4 right-4 text-sm text-red-500 hover:text-red-700 font-semibold"
-          >
-            Excluir
-          </button>
-        </div>
-      </div>
-    );
-  };
-  
   return (
     <div>
       <div className="min-h-screen bg-[#386641] p-4 md:p-8 flex flex-col items-center mt-21">
-        <Navbar></Navbar>
+        <Navbar />
         <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">
           Finalizar Compra
         </h1>
 
         <div className="w-full max-w-7xl flex flex-col lg:flex-row gap-8">
           <div className="flex-1 flex flex-col gap-8">
+            {/* Seus Endereços */}
             <div className="bg-[#F2E8CF] p-6 rounded-4xl">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-[#386641]">
                   Seus Endereços
                 </h2>
-                <button className="bg-transparent text-[#6CAF4B] border border-[#6CAF4B] py-2 px-4 rounded-full text-sm font-semibold hover:bg-[#A7C957] hover:text-[#386641] transition-colors duration-300">
+                <button
+                  onClick={() => navigate("/perfil")}
+                  className="bg-transparent text-[#6CAF4B] border border-[#6CAF4B] py-2 px-4 rounded-full text-sm font-semibold hover:bg-[#A7C957] hover:text-[#386641] transition-colors duration-300"
+                >
                   Mudar Endereço
                 </button>
               </div>
-              <p className="text-lg font-medium text-[#386641]">
-                {address.name}
-              </p>
-              <p className="text-gray-600">{address.details}</p>
-              <p className="text-gray-600">{address.cityStateZip}</p>
+              {addresses.length > 0 ? (
+                <div className="flex flex-col gap-4">
+                  {addresses.map((addr) => (
+                    <label
+                      key={addr.id}
+                      className="flex items-center bg-white p-3 rounded-lg cursor-pointer"
+                    >
+                      <input
+                        type="radio"
+                        name="address"
+                        value={addr.id}
+                        checked={selectedAddress?.id === addr.id}
+                        onChange={() => setSelectedAddress(addr)}
+                        className="mr-3"
+                      />
+                      <div>
+                        <p className="font-semibold text-[#386641]">
+                          {addr.name}
+                        </p>
+                        <p className="text-gray-500">{addr.details}</p>
+                        <p className="text-gray-500">{addr.cityStateZip}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              ) : (
+                <p>Nenhum endereço cadastrado.</p>
+              )}
             </div>
 
+            {/* Método de Pagamento */}
             <div className="bg-[#F2E8CF] p-6 rounded-4xl">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-[#386641]">
                   Método de Pagamento
                 </h2>
-                <button className="bg-transparent text-[#6CAF4B] border border-[#6CAF4B] py-2 px-4 rounded-full text-sm font-semibold hover:bg-[#A7C957] hover:text-[#386641] transition-colors duration-300">
-                  Mudar Pagamento
-                </button>
               </div>
               <div className="flex items-center">
                 {paymentMethod.icon && (
@@ -250,6 +255,7 @@ const CheckoutPage: React.FC = () => {
               </div>
             </div>
 
+            {/* Seus Itens */}
             <div className="bg-[#F2E8CF] p-6 rounded-4xl">
               <h2 className="text-xl font-semibold text-[#386641] mb-4">
                 Seus Itens
@@ -257,13 +263,15 @@ const CheckoutPage: React.FC = () => {
               {cartItems.map((item) => (
                 <CheckoutItem
                   key={item.id}
-                  item={item as unknown as OrderItemType}
+                  item={item}
                   onQuantityChange={handleQuantityChange}
                   onRemove={handleRemoveItem}
                 />
               ))}
             </div>
           </div>
+
+          {/* Resumo do Pedido */}
           <div className="lg:w-96 bg-[#F2E8CF] p-6 rounded-4xl self-start sticky top-8">
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-4 text-[#386641]">
@@ -311,14 +319,19 @@ const CheckoutPage: React.FC = () => {
             </div>
             <button
               onClick={handleConfirmPurchase}
-              className="w-full bg-[#A7C957] text-[#386641] py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition duration-300 cursor-pointer"
+              disabled={isProcessing}
+              className={`w-full py-3 rounded-full text-lg font-semibold transition duration-300 ${
+                isProcessing
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#A7C957] text-[#386641] hover:bg-opacity-90 cursor-pointer"
+              }`}
             >
-              Confirmar Compra
+              {isProcessing ? "Processando..." : "Confirmar Compra"}
             </button>
           </div>
         </div>
       </div>
-      <Footer></Footer>
+      <Footer />
     </div>
   );
 };
