@@ -69,7 +69,6 @@ export const Sidebar9: React.FC<Sidebar9Props> = ({ activeMenuItem, setActiveMen
             </button>
           ))}
           
-          {/* --- 4. RENDERIZAÇÃO CONDICIONAL --- */}
           {/* O link de admin só aparece se a prop isAdmin for verdadeira */}
           {isAdmin && (
              <button
