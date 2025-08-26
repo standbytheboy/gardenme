@@ -4,12 +4,11 @@ import Footer from "../components/Footer";
 import { Carousel } from "../components/carousel/Carousel";
 import { MainPlant } from "../components/MainPlant";
 import AddedToCartCard from "../components/AddedToCart";
-import { Plant } from "../components/interfaces";
+import { Plant, ProdutoBackend } from "../components/interfaces";
 
 const ProductPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [mainPlant, setMainPlant] = useState<Plant | null>(null);
-
+  
   // Estado do carrinho persistido
   const [cart, setCart] = useState<Plant[]>(() => {
     const storedCart = localStorage.getItem("cartItems");
@@ -39,6 +38,44 @@ const ProductPage: React.FC = () => {
 
   const handleCloseModal = () => setIsModalOpen(false);
   const handlePlantClick = (plant: Plant) => setMainPlant(plant);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [mainPlant, setMainPlant] = useState<Plant | null>(null);
+  
+  useEffect(() => {
+    const fetchFirstProduct = async () => {
+      try {
+        const response = await fetch("/api/produtos/primeiro");
+        if (!response.ok) {
+          throw new Error("Erro ao carregar o produto em destaque.");
+        }
+        
+        const productBackend = (await response.json()) as ProdutoBackend;
+        
+        const plant: Plant = {
+          id: Number(productBackend.id_produto),
+          name: productBackend.nome_produto,
+          price: Number(productBackend.preco),
+          imageSrc: productBackend.imagem_url || "url_da_imagem_padrao.jpg",
+          description: productBackend.descricao,
+          rating: 4.5,
+          quantity: 0
+        };
+
+        setMainPlant(plant); // Atualiza o estado com os dados recebidos
+      } catch  {
+        console.error("Falha ao carregar produto");
+      } finally {
+        setIsLoading(false); // Termina o carregamento, com sucesso ou erro
+      }
+    };
+
+    fetchFirstProduct();
+  }, []);
+  if (isLoading) {
+    return <div>Carregando planta...</div>;
+  }
+
 
   return (
     <div className="bg-[#A7C957] text-[#386641] min-h-screen">

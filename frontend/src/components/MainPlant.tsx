@@ -1,15 +1,16 @@
 import React from "react";
 import { Accordion } from "../components/Accordion";
-import aloeImage from "../assets/aloe.webp";
 import { MainPlantProps } from "./interfaces";
 
-// Mock de dados para a planta principal 
+// Mock de dados para fallback
 const defaultMainPlantData = {
-  id: 1,
-  name: "Aloevera",
-  price: "R$ 59,99",
-  description: "Também conhecida como babosa, é uma planta suculenta amplamente utilizada por suas propriedades medicinais, cosméticas e terapêuticas.",
-  imageSrc: aloeImage,
+  id: 0,
+  name: "Nenhuma planta selecionada",
+  price: 0,
+  imageSrc: "url_da_imagem_padrao.jpg",
+  description: "...",
+  rating: 0,
+  quantity: 0,
 };
 
 const accordionData = [

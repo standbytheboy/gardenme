@@ -33,7 +33,6 @@ use Garden\Controllers\DicasController;
 use Garden\Controllers\EnderecoController;
 use Garden\Controllers\FotoController;
 use Garden\Controllers\ProdutoController;
-use Garden\Controllers\OrdemDePedidoController;
 
 // **Movido para o topo para que fiquem disponíveis para todas as rotas**
 define('DB_HOST', 'localhost');
@@ -167,7 +166,18 @@ if (preg_match('#^/api/usuarios/(\d+)/foto$#', $route, $matches)) {
     exit();
 }
 
-if (preg_match('#^/api/produtos(/(\d+))?$#', $route, $matches)) {
+if (preg_match('#^/api/produtos/primeiro$#', $route)) {
+    if ($method === 'GET') {
+        $controller = new ProdutoController();
+        $controller->buscarPrimeiro();
+    } else {
+        http_response_code(405); // Method Not Allowed
+        echo json_encode(['mensagem' => 'Método não permitido para esta rota.']);
+    }
+    exit(); // Finaliza o script após tratar a rota
+
+// 2. Rota com ID numérico: /api/produtos/123
+} elseif (preg_match('#^/api/produtos(/(\d+))?$#', $route, $matches)) {
     $id = $matches[2] ?? null;
     $controller = new ProdutoController();
 

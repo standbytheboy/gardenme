@@ -113,9 +113,9 @@ class ProdutoDAO
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }
-     private function mapProduto(array $dados): \Garden\Models\Produto
+     private function mapProduto(array $dados):Produto
     {
-        return new \Garden\Models\Produto(
+        return new Produto(
             idProduto: $dados['id_produto'],
             idCategoria: $dados['id_categoria'],
             nomeProduto: $dados['nome_produto'],
@@ -125,5 +125,30 @@ class ProdutoDAO
             criadoEm: $dados['criado_em'],
             atualizadoEm: $dados['atualizado_em']
         );
+    }
+    public function buscarPrimeiro() {
+        $sql = "SELECT id_produto, nome_produto, id_categoria, preco, descricao, imagem_url 
+                FROM produtos 
+                ORDER BY id_produto ASC 
+                LIMIT 1";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($resultado) {
+            $produto = new Produto(
+            (int)$resultado['id_produto'],
+            (int)$resultado['id_categoria'],
+            $resultado['nome_produto'],
+            (float)$resultado['preco'],
+            $resultado['descricao'],
+            $resultado['imagem_url']
+            );
+            
+            return $produto;
+        }
+
     }
 }

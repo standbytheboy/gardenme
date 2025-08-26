@@ -107,4 +107,21 @@ class ProdutoController
             echo json_encode(['mensagem' => 'Erro interno ao deletar produto.'], JSON_UNESCAPED_UNICODE);
         }
     }
+    public function buscarPrimeiro() {
+        header('Content-Type: application/json');
+        try {
+            $produtoDAO = new ProdutoDAO();
+            $produto = $produtoDAO->buscarPrimeiro();
+
+            if ($produto) {
+                echo json_encode($produto);
+            } else {
+                http_response_code(404); // Not Found
+                echo json_encode(['mensagem' => 'Nenhum produto encontrado.']);
+            }
+        } catch (\Exception $e) {
+            http_response_code(500); // Internal Server Error
+            echo json_encode(['mensagem' => 'Erro ao buscar o produto: ' . $e->getMessage()]);
+        }
+    }
 }

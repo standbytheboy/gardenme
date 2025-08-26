@@ -4,7 +4,7 @@ namespace Garden\Models;
 
 use Garden\Models\Entidade;
 
-class Produto extends Entidade
+class Produto extends Entidade implements \JsonSerializable 
 {
     private ?int $idProduto;
     private int $idCategoria;
@@ -48,4 +48,15 @@ class Produto extends Entidade
     public function setDescricaoTexto(string $descricao): void { $this->descricaoTexto = $descricao; }
     public function setPreco(float $preco): void { $this->preco = $preco; }
     public function setImagemUrl(string $url): void { $this->imagemUrl = $url; }
+
+    public function jsonSerialize(): array {
+        return [
+            'id_produto'   => $this->idProduto,
+            'id_categoria' => $this->idCategoria,
+            'nome_produto' => $this->nomeProduto,
+            'preco'        => $this->preco,
+            'descricao'    => $this->descricaoTexto,
+            'imagem_url'   => $this->imagemUrl,
+        ];
+    }
 }

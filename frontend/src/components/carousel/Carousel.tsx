@@ -27,7 +27,7 @@ export const Carousel = ({ onPlantClick }: CarouselProps) => {
           id: Number(p.id_produto),
           name: p.nome_produto,
           price: Number(p.preco),
-          imageSrc: p.imagem_url || "https://via.placeholder.com/300x250",
+          imageSrc: p.imagem_url || "https://t4.ftcdn.net/jpg/06/71/92/37/360_F_671923740_x0zOL3OIuUAnSF6sr7PuznCI5bQFKhI0.jpg",
           description: p.descricao,
           rating: 4.5,
           quantity: 0
