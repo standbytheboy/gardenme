@@ -8,9 +8,12 @@ import { Plant } from "src/components/types";
 
 interface AddressType {
   id: number;
-  name: string;
-  details: string;
-  cityStateZip: string;
+  logradouro: string;
+  numero: string;
+  bairro: string;
+  cidade: string;
+  estado: string;
+  cep: string;
 }
 
 const CheckoutPage = () => {
@@ -207,25 +210,23 @@ const CheckoutPage = () => {
               {addresses.length > 0 ? (
                 <div className="flex flex-col gap-4">
                   {addresses.map((addr) => (
-                    <label
-                      key={addr.id}
-                      className="flex items-center bg-white p-3 rounded-lg cursor-pointer"
-                    >
+                    <label key={addr.id} className="flex items-center p-3 rounded-lg cursor-pointer">
                       <input
                         type="radio"
                         name="address"
                         value={addr.id}
                         checked={selectedAddress?.id === addr.id}
                         onChange={() => setSelectedAddress(addr)}
-                        className="mr-3"
-                      />
-                      <div>
-                        <p className="font-semibold text-[#386641]">
-                          {addr.name}
-                        </p>
-                        <p className="text-gray-500">{addr.details}</p>
-                        <p className="text-gray-500">{addr.cityStateZip}</p>
-                      </div>
+                        className="mr-3"/>
+                          <div>
+                            <p className="font-semibold text-[#386641]">
+                              {addr.logradouro}, {addr.numero}
+                            </p>
+                            <p className="text-gray-500">{addr.bairro}</p>
+                            <p className="text-gray-500">
+                              {addr.cidade} - {addr.estado}, {addr.cep}
+                            </p>
+                          </div>
                     </label>
                   ))}
                 </div>
