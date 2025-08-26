@@ -8,6 +8,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSucessPage';
 import './index.css';
 import Product from './pages/ProductDetail';
+import ProductManagement from './pages/ProductManagement';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/pedido-sucesso" element={<OrderSuccessPage />} />
         <Route path="/perfil" element={<UserProfileSettings />} />
+        <Route path="/admin/produtos" element={<ProductManagement />} />
       </Routes>
     </BrowserRouter>
   );

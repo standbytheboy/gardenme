@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -170,28 +170,59 @@ if (preg_match('#^/api/usuarios/(\d+)/foto$#', $route, $matches)) {
 if (preg_match('#^/api/produtos(/(\d+))?$#', $route, $matches)) {
     $id = $matches[2] ?? null;
     $controller = new ProdutoController();
+
+    // Rotas que exigem ser administrador
+    if (in_array($method, ['POST', 'PUT', 'DELETE'])) {
+        $authResult = AuthMiddleware::verificar();
+        if (isset($authResult->status)) {
+            http_response_code($authResult->status);
+            echo json_encode(['mensagem' => $authResult->mensagem]);
+            exit();
+        }
+        
+        // Carrega o usuário para verificar se é admin
+        $usuarioDAO = new \Garden\DAO\UsuarioDAO();
+        $usuario = $usuarioDAO->buscarPorId($authResult->data->id_usuario);
+        
+        if (!$usuario || !$usuario->isAdmin()) {
+            http_response_code(403); // Forbidden
+            echo json_encode(['mensagem' => 'Acesso negado. Apenas administradores podem executar esta ação.']);
+            exit();
+        }
+    }
+
+    // Direciona para o método correto do controller
     if ($id) {
-        if ($method === 'GET') $controller->detalhar((int)$id);
-        if ($method === 'PUT') $controller->atualizar((int)$id);
-        if ($method === 'DELETE') $controller->deletar((int)$id);
+        // Rotas com ID: /api/produtos/123
+        switch ($method) {
+            case 'GET':
+                $controller->detalhar((int)$id);
+                break;
+            case 'PUT':
+                $controller->atualizar((int)$id);
+                break;
+            case 'DELETE':
+                $controller->deletar((int)$id);
+                break;
+            default:
+                http_response_code(405); // Method Not Allowed
+                echo json_encode(['mensagem' => 'Método não permitido para esta rota.']);
+                break;
+        }
     } else {
-        if ($method === 'GET') $controller->listar();
-        if ($method === 'POST'){
-            $authResult = AuthMiddleware::verificar();
-            if (isset($authResult['status'])) {
-                http_response_code($authResult['status']);
-                echo json_encode(['mensagem' => $authResult['mensagem']]);
-                exit();
-            }
-            $usuarioDAO = new \Garden\Dao\UsuarioDAO();
-            $usuario = $usuarioDAO->buscarPorId($authResult->data->id_usuario);
-            if (!$usuario || !$usuario->isAdmin()) {
-                http_response_code(403);
-                echo json_encode(['mensagem' => 'Acesso negado. Apenas administradores podem criar produtos.']);
-                exit();
-            }
-            $controller->criar();
-        } 
+        // Rotas sem ID: /api/produtos
+        switch ($method) {
+            case 'GET':
+                $controller->listar();
+                break;
+            case 'POST':
+                $controller->criar();
+                break;
+            default:
+                http_response_code(405);
+                echo json_encode(['mensagem' => 'Método não permitido para esta rota.']);
+                break;
+        }
     }
     exit();
 }

@@ -65,16 +65,16 @@ class ProdutoDAO
             return 'conflict';
         }
 
-        $sql = "INSERT INTO produtos (id_categoria, nome_produto, descricao, preco)
-                VALUES (:id_categoria, :nome_produto, :descricao, :preco)";
+        $sql = "INSERT INTO produtos (id_categoria, nome_produto, descricao, preco, imagem_url)
+                VALUES (:id_categoria, :nome_produto, :descricao, :preco, :imagem_url)";
 
         $stmt = $this->conn->prepare($sql);
         $ok = $stmt->execute([
             'id_categoria' => $produto['id_categoria'],
             'nome_produto' => $produto['nome_produto'],
-            'descricao'    => $produto['descricao'] ?? '',
-            'preco'        => $produto['preco'],
-            'imagem_url'        => $produto['imagem_url'] ?? ''
+            'descricao' => $produto['descricao'] ?? '',
+            'preco' => $produto['preco'],
+            'imagem_url' => $produto['imagem_url'] ?? ''
         ]);
 
         return $ok ? $this->conn->lastInsertId() : false;
@@ -92,7 +92,8 @@ class ProdutoDAO
                 SET id_categoria = :id_categoria,
                     nome_produto = :nome_produto,
                     descricao = :descricao,
-                    preco = :preco
+                    preco = :preco,
+                    imagem_url = :imagem_url
                 WHERE id_produto = :id";
 
         $stmt = $this->conn->prepare($sql);

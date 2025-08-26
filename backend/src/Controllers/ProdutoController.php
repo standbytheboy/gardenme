@@ -16,7 +16,6 @@ class ProdutoController
     public function listar()
     {
         $produtos = $this->produtoDAO->listarTodos();
-        header('Content-Type: application/json; charset=utf-8');
         echo json_encode($produtos, JSON_UNESCAPED_UNICODE);
     }
 
@@ -24,7 +23,6 @@ class ProdutoController
     {
         $produto = $this->produtoDAO->buscarPorId($id);
 
-        header('Content-Type: application/json; charset=utf-8');
         if ($produto) {
             echo json_encode($produto, JSON_UNESCAPED_UNICODE);
         } else {
@@ -50,7 +48,6 @@ class ProdutoController
 
         $resultado = $this->produtoDAO->criar($dadosCorpo);
 
-        header('Content-Type: application/json; charset=utf-8');
         if ($resultado === 'conflict') {
             http_response_code(409);
             echo json_encode(['mensagem' => 'Erro ao criar: nome já em uso.'], JSON_UNESCAPED_UNICODE);
@@ -80,7 +77,6 @@ class ProdutoController
 
         $resultado = $this->produtoDAO->atualizar($id, $dadosCorpo);
 
-        header('Content-Type: application/json; charset=utf-8');
         if ($resultado === 'conflict') {
             http_response_code(409);
             echo json_encode(['mensagem' => 'Erro ao atualizar: nome já em uso.'], JSON_UNESCAPED_UNICODE);
@@ -96,7 +92,6 @@ class ProdutoController
     {
         $produto = $this->produtoDAO->buscarPorId($id);
 
-        header('Content-Type: application/json; charset=utf-8');
         if (!$produto) {
             http_response_code(404);
             echo json_encode(['mensagem' => 'Produto não encontrado.'], JSON_UNESCAPED_UNICODE);
