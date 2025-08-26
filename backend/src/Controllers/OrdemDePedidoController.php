@@ -105,7 +105,7 @@ class OrdemDePedidoController
                 echo json_encode(['mensagem' => "Produto com ID {$item->id_produto} não encontrado."]);
                 return;
             }
-            $precoTotalCalculado += $produto->getPreco() * $item->quantidade;
+            $precoTotalCalculado += $this->produtoDAO->getPreco() * $item->quantidade;
         }
 
         $novoPedido = new OrdemDePedido(
