@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AddressManager from "../components/AddressManager.tsx";
 import Footer from "../components/Footer.tsx";
 import { Navbar } from "../components/Navbar.tsx";
@@ -12,7 +12,42 @@ import UserData from "../components/UserData.tsx";
 
 const UserProfileSettings: React.FC = () => {
   const navigate = useNavigate();
-  const [isAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // useEffect para buscar o "is_admin" do usuário
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const idDoUsuario = localStorage.getItem("userId");
+      const tokenDeAutenticacao = localStorage.getItem("userToken");
+
+      if (!idDoUsuario || !tokenDeAutenticacao) {
+        console.error("Usuário não autenticado.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/usuarios/${idDoUsuario}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenDeAutenticacao}`,
+          },
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setIsAdmin(userData.is_admin);
+        } else {
+          console.error("Erro ao buscar dados do usuário:", response.status);
+        }
+      } catch (error) {
+        console.error("Erro na requisição de dados do usuário:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   // Estado para o item de menu ativo na sidebar
   const [activeMenuItem, setActiveMenuItem] = useState("Meus Dados");
 
