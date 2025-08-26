@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { TestimonialCardProps, ProgressBarProps } from "./interfaces";
 
 const StarIcon: React.FC = () => (
   <svg
@@ -9,13 +10,6 @@ const StarIcon: React.FC = () => (
     <path d="M12 .587l3.692 7.568 8.308 1.207-6.002 5.855 1.416 8.271L12 18.896l-7.414 3.902 1.416-8.271-6.002-5.855 8.308-1.207L12 .587z" />
   </svg>
 );
-
-interface TestimonialCardProps {
-  user: string;
-  role: string;
-  text: string;
-  badge: string;
-}
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({
   user,
@@ -47,10 +41,6 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
   );
 };
 
-interface ProgressBarProps {
-  totalIndicators: number;
-  currentSlide: number;
-}
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
   totalIndicators,

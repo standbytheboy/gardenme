@@ -3,11 +3,7 @@ import successIllustration from "../assets/Reforestation-cuate.svg"; // Substitu
 import { Navbar } from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
-
-interface OrderSuccessPageProps {
-  orderNumber?: string; // Opcional, caso você queira passar o número do pedido
-}
-
+import { OrderSuccessPageProps } from "src/components/interfaces";
 
 const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
   orderNumber = "12345",

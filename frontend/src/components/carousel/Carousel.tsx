@@ -6,24 +6,8 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/navigation";
 import "./Carousel.css";
 import { PlantCard } from "../PlantCard";
-import { Plant } from "../types";
-
-interface CarouselProps {
-  onPlantClick: (plant: Plant) => void;
-}
-
-// Tipo para o retorno da API
-interface ProdutoBackend {
-  id_produto: string;
-  id_categoria: string;
-  nome_categoria: string;
-  nome_produto: string;
-  descricao: string;
-  preco: number;
-  imagem_url?: string;
-  criado_em: string;
-  atualizado_em: string;
-}
+import { Plant } from "../interfaces";
+import { CarouselProps, ProdutoBackend } from "../interfaces";
 
 export const Carousel = ({ onPlantClick }: CarouselProps) => {
   const prevRef = useRef<HTMLDivElement>(null);

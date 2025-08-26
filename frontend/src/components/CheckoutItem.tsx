@@ -1,6 +1,6 @@
 // src/components/CheckoutItem.jsx
 
-import { Plant } from "../components/types";
+import { Plant } from "./interfaces";
 
 const CheckoutItem: React.FC<{
     item: Plant;

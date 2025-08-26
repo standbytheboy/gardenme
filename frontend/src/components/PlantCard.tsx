@@ -1,9 +1,5 @@
-import { Plant } from "./types";
-
-interface PlantCardProps {
-  plant: Plant;
-  onPlantClick: (plant: Plant) => void;
-}
+import { Plant } from "./interfaces";
+import { PlantCardProps } from "./interfaces";
 
 export function PlantCard({ plant, onPlantClick }: PlantCardProps) {
   const handleAddToCart = (e: React.MouseEvent) => {

@@ -1,10 +1,6 @@
 import React from 'react';
 import { ArrowRight } from 'akar-icons';
-
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-}
+import { ButtonProps } from './interfaces';
 
 export const ActionBtn: React.FC<ButtonProps> = ({ children, onClick }) => {
   return (

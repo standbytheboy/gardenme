@@ -3,6 +3,7 @@ import { GoogleContainedFill } from "akar-icons";
 import appleLogo from "../assets/apple-logo.svg";
 import gardenMeLogo from "../assets/logos/classic-classic.png";
 import { useNavigate } from "react-router-dom";
+import { ServerResponse } from "src/components/interfaces";
 
 const SignupPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -13,11 +14,6 @@ const SignupPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  interface ServerResponse {
-    mensagem: string;
-    // Adicione outras propriedades que o seu backend possa retornar
-    // por exemplo: status: string; sucesso: boolean;
-  }
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 

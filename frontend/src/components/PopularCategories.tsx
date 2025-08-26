@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Edit as EditIcon, ArrowRight as ArrowRightIcon } from 'akar-icons';
 import { ActionBtn } from './ActionBtn';
-
-interface CategoryCardProps {
-  icon: React.ElementType;
-  title: string;
-  description: string;
-}
+import { CategoryCardProps } from './interfaces';
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ icon: IconComponent, title, description }) => {
   const [isHovered, setIsHovered] = useState(false);

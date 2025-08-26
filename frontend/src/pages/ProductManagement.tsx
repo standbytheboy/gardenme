@@ -2,11 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import Footer from '../components/Footer';
-
-interface Category {
-  id_categoria: number;
-  nome_categoria: string;
-}
+import { Category } from 'src/components/interfaces';
 
 const ProductManagement: React.FC = () => {
   const [productName, setProductName] = useState('');

@@ -4,15 +4,7 @@ import { Navbar } from "../components/Navbar.tsx";
 import Footer from "../components/Footer.tsx";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
-
-interface CartItemType {
-  id: string;
-  name: string;
-  kit: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { CartItemType } from "src/components/interfaces.tsx";
 
 const ShoppingCart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItemType[]>(() => {

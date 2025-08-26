@@ -1,33 +1,7 @@
 // src/components/MyOrders.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-interface OrderItem {
-  id_produto: number;
-  quantidade: number;
-  preco_unitario: number;
-  name?: string;
-}
-
-interface AddressType {
-  id_endereco: number;
-  apelido: string;
-  logradouro: string;
-  numero: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  cep: string;
-}
-
-interface Order {
-  id_pedido: number;
-  preco_total: number;
-  criado_em: string;
-  id_status: number;
-  itens: OrderItem[];
-  endereco: AddressType | null;
-}
+import { Order } from "./interfaces";
 
 const MyOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // 1. Importar o novo ícone
 import { Person, LockOff, Location, Cart, Question, MoreHorizontalFill, Cross as CloseIcon, TrashCan, Plant, ProductHuntFill } from 'akar-icons';
+import { Sidebar9Props } from "./interfaces";
 
 const navItems = [
   { name: "Meus Dados", icon: Person, link: null },
@@ -19,12 +20,6 @@ const adminNavItem = {
   icon: ProductHuntFill,
   link: "/admin/produtos",
 };
-
-interface Sidebar9Props {
-  activeMenuItem: string;
-  setActiveMenuItem: (item: string) => void;
-  isAdmin: boolean;
-}
 
 export const Sidebar9: React.FC<Sidebar9Props> = ({ activeMenuItem, setActiveMenuItem, isAdmin }) => {
   const [isOpen, setIsOpen] = useState(false);

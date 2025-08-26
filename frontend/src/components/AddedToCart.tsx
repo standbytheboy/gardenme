@@ -1,12 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { AddedToCartCardProps } from "./interfaces";
 
-// 1. Definindo a interface para as props do AddedToCartCard
-interface AddedToCartCardProps {
-  productName: string;
-  productPrice: string;
-}
-
-// 2. Usando a interface na função do componente
 const AddedToCartCard = ({ productName, productPrice }: AddedToCartCardProps) => {
   const navigate = useNavigate();
   return (

@@ -1,20 +1,7 @@
 import { useRef, useState } from "react";
 import type { FC } from "react";
 import { ChevronDown } from "akar-icons";
-
-// Define the shape of a single accordion item
-interface AccordionItemData{ 
-  header: string;
-  content: string;
-}
-
-// Define the props for the AccordionItem component
-interface AccordionItemProps {
-  handleToggle: (index: number) => void;
-  active: number | null;
-  item: AccordionItemData;
-  index: number;
-}
+import { AccordionProps, AccordionItemProps } from "./interfaces";
 
 const AccordionItem: FC<AccordionItemProps> = ({ handleToggle, active, item, index }) => {
   const contentEl = useRef<HTMLDivElement>(null);
@@ -58,11 +45,6 @@ const AccordionItem: FC<AccordionItemProps> = ({ handleToggle, active, item, ind
     </li>
   );
 };
-
-// Define the props for the Accordion component
-interface AccordionProps {
-  items: AccordionItemData[];
-}
 
 export const Accordion: FC<AccordionProps> = ({ items }) => {
   const [active, setActive] = useState<number | null>(null);

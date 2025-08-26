@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import { Carousel } from "../components/carousel/Carousel";
 import { MainPlant } from "../components/MainPlant";
 import AddedToCartCard from "../components/AddedToCart";
-import { Plant } from "../components/types";
+import { Plant } from "../components/interfaces";
 
 const ProductPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

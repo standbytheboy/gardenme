@@ -4,17 +4,9 @@ import { Navbar } from "../components/Navbar";
 import Footer from "../components/Footer";
 import CheckoutItem from "../components/CheckoutItem";
 import pixIcon from "../assets/pix.svg";
-import { Plant } from "src/components/types";
-
-interface AddressType {
-  id: number;
-  logradouro: string;
-  numero: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  cep: string;
-}
+import { Plant } from "src/components/interfaces";
+import { AddressType } from "src/components/interfaces";
+import { PaymentMethodType } from "src/components/interfaces";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -24,12 +16,6 @@ const CheckoutPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [cartItems, setCartItems] = useState<Plant[]>([]);
   const [couponCode, setCouponCode] = useState("");
-
-  interface PaymentMethodType {
-    type: string;
-    details: string;
-    icon?: string;
-  }
 
   const [paymentMethod] = useState<PaymentMethodType>({
     type: "Pix",

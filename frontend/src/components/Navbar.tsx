@@ -5,12 +5,8 @@ import { Search } from "akar-icons";
 import Logo from '../assets/logos/green-complete.png';
 import profilePlaceholder from '../assets/profile-picture-placeholder.jpg';
 import { isLoggedIn, getProfilePictureUrl, logout } from "../utils/authUtils";
+import { NavItem, LinkProps } from "./interfaces";
 
-interface NavItem {
-  name: string;
-  link?: string;
-  items?: { name: string; link: string }[];
-}
 
 const items: NavItem[] = [
   { name: "Início", link: "/" },
@@ -18,11 +14,7 @@ const items: NavItem[] = [
   { name: "Carrinho", link: "/carrinho" },
 ];
 
-interface LinkProps {
-  item: NavItem;
-  activeItem: NavItem | null;
-  onHover: (item: NavItem | null, x: string) => void;
-}
+
 
 const Link = ({ item, onHover }: LinkProps) => {
   const navigate = useNavigate();

@@ -1,23 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Pencil,  Plus, TrashCan } from "akar-icons";
-
-interface Address {
-  id: number;
-  apelido: string;
-  cep: string;
-  logradouro: string;
-  numero: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  complemento: string;
-}
-
-interface AddressFormProps {
-  onSave: (address: Address) => void;
-  onCancel: () => void;
-  initialData?: Address | null;
-}
+import { Address, AddressFormProps } from "./interfaces";
 
 const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData }) => {
   const [formData, setFormData] = useState<Omit<Address, 'id' | 'userId'>>(
