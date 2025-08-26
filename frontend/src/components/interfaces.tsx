@@ -15,8 +15,8 @@ export interface Plant {
 }
 
 export interface Category {
-  id: number;
-  name: string;
+  id_categoria: number;
+  nome_categoria: string;
 }
 
 export interface Address {

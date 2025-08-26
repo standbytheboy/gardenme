@@ -96,39 +96,39 @@ const ProductManagement: React.FC = () => {
     <div className="bg-[#A7C957]">
       <Navbar />
       <div className="min-h-screen flex items-center justify-center bg-[#386641] pt-24 pb-12">
-        <div className="bg-[#F2E8CF] p-8 rounded-2xl shadow-lg w-full max-w-2xl">
-          <h2 className="text-3xl font-bold text-[#386641] mb-6 text-center">
+        <div className="bg-[#00000030] p-8 rounded-2xl shadow-lg w-full max-w-2xl">
+          <h2 className="text-3xl font-bold text-[#A7C957] mb-6 text-center">
             Cadastro de Produto
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="productName" className="block text-[#386641] font-semibold mb-2">Nome do Produto</label>
+              <label htmlFor="productName" className="block text-[#A7C957] font-semibold mb-2">Nome do Produto</label>
               <input
                 id="productName" type="text" value={productName} onChange={(e) => setProductName(e.target.value)}
-                className="w-full p-3 rounded-md bg-white text-[#386641] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                className="w-full p-3 rounded-md bg-white text-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
                 required
               />
             </div>
             <div>
-              <label htmlFor="description" className="block text-[#386641] font-semibold mb-2">Descrição</label>
+              <label htmlFor="description" className="block text-[#A7C957] font-semibold mb-2">Descrição</label>
               <textarea
                 id="description" value={description} onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-3 rounded-md bg-white text-[#386641] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                className="w-full p-3 rounded-md bg-white text-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
                 rows={4}
                 required
               ></textarea>
             </div>
             <div className='flex gap-4'>
               <div className='w-1/2'>
-                <label htmlFor="price" className="block text-[#386641] font-semibold mb-2">Preço (R$)</label>
+                <label htmlFor="price" className="block text-[#A7C957] font-semibold mb-2">Preço (R$)</label>
                 <input
                   id="price" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)}
-                  className="w-full p-3 rounded-md bg-white text-[#386641] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                  className="w-full p-3 rounded-md bg-white text-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
                   required
                 />
               </div>
               <div className='w-1/2'>
-                <label htmlFor="category" className="block text-[#386641] font-semibold mb-2">Categoria</label>
+                <label htmlFor="category" className="block text-[#A7C957] font-semibold mb-2">Categoria</label>
                 <select
                   id="category" value={category} onChange={(e) => setCategory(e.target.value)}
                   className="w-full p-3 rounded-md bg-white text-[#386641] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
@@ -144,10 +144,10 @@ const ProductManagement: React.FC = () => {
               </div>
             </div>
             <div>
-              <label htmlFor="imageUrl" className="block text-[#386641] font-semibold mb-2">URL da Imagem</label>
+              <label htmlFor="imageUrl" className="block text-[#A7C957] font-semibold mb-2">URL da Imagem</label>
               <input
                 id="imageUrl" type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full p-3 rounded-md bg-white text-[#386641] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                className="w-full p-3 rounded-md bg-white text-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
               />
             </div>
             {message && <p className="text-center text-red-500">{message}</p>}
