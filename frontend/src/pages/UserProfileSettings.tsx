@@ -11,6 +11,7 @@ import MyOrders from "../components/MyOrders.tsx";
 const UserProfileSettings: React.FC = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Estados para os dados do usuário
   const [profilePic, setProfilePic] = useState<string | null>(
@@ -59,6 +60,7 @@ const UserProfileSettings: React.FC = () => {
           setFirstName(userData.nome);
           setLastName(userData.sobrenome);
           setEmail(userData.email);
+          setIsAdmin(userData.is_admin);
 
           if (userData.caminho_foto_perfil) {
             localStorage.setItem(
@@ -311,6 +313,7 @@ const UserProfileSettings: React.FC = () => {
           <Sidebar9
             activeMenuItem={activeMenuItem}
             setActiveMenuItem={setActiveMenuItem}
+            isAdmin={isAdmin}
           />
 
           <div className="flex-1 bg-[#00000050] p-4 px-20 rounded-lg shadow-lg overflow-auto flex flex-col justify-center">

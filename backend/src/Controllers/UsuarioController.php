@@ -26,7 +26,8 @@ class UsuarioController
                 'sobrenome' => $usuario->getSobrenome(),
                 'email' => $usuario->getEmail(),
                 'celular' => $usuario->getCelular(),
-                'caminho_foto_perfil' => $usuario->getCaminhoFotoPerfil()
+                'caminho_foto_perfil' => $usuario->getCaminhoFotoPerfil(),
+                'is_admin' => $usuario->isAdmin()
             ];
             echo json_encode($resultado);
         } else {
