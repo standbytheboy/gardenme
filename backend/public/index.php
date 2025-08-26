@@ -176,14 +176,28 @@ if (preg_match('#^/api/produtos(/(\d+))?$#', $route, $matches)) {
         if ($method === 'DELETE') $controller->deletar((int)$id);
     } else {
         if ($method === 'GET') $controller->listar();
-        if ($method === 'POST') $controller->criar();
+        if ($method === 'POST'){
+            $authResult = AuthMiddleware::verificar();
+            if (isset($authResult['status'])) {
+                http_response_code($authResult['status']);
+                echo json_encode(['mensagem' => $authResult['mensagem']]);
+                exit();
+            }
+            $usuarioDAO = new \Garden\Dao\UsuarioDAO();
+            $usuario = $usuarioDAO->buscarPorId($authResult->data->id_usuario);
+            if (!$usuario || !$usuario->isAdmin()) {
+                http_response_code(403);
+                echo json_encode(['mensagem' => 'Acesso negado. Apenas administradores podem criar produtos.']);
+                exit();
+            }
+            $controller->criar();
+        } 
     }
     exit();
 }
 
-// **A sua nova lógica de pedido integrada ao roteador**
+// **lógica de pedido integrada ao roteador**
 if ($route === '/api/pedidos' && $method === 'POST') {
-    // A autenticação deve ser tratada aqui
     $authResult = AuthMiddleware::verificar();
     if (is_array($authResult) && isset($authResult['status'])) {
         http_response_code($authResult['status']);
@@ -199,7 +213,7 @@ if ($route === '/api/pedidos' && $method === 'POST') {
         sendResponse(400, 'Erro ao decodificar JSON: ' . json_last_error_msg());
     }
 
-    // A lógica de criação do pedido
+    // lógica de criação do pedido
     try {
         $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -256,7 +270,6 @@ if ($route === '/api/meus-pedidos' && $method === 'GET' && $dadosToken) {
     exit();
 }
 
-// Se nenhuma rota corresponder, retorne 404.
 http_response_code(404);
 echo json_encode(['mensagem' => 'Endpoint não encontrado']);
 exit();
