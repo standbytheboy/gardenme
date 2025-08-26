@@ -44,7 +44,7 @@ export const MainPlant: React.FC<MainPlantProps> = ({
           </h1>
           <div className="flex gap-8 items-center w-100">
             <p className="text-3xl font-bold text-[#F2E8CF] mb-4">
-              {currentPlant.price}
+              R$ {currentPlant.price}
             </p>
             <p className="text-sm text-[#F2E8CF] mb-4">
               200 pessoas plantaram essa

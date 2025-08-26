@@ -31,7 +31,8 @@ export function PlantCard({ plant, onPlantClick }: PlantCardProps) {
       className="flex flex-col w-[470px] h-[255px] rounded-lg shadow-sm dark:bg-[#386641] p-5 mx-4 cursor-pointer"
       onClick={() => onPlantClick(plant)}
     >
-      <div className="flex justify-between items-center h-full">
+      <a href="#">
+        <div className="flex justify-between items-center h-full">
         <div>
           <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{plant.name}</h5>
           <p className="text-[#A7C957] w-[280px] line-clamp-4">{plant.description}</p>
@@ -49,6 +50,7 @@ export function PlantCard({ plant, onPlantClick }: PlantCardProps) {
           Adicionar ao Carrinho
         </button>
       </div>
+      </a>
     </div>
   );
 }

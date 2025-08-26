@@ -204,7 +204,7 @@ const CheckoutPage = () => {
                   onClick={() => navigate("/perfil")}
                   className="bg-transparent text-[#6CAF4B] border border-[#6CAF4B] py-2 px-4 rounded-full text-sm font-semibold hover:bg-[#A7C957] hover:text-[#386641] transition-colors duration-300"
                 >
-                  Mudar Endereço
+                  Adicionar Endereço
                 </button>
               </div>
               {addresses.length > 0 ? (
