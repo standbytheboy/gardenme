@@ -71,7 +71,7 @@ const MyOrders: React.FC = () => {
   if (orders.length === 0) return <p className="text-center text-gray-300">Você ainda não tem pedidos.</p>;
 
   return (
-    <div className="space-y-6 mt-[20rem]">
+    <div className="flex flex-col h-[80vh] rounded-lg p-6 space-y-6">
       <h3 className="text-xl font-bold text-[#A7C957]">Histórico de Pedidos</h3>
 
       {orders.map((order) => (
