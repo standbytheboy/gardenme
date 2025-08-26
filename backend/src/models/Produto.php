@@ -23,7 +23,7 @@ class Produto extends Entidade
         ?string $criadoEm = null,
         ?string $atualizadoEm = null
     ) {
-        parent::__construct($criadoEm, $atualizadoEm);
+        parent::__construct($idProduto, $criadoEm, $atualizadoEm);
 
         $this->idProduto = $idProduto;
         $this->idCategoria = $idCategoria;
