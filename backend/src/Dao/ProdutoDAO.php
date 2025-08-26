@@ -1,7 +1,8 @@
 <?php
 
 namespace Garden\DAO;
-
+use Garden\Core\Database;
+use Garden\Models\Produto;
 use PDO;
 
 class ProdutoDAO
@@ -10,8 +11,7 @@ class ProdutoDAO
 
     public function __construct()
     {
-        $this->conn = new PDO("mysql:host=localhost;dbname=gardenme;charset=utf8mb4", "root", "");
-        $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->conn = Database::getInstance();
     }
 
     public function listarTodos(): array
@@ -34,7 +34,7 @@ class ProdutoDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function buscarPorId(int $id): ?array
+    public function buscarPorId(int $id): ?Produto
     {
         $sql = "SELECT 
                     p.id_produto,
@@ -53,8 +53,8 @@ class ProdutoDAO
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['id' => $id]);
 
-        $produto = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $produto ?: null;
+        $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $dados ? $this->mapProduto($dados) : null;
     }
 
     public function criar(array $produto): int|string|false
@@ -112,5 +112,18 @@ class ProdutoDAO
         $sql = "DELETE FROM produtos WHERE id_produto = :id";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute(['id' => $id]);
+    }
+     private function mapProduto(array $dados): \Garden\Models\Produto
+    {
+        return new \Garden\Models\Produto(
+            idProduto: $dados['id_produto'],
+            idCategoria: $dados['id_categoria'],
+            nomeProduto: $dados['nome_produto'],
+            preco: (float)$dados['preco'],
+            descricaoTexto: $dados['descricao'] ?? '',
+            imagemUrl: $dados['imagem_url'] ?? null,
+            criadoEm: $dados['criado_em'],
+            atualizadoEm: $dados['atualizado_em']
+        );
     }
 }

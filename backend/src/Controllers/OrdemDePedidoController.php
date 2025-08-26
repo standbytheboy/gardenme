@@ -15,6 +15,7 @@ class OrdemDePedidoController
     private OrdemDePedidoDAO $ordemDePedidoDAO;
     private ItensDoPedidoDAO $itensDoPedidoDAO;
     private ProdutoDAO $produtoDAO;
+    private EnderecoDAO $enderecoDAO;
 
     public function __construct()
     {
@@ -22,26 +23,6 @@ class OrdemDePedidoController
         $this->itensDoPedidoDAO = new ItensDoPedidoDAO();
         $this->produtoDAO = new ProdutoDAO();
         $this->enderecoDAO = new EnderecoDAO(); 
-    }
-
-    public function listarMeusPedidos()
-    {
-        // Bloco de verificação de autenticação
-        $resultadoAuth = AuthMiddleware::verificar();
-        if (isset($resultadoAuth['status']) && $resultadoAuth['status'] === 401) {
-            http_response_code(401);
-            header('Content-Type: application/json');
-            echo json_encode(['mensagem' => $resultadoAuth['mensagem']]);
-            return;
-        }
-        $dadosToken = $resultadoAuth;
-        // Fim do bloco de verificação
-        
-        $idUsuario = $dadosToken->data->id_usuario;
-        $pedidos = $this->ordemDePedidoDAO->buscarPorUsuarioId($idUsuario);
-        
-        header('Content-Type: application/json');
-        echo json_encode($pedidos);
     }
 
     public function detalhar(int $id)
@@ -96,10 +77,11 @@ class OrdemDePedidoController
         }
         
         $precoTotalCalculado = 0.0;
-        $valorFreteCalculado = 15.0; // Valor de frete fixo, mas pode ser calculado
+        $valorFreteCalculado = 25.0; 
 
         foreach ($dadosCorpo->itens as $item) {
             $produto = $this->produtoDAO->buscarPorId($item->id_produto);
+            
             if (!$produto) {
                 http_response_code(404);
                 echo json_encode(['mensagem' => "Produto com ID {$item->id_produto} não encontrado."]);
@@ -111,10 +93,11 @@ class OrdemDePedidoController
         $novoPedido = new OrdemDePedido(
             idUsuario: $idUsuario,
             idEndereco: (int) $dadosCorpo->id_endereco,
-            idStatus: 1, // Status inicial, ex: "Aguardando Pagamento"
+            idStatus: 1,
             precoTotal: $precoTotalCalculado,
             valorFrete: $valorFreteCalculado,
-            pagamentoMetodo: $dadosCorpo->pagamento_metodo ?? 'Não definido'
+            pagamentoMetodo: $dadosCorpo->pagamento_metodo ?? 'Não definido',
+            pagamentoStatus: $dadosCorpo->pagamento_status ?? 'pendente'
         );
 
         $idNovoPedido = $this->ordemDePedidoDAO->criar($novoPedido);
@@ -130,13 +113,13 @@ class OrdemDePedidoController
                 idPedido: $idNovoPedido,
                 idProduto: $item->id_produto,
                 quantidade: $item->quantidade,
-                precoUnitario: $item->preco_unitario
+                precoUnitario: $item->preco_unitario // Preço do momento da compra
             );
             $this->itensDoPedidoDAO->criar($novoItem);
         }
 
         http_response_code(201);
-        echo json_encode(['id_pedido' => $idNovoPedido, 'mensagem' => 'Pedido criado com sucesso.']);
+        echo json_encode(['mensagem' => 'Pedido criado com sucesso.', 'data' => ['id_pedido' => $idNovoPedido]]);
     }
 
         public function listarPedidosComDetalhes(object $dadosToken): array
@@ -156,7 +139,7 @@ class OrdemDePedidoController
                         'id_produto' => $item->getIdProduto(),
                         'quantidade' => $item->getQuantidade(),
                         'preco_unitario' => $item->getPrecoUnitario(),
-                        'name' => $produto['nome_produto'] ?? 'Produto Não Encontrado'
+                        'name' => $produto ? $produto->getNomeProduto() : 'Produto Não Encontrado'
                     ];
                 }
 
