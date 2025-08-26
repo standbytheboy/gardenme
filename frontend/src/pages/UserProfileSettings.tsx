@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import userProfilePic from "../assets/profile-picture-placeholder.jpg";
-import { Sidebar9 } from "../components/SidebarUserSettings.tsx";
-import { Navbar } from "../components/Navbar.tsx";
 import AddressManager from "../components/AddressManager.tsx";
 import Footer from "../components/Footer.tsx";
-import { useNavigate } from "react-router-dom";
 import { getProfilePictureUrl, logout } from "../utils/authUtils";
+import { Navbar } from "../components/Navbar.tsx";
+import { Sidebar9 } from "../components/SidebarUserSettings.tsx";
+import { useNavigate } from "react-router-dom";
+import userProfilePic from "../assets/profile-picture-placeholder.jpg";
+import MyOrders from "../components/MyOrders.tsx";
 
 const UserProfileSettings: React.FC = () => {
   const navigate = useNavigate();
@@ -521,7 +522,7 @@ const UserProfileSettings: React.FC = () => {
             )}
             {activeMenuItem === "Endereços" && <AddressManager />}
             {activeMenuItem === "Meus Pedidos" && (
-              <div className="text-lg text-white">Histórico de Pedidos...</div>
+              <MyOrders />
             )}
             {activeMenuItem === "Excluir conta" && (
               <div className="flex flex-col gap-6 items-center">

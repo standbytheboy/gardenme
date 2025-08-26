@@ -108,4 +108,16 @@ class OrdemDePedidoDAO
             atualizacaoEm: $dados['atualizado_em']
         );
     }
+    public function buscarEnderecoPorId(int $idEndereco): ?array {
+    try {
+        $sql = 'SELECT * FROM endereco WHERE id_endereco = :id_endereco';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':id_endereco', $idEndereco, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    } catch (\PDOException $e) {
+        return null;
+    }
+}
+
 }

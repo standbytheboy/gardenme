@@ -55,7 +55,6 @@ const CheckoutPage = () => {
       }
 
       const data = await response.json();
-      console.log("Endereços recebidos:", data);
       setAddresses(data);
 
       if (data.length > 0) {
@@ -131,6 +130,8 @@ const CheckoutPage = () => {
 
       console.log("Pedido ID:", data.data.id_pedido);
       alert("Compra finalizada com sucesso!");
+      // Limpar o localStorage do carrinho
+      localStorage.removeItem("cartItems");
       navigate(`/pedido-sucesso`);
     } catch (error) {
       console.error("Erro de conexão ou ao processar a resposta:", error);

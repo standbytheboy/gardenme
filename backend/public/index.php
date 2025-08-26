@@ -33,7 +33,7 @@ use Garden\Controllers\DicasController;
 use Garden\Controllers\EnderecoController;
 use Garden\Controllers\FotoController;
 use Garden\Controllers\ProdutoController;
-// Certifique-se de ter um controlador para pedidos ou use a lógica inline.
+use Garden\Controllers\OrdemDePedidoController;
 
 // **Movido para o topo para que fiquem disponíveis para todas as rotas**
 define('DB_HOST', 'localhost');
@@ -43,7 +43,7 @@ define('DB_NAME', 'gardenme');
 
 function sendResponse($status, $message, $data = []) {
     http_response_code($status);
-    echo json_encode(['message' => $message, 'data' => $data]);
+    echo json_encode(['message' => $message, 'data' => $data], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -78,6 +78,7 @@ $requiresAuth = [
     '#^/api/usuarios/(\d+)$#' => ['GET', 'PUT', 'DELETE'],
     '#^/api/categorias/(\d+)$#' => ['DELETE'],
     '#^/api/usuarios/(\d+)/foto$#' => ['POST', 'DELETE'],
+    '#^/api/meus-pedidos$#' => ['GET'],
 ];
 
 foreach ($requiresAuth as $pattern => $methods) {
@@ -242,6 +243,16 @@ if ($route === '/api/pedidos' && $method === 'POST') {
         }
         sendResponse(500, 'Erro ao criar o pedido: ' . $e->getMessage());
     }
+    exit();
+
+}
+
+// Roteamento específico para a listagem de pedidos após a autenticação
+if ($route === '/api/meus-pedidos' && $method === 'GET' && $dadosToken) {
+    $controller = new Garden\Controllers\OrdemDePedidoController();
+    $pedidos = $controller->listarPedidosComDetalhes($dadosToken);
+    header('Content-Type: application/json');
+    echo json_encode($pedidos, JSON_UNESCAPED_UNICODE);
     exit();
 }
 

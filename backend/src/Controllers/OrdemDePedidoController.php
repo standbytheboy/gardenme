@@ -5,6 +5,7 @@ namespace Garden\Controllers;
 use Garden\DAO\OrdemDePedidoDAO;
 use Garden\DAO\ItensDoPedidoDAO;
 use Garden\DAO\ProdutoDAO;
+use Garden\DAO\EnderecoDAO;
 use Garden\Models\OrdemDePedido;
 use Garden\Models\ItensDoPedido;
 use Garden\Middleware\AuthMiddleware;
@@ -20,6 +21,7 @@ class OrdemDePedidoController
         $this->ordemDePedidoDAO = new OrdemDePedidoDAO();
         $this->itensDoPedidoDAO = new ItensDoPedidoDAO();
         $this->produtoDAO = new ProdutoDAO();
+        $this->enderecoDAO = new EnderecoDAO(); 
     }
 
     public function listarMeusPedidos()
@@ -136,4 +138,56 @@ class OrdemDePedidoController
         http_response_code(201);
         echo json_encode(['id_pedido' => $idNovoPedido, 'mensagem' => 'Pedido criado com sucesso.']);
     }
+
+        public function listarPedidosComDetalhes(object $dadosToken): array
+    {
+        try {
+            $idUsuario = $dadosToken->data->id_usuario;
+            $pedidos = $this->ordemDePedidoDAO->buscarPorUsuarioId($idUsuario);
+
+            $pedidosComDetalhes = [];
+            foreach ($pedidos as $pedido) {
+                // Busca os itens do pedido
+                $itensDoPedido = $this->itensDoPedidoDAO->buscarPorPedidoId($pedido->getId());
+                $itensComDetalhes = [];
+                foreach ($itensDoPedido as $item) {
+                    $produto = $this->produtoDAO->buscarPorId($item->getIdProduto());
+                    $itensComDetalhes[] = [
+                        'id_produto' => $item->getIdProduto(),
+                        'quantidade' => $item->getQuantidade(),
+                        'preco_unitario' => $item->getPrecoUnitario(),
+                        'name' => $produto['nome_produto'] ?? 'Produto Não Encontrado'
+                    ];
+                }
+
+                // Busca o endereço do pedido
+                $endereco = $this->enderecoDAO->buscarPorId($pedido->getIdEndereco());
+                $enderecoDetalhes = $endereco ? [
+                    'id_endereco' => $endereco->getId(),
+                    'apelido' => $endereco->getApelido(),
+                    'logradouro' => $endereco->getLogradouro(),
+                    'numero' => $endereco->getNumero(),
+                    'bairro' => $endereco->getBairro(),
+                    'cidade' => $endereco->getCidade(),
+                    'estado' => $endereco->getEstado(),
+                    'cep' => $endereco->getCep(),
+                ] : null;
+
+                // Monta a estrutura completa do pedido
+                $pedidosComDetalhes[] = [
+                    'id_pedido' => $pedido->getId(),
+                    'preco_total' => $pedido->getPrecoTotal(),
+                    'criado_em' => $pedido->getCriadoEm(),
+                    'id_status' => $pedido->getIdStatus(),
+                    'itens' => $itensComDetalhes,
+                    'endereco' => $enderecoDetalhes
+                ];
+            }
+            return $pedidosComDetalhes;
+        } catch (\Exception $e) {
+            error_log('Erro ao listar pedidos com detalhes: ' . $e->getMessage());
+            return [];
+        }
+    }
+
 }
