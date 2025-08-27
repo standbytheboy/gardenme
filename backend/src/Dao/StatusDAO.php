@@ -3,8 +3,8 @@
 namespace Garden\Dao;
 
 use PDO;
-use Garden\Core\Database;
-use Garden\Models\Status;
+use Garden\core\Database;
+use Garden\models\Status;
 
 class StatusDAO
 {

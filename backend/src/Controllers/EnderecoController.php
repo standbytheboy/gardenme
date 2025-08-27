@@ -3,7 +3,7 @@
 namespace Garden\Controllers;
 
 use Garden\DAO\EnderecoDAO;
-use Garden\Models\Endereco;
+use Garden\models\Endereco;
 
 class EnderecoController
 {

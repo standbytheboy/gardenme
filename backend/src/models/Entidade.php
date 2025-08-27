@@ -1,6 +1,6 @@
 <?php
 
-namespace Garden\Models;
+namespace Garden\models;
 
 abstract class Entidade
 {

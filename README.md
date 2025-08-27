@@ -116,7 +116,7 @@ Certifique-se de ter instalado em sua máquina:
 
 Este projeto foi desenvolvido como parte do Projeto Integrador do Senac por:
 
-  * **Douglas Balbino** - Papel: [Especialista em Backend Core]
+  * **Douglas Balbino** - Papel: [Especialista em Backend core]
   * **Gabriel Aparecido** - Papel: [Especialista em Backend de Lógica de Negócio]
   * **Lucas Morais** - Papel: [Especialista em Frontend]
 

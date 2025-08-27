@@ -6,8 +6,8 @@ use Garden\DAO\OrdemDePedidoDAO;
 use Garden\DAO\ItensDoPedidoDAO;
 use Garden\DAO\ProdutoDAO;
 use Garden\DAO\EnderecoDAO;
-use Garden\Models\OrdemDePedido;
-use Garden\Models\ItensDoPedido;
+use Garden\models\OrdemDePedido;
+use Garden\models\ItensDoPedido;
 use Garden\Middleware\AuthMiddleware;
 
 class OrdemDePedidoController

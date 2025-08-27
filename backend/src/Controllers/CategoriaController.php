@@ -3,7 +3,7 @@
 namespace Garden\Controllers;
 
 use Garden\DAO\CategoriaDAO;
-use Garden\Models\Categoria;
+use Garden\models\Categoria;
 
 class CategoriaController
 {

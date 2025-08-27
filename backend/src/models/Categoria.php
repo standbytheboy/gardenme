@@ -1,8 +1,8 @@
 <?php
 
-namespace Garden\Models;
+namespace Garden\models;
 
-use Garden\Models\Entidade;
+use Garden\models\Entidade;
 
 class Categoria extends Entidade
 {

@@ -1,8 +1,8 @@
 <?php
 
 namespace Garden\DAO;
-use Garden\Core\Database;
-use Garden\Models\Produto;
+use Garden\core\Database;
+use Garden\models\Produto;
 use PDO;
 
 class ProdutoDAO
