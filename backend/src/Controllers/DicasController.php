@@ -2,7 +2,7 @@
 namespace Garden\Controllers;
 
 use Garden\Dao\DicasDAO;
-use Garden\Models\Dicas;
+use Garden\models\Dicas;
 
 class DicasController {
     private DicasDAO $dicasDAO;

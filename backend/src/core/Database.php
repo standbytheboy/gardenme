@@ -1,6 +1,6 @@
 <?php
 
-namespace Garden\Core;
+namespace Garden\core;
 
 use PDO;
 use PDOException;

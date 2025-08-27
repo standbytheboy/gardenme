@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once dirname(__DIR__) . '/models/Usuario.php';
 require_once dirname(__DIR__) . '/Dao/UsuarioDAO.php';
-use Garden\Models\Usuario;
+use Garden\models\Usuario;
 use Garden\Dao\UsuarioDAO;
 
 function isLoggedIn(): bool {

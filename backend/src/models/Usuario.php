@@ -1,7 +1,7 @@
 <?php
 
-namespace Garden\Models;
-use Garden\Models\Entidade;
+namespace Garden\models;
+use Garden\models\Entidade;
 
 class Usuario extends Entidade
 {

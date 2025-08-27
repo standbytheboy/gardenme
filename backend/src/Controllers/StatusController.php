@@ -3,7 +3,7 @@
 namespace Garden\Controllers;
 
 use Garden\DAO\StatusDAO;
-use Garden\Models\Status;
+use Garden\models\Status;
 
 class StatusController
 {

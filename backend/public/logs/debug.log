@@ -1,0 +1,10 @@
+[2025-08-27 18:21:15] index.php chamado
+[2025-08-27 18:21:15] Autoload carregado com sucesso
+[2025-08-27 18:21:15] Rota chamada: /
+[2025-08-27 18:21:15] Método: GET
+[2025-08-27 18:21:15] Rota não encontrada: /
+[2025-08-27 18:21:35] index.php chamado
+[2025-08-27 18:21:35] Autoload carregado com sucesso
+[2025-08-27 18:21:35] Rota chamada: /gardenme/backend/public/api/registrar
+[2025-08-27 18:21:35] Método: POST
+[2025-08-27 18:21:35] Rota não encontrada: /gardenme/backend/public/api/registrar

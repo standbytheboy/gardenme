@@ -1,8 +1,8 @@
 <?php
 namespace Garden\DAO; 
 use PDO;
-use Garden\Core\Database;
-use Garden\Models\Usuario; 
+use Garden\core\Database;
+use Garden\models\Usuario; 
 
 class UsuarioDAO
 {
@@ -20,7 +20,7 @@ class UsuarioDAO
             
             $stmt = $this->conn->prepare($sql);
 
-            $senhaCriptografada = password_hash($senhaPura, PASSWORD_ARGON2ID);
+            $senhaCriptografada = password_hash($senhaPura, PASSWORD_BCRYPT);
 
             $stmt->bindValue(':nome', $usuario->getNome());
             $stmt->bindValue(':sobrenome', $usuario->getSobrenome());

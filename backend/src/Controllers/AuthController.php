@@ -2,51 +2,42 @@
 namespace Garden\Controllers;
 
 use Garden\Dao\UsuarioDAO;
-use Garden\Models\Usuario;
+use Garden\models\Usuario;
 use Firebase\JWT\JWT;
 
 class AuthController
 {
-    public function registrar()
+    // Em backend/src/Controllers/AuthController.php
+
+public function registrar()
 {
-    // Limpa buffers de saída para evitar qualquer saída inesperada
+    // Limpa qualquer saída de buffer que possa ter ocorrido antes
     while (ob_get_level()) {
         ob_end_clean();
     }
 
+    // Garante que a resposta será sempre JSON
     header('Content-Type: application/json; charset=utf-8');
 
     try {
         $input = file_get_contents('php://input');
-        error_log("INPUT RECEBIDO: " . $input);
-
         $dadosCorpo = json_decode($input, true);
-        error_log("DECODE JSON: " . var_export($dadosCorpo, true));
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception('JSON inválido: ' . json_last_error_msg());
+            http_response_code(400);
+            echo json_encode(['mensagem' => 'Corpo da requisição não é um JSON válido: ' . json_last_error_msg()]);
+            exit;
         }
 
-        // Validação de campos obrigatórios
         if (empty($dadosCorpo['nome']) || empty($dadosCorpo['email']) || empty($dadosCorpo['senha'])) {
             http_response_code(400);
             echo json_encode(['mensagem' => 'Nome, e-mail e senha são obrigatórios.']);
             exit;
         }
+        
+        // Outras validações...
 
-        if (!filter_var($dadosCorpo['email'], FILTER_VALIDATE_EMAIL)) {
-            http_response_code(400);
-            echo json_encode(['mensagem' => 'Formato de e-mail inválido.']);
-            exit;
-        }
-
-        if (strlen($dadosCorpo['senha']) < 6) {
-            http_response_code(400);
-            echo json_encode(['mensagem' => 'Senha deve ter no mínimo 6 caracteres.']);
-            exit;
-        }
-
-        $usuario = new Usuario(
+        $usuario = new \Garden\models\Usuario(
             nome: $dadosCorpo['nome'],
             sobrenome: $dadosCorpo['sobrenome'] ?? '',
             email: $dadosCorpo['email'],
@@ -54,49 +45,41 @@ class AuthController
             isAdmin: false
         );
 
-        // Tenta criar usuário no banco
-        $usuarioDAO = new UsuarioDAO();
-        try {
-            $resultado = $usuarioDAO->criar($usuario, $dadosCorpo['senha']);
-            error_log('Retorno UsuarioDAO::criar -> ' . var_export($resultado, true));
-        } catch (\Throwable $e) {
-            error_log('Erro inesperado em UsuarioDAO::criar -> ' . $e->getMessage());
-            http_response_code(500);
-            echo json_encode([
-                'mensagem' => 'Erro interno ao criar usuário.',
-                'detalhes' => $e->getMessage()
-            ]);
-            exit;
-        }
+        $usuarioDAO = new \Garden\Dao\UsuarioDAO();
+        $resultado = $usuarioDAO->criar($usuario, $dadosCorpo['senha']);
 
-        // Retorno final
         if ($resultado === 'conflict') {
-            http_response_code(409);
-            echo json_encode(['mensagem' => 'Email já cadastrado.']);
-            exit;
-        } elseif ($resultado !== false) {
-            http_response_code(201);
+            http_response_code(409); // Conflict
+            echo json_encode(['mensagem' => 'O e-mail fornecido já está em uso.']);
+        } elseif ($resultado) {
+            http_response_code(201); // Created
             echo json_encode([
                 'mensagem' => 'Usuário criado com sucesso.',
                 'id_usuario' => $resultado
             ]);
-            exit;
         } else {
-            error_log('Falha desconhecida ao criar usuário.');
+            // Se o DAO retornou 'false' por um motivo inesperado
             http_response_code(500);
-            echo json_encode(['mensagem' => 'Erro interno ao criar usuário.']);
-            exit;
+            echo json_encode(['mensagem' => 'Ocorreu um erro inesperado ao criar o usuário.']);
         }
 
-    } catch (\Throwable $e) {
-        error_log('Erro inesperado em registrar() -> ' . $e->getMessage());
+    } catch (\PDOException $pdoe) {
+        // Erro específico do banco de dados
         http_response_code(500);
+        error_log('Erro de PDO em registrar(): ' . $pdoe->getMessage()); // Loga o erro real
         echo json_encode([
-            'mensagem' => 'Erro interno no servidor',
+            'mensagem' => 'Erro de comunicação com o banco de dados.',
+            'detalhes' => 'Verifique as credenciais e a conexão.' // Mensagem segura para o frontend
+        ]);
+    } catch (\Throwable $e) {
+        // Captura qualquer outro erro
+        http_response_code(500);
+        error_log('Erro geral em registrar(): ' . $e->getMessage()); // Loga o erro real
+        echo json_encode([
+            'mensagem' => 'Erro interno no servidor.',
             'detalhes' => $e->getMessage()
         ]);
     }
-
     exit;
 }
     public function login()
