@@ -27,7 +27,7 @@ class UsuarioDAO
             $stmt->bindValue(':email', $usuario->getEmail());
             $stmt->bindValue(':celular', $usuario->getCelular());
             $stmt->bindValue(':senha_hash', $senhaCriptografada);
-            $stmt->bindValue(':is_admin', $usuario->isAdmin());
+            $stmt->bindValue(':is_admin', $usuario->isAdmin(), PDO::PARAM_INT);
             
             $stmt->execute();
             return $this->conn->lastInsertId();

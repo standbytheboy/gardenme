@@ -9,12 +9,15 @@ class Database
 {
     private static ?PDO $instance = null;
 
-    private const DB_HOST = 'localhost';
+    // private const DB_HOST = 'localhost';
+    // private const DB_NAME = 'gardenme';
+    // private const DB_USER = 'root';
+    // private const DB_PASS = '';
+
+    private const DB_HOST = '127.0.0.1';
     private const DB_NAME = 'gardenme';
-    private const DB_USER = 'root';
-    private const DB_PASS = '';
-
-
+    private const DB_USER = 'gardenme';
+    private const DB_PASS = 'senha_forte';
 
     public static function getInstance(): PDO
     {

@@ -39,10 +39,10 @@ use Garden\Controllers\FotoController;
 use Garden\Controllers\ProdutoController;
 
 // **Movido para o topo para que fiquem disponíveis para todas as rotas**
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'gardenme');
+// define('DB_HOST', 'localhost');
+// define('DB_PASSWORD', '');
+// define('DB_USER', 'root');
+// define('DB_NAME', 'gardenme');
 
 function sendResponse($status, $message, $data = []) {
     http_response_code($status);
