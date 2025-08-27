@@ -1,7 +1,7 @@
 <?php
 namespace Garden\Controllers;
 
-use Garden\Dao\UsuarioDAO;
+use Garden\Dao\UsuarioDao;
 use Garden\models\Usuario;
 use Firebase\JWT\JWT;
 
@@ -45,8 +45,8 @@ public function registrar()
             isAdmin: false
         );
 
-        $usuarioDAO = new \Garden\Dao\UsuarioDAO();
-        $resultado = $usuarioDAO->criar($usuario, $dadosCorpo['senha']);
+        $usuarioDao = new \Garden\Dao\UsuarioDao();
+        $resultado = $usuarioDao->criar($usuario, $dadosCorpo['senha']);
 
         if ($resultado === 'conflict') {
             http_response_code(409); // Conflict
@@ -58,7 +58,7 @@ public function registrar()
                 'id_usuario' => $resultado
             ]);
         } else {
-            // Se o DAO retornou 'false' por um motivo inesperado
+            // Se o Dao retornou 'false' por um motivo inesperado
             http_response_code(500);
             echo json_encode(['mensagem' => 'Ocorreu um erro inesperado ao criar o usuário.']);
         }
@@ -101,8 +101,8 @@ public function registrar()
                 return;
             }
 
-            $usuarioDAO = new UsuarioDAO();
-            $usuario = $usuarioDAO->buscarPorEmail($dadosCorpo->email);
+            $usuarioDao = new UsuarioDao();
+            $usuario = $usuarioDao->buscarPorEmail($dadosCorpo->email);
 
             if ($usuario && password_verify($dadosCorpo->senha, $usuario['senha_hash'])) {
 

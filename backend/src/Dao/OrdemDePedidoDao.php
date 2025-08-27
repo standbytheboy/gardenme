@@ -6,7 +6,7 @@ use PDO;
 use Garden\core\Database;
 use Garden\models\OrdemDePedido;
 
-class OrdemDePedidoDAO
+class OrdemDePedidoDao
 {
     private PDO $conn;
 

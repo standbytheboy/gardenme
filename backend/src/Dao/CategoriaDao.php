@@ -7,7 +7,7 @@ use Garden\core\Database;
 use Garden\models\Categoria;
 
 
-class CategoriaDAO {
+class CategoriaDao {
     private PDO $conn;
 
     public function __construct()

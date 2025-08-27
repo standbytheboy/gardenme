@@ -1,18 +1,18 @@
 <?php
 namespace Garden\Controllers;
 
-use Garden\Dao\DicasDAO;
+use Garden\Dao\DicasDao;
 use Garden\models\Dicas;
 
 class DicasController {
-    private DicasDAO $dicasDAO;
+    private DicasDao $dicasDao;
 
     public function __construct() {
-        $this->dicasDAO = new DicasDAO();
+        $this->dicasDao = new DicasDao();
     }
 
     public function listar() {
-        $dicas = $this->dicasDAO->listarTodos();
+        $dicas = $this->dicasDao->listarTodos();
         $resultado = array_map(function ($dica) {
             return [
                 'id_dica' => $dica->getId(),
@@ -26,7 +26,7 @@ class DicasController {
     }
 
     public function detalhar(int $id) {
-        $dicas = $this->dicasDAO->buscarPorId($id);
+        $dicas = $this->dicasDao->buscarPorId($id);
 
         header('Content-Type: application/json');
         if ($dicas) {
@@ -59,7 +59,7 @@ class DicasController {
             idProduto: $dadosCorpo->idProduto ?? null
         );
 
-        $novoId = $this->dicasDAO->criar($dicas);
+        $novoId = $this->dicasDao->criar($dicas);
 
         if($novoId) {
             http_response_code(201);
@@ -79,7 +79,7 @@ class DicasController {
             return;
         }
 
-        $dicasExistente = $this->dicasDAO->buscarPorId($id);
+        $dicasExistente = $this->dicasDao->buscarPorId($id);
 
         if (!$dicasExistente) {
             http_response_code(404);
@@ -94,7 +94,7 @@ class DicasController {
             idProduto: $dadosCorpo->idProduto ?? null
         );
 
-        $resultado = $this->dicasDAO->atualizar($dicas);
+        $resultado = $this->dicasDao->atualizar($dicas);
 
         if ($resultado === 'conflict') {
             http_response_code(409);
@@ -108,8 +108,8 @@ class DicasController {
     }
 
     public function deletar(int $id) {
-        $dicasDAO = new DicasDAO();
-        $dicas = $dicasDAO->buscarPorId($id);
+        $dicasDao = new DicasDao();
+        $dicas = $dicasDao->buscarPorId($id);
 
         if(!$dicas) {
             http_response_code(404);
@@ -117,7 +117,7 @@ class DicasController {
             return;
         }
 
-        $sucesso = $dicasDAO->deletar($id);
+        $sucesso = $dicasDao->deletar($id);
 
         if($sucesso) {
             http_response_code(200);

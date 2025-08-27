@@ -2,17 +2,17 @@
 
 namespace Garden\Controllers;
 
-use Garden\DAO\UsuarioDAO;
+use Garden\Dao\UsuarioDao;
 use Garden\Middleware\AuthMiddleware; // Incluído para verificação do token
 
 class FotoController
 {
-    private UsuarioDAO $usuarioDAO;
+    private UsuarioDao $usuarioDao;
     private string $diretorioUploads;
 
     public function __construct()
     {
-        $this->usuarioDAO = new UsuarioDAO();
+        $this->usuarioDao = new UsuarioDao();
         // O diretório de uploads deve ser acessível pelo servidor web
         $this->diretorioUploads = __DIR__ . '/../../public/uploads/profile_pictures/';
     }
@@ -54,7 +54,7 @@ class FotoController
         }
 
         // 4. Deletar a foto antiga, se existir
-        $usuario = $this->usuarioDAO->buscarPorId($id_usuario);
+        $usuario = $this->usuarioDao->buscarPorId($id_usuario);
         if ($usuario && $usuario->getCaminhoFotoPerfil()) {
             $caminhoAntigo = $this->diretorioUploads . $usuario->getCaminhoFotoPerfil();
             if (file_exists($caminhoAntigo)) {
@@ -63,7 +63,7 @@ class FotoController
         }
 
         // 5. Atualizar o caminho no banco de dados
-        $sucesso = $this->usuarioDAO->atualizarCaminhoFotoPerfil($id_usuario, $novoNomeArquivo);
+        $sucesso = $this->usuarioDao->atualizarCaminhoFotoPerfil($id_usuario, $novoNomeArquivo);
 
         if ($sucesso) {
             http_response_code(200);
@@ -88,7 +88,7 @@ class FotoController
         }
 
         // 2. Obter e excluir o arquivo
-        $usuario = $this->usuarioDAO->buscarPorId($id_usuario);
+        $usuario = $this->usuarioDao->buscarPorId($id_usuario);
 
         if ($usuario && $usuario->getCaminhoFotoPerfil()) {
             $caminhoFoto = $this->diretorioUploads . $usuario->getCaminhoFotoPerfil();
@@ -97,7 +97,7 @@ class FotoController
             }
 
             // 3. Remover o caminho do banco de dados
-            $sucesso = $this->usuarioDAO->removerCaminhoFotoPerfil($id_usuario);
+            $sucesso = $this->usuarioDao->removerCaminhoFotoPerfil($id_usuario);
 
             if ($sucesso) {
                 http_response_code(200);

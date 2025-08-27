@@ -2,21 +2,21 @@
 
 namespace Garden\Controllers;
 
-use Garden\DAO\StatusDAO;
+use Garden\Dao\StatusDao;
 use Garden\models\Status;
 
 class StatusController
 {
-    private StatusDAO $statusDAO;
+    private StatusDao $statusDao;
 
     public function __construct()
     {
-        $this->statusDAO = new StatusDAO();
+        $this->statusDao = new StatusDao();
     }
 
     public function listar()
     {
-        $listaStatus = $this->statusDAO->listarTodos();
+        $listaStatus = $this->statusDao->listarTodos();
 
         $resultado = array_map(function ($status) {
             return [
@@ -31,7 +31,7 @@ class StatusController
 
     public function detalhar(int $id)
     {
-        $status = $this->statusDAO->buscarPorId($id);
+        $status = $this->statusDao->buscarPorId($id);
 
         header('Content-Type: application/json');
         if ($status) {
@@ -59,7 +59,7 @@ class StatusController
         }
 
         $status = new Status(descricao: $dadosCorpo->descricao);
-        $novoId = $this->statusDAO->criar($status);
+        $novoId = $this->statusDao->criar($status);
 
         if ($novoId) {
             http_response_code(201);

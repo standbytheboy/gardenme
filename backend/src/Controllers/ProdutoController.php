@@ -2,26 +2,41 @@
 
 namespace Garden\Controllers;
 
-use Garden\DAO\ProdutoDAO;
+use Garden\Dao\ProdutoDao;
 
 class ProdutoController
 {
-    private ProdutoDAO $produtoDAO;
+    private ProdutoDao $produtoDao;
 
     public function __construct()
     {
-        $this->produtoDAO = new ProdutoDAO();
+        $this->produtoDao = new ProdutoDao();
     }
 
     public function listar()
-    {
-        $produtos = $this->produtoDAO->listarTodos();
-        echo json_encode($produtos, JSON_UNESCAPED_UNICODE);
+{
+    // Limpa qualquer saída de buffer anterior para evitar erros de JSON
+    if (ob_get_level()) {
+        ob_end_clean();
     }
+
+    header('Content-Type: application/json; charset=utf-8');
+
+    try {
+        $produtos = $this->produtoDao->listarTodos();
+        echo json_encode($produtos, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+    } catch (\Exception $e) {
+        // Se houver qualquer erro (na consulta ou no encode), captura e retorna um erro 500
+        http_response_code(500);
+        error_log("Erro em ProdutoController->listar: " . $e->getMessage()); // Regista o erro para depuração
+        echo json_encode(['mensagem' => 'Ocorreu um erro interno ao buscar os produtos.']);
+    }
+    exit; // Garante que nada mais é enviado após a resposta
+}
 
     public function detalhar(int $id)
     {
-        $produto = $this->produtoDAO->buscarPorId($id);
+        $produto = $this->produtoDao->buscarPorId($id);
 
         if ($produto) {
             echo json_encode($produto, JSON_UNESCAPED_UNICODE);
@@ -46,7 +61,7 @@ class ProdutoController
             return;
         }
 
-        $resultado = $this->produtoDAO->criar($dadosCorpo);
+        $resultado = $this->produtoDao->criar($dadosCorpo);
 
         if ($resultado === 'conflict') {
             http_response_code(409);
@@ -75,7 +90,7 @@ class ProdutoController
             return;
         }
 
-        $resultado = $this->produtoDAO->atualizar($id, $dadosCorpo);
+        $resultado = $this->produtoDao->atualizar($id, $dadosCorpo);
 
         if ($resultado === 'conflict') {
             http_response_code(409);
@@ -90,7 +105,7 @@ class ProdutoController
 
     public function deletar(int $id)
     {
-        $produto = $this->produtoDAO->buscarPorId($id);
+        $produto = $this->produtoDao->buscarPorId($id);
 
         if (!$produto) {
             http_response_code(404);
@@ -98,7 +113,7 @@ class ProdutoController
             return;
         }
 
-        $sucesso = $this->produtoDAO->deletar($id);
+        $sucesso = $this->produtoDao->deletar($id);
 
         if ($sucesso) {
             echo json_encode(['mensagem' => 'Produto deletado com sucesso.'], JSON_UNESCAPED_UNICODE);
@@ -110,8 +125,8 @@ class ProdutoController
     public function buscarPrimeiro() {
         header('Content-Type: application/json');
         try {
-            $produtoDAO = new ProdutoDAO();
-            $produto = $produtoDAO->buscarPrimeiro();
+            $produtoDao = new ProdutoDao();
+            $produto = $produtoDao->buscarPrimeiro();
 
             if ($produto) {
                 echo json_encode($produto);

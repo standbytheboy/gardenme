@@ -6,7 +6,7 @@ use PDO;
 use Garden\core\Database;
 use Garden\models\Endereco;
 
-class EnderecoDAO
+class EnderecoDao
 {
     private PDO $conn;
 

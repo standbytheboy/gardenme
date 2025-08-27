@@ -1,10 +1,10 @@
 <?php
-namespace Garden\DAO; 
+namespace Garden\Dao; 
 use PDO;
 use Garden\core\Database;
 use Garden\models\Usuario; 
 
-class UsuarioDAO
+class UsuarioDao
 {
     private PDO $conn;
 

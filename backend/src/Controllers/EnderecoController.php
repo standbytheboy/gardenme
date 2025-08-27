@@ -2,16 +2,16 @@
 
 namespace Garden\Controllers;
 
-use Garden\DAO\EnderecoDAO;
+use Garden\Dao\EnderecoDao;
 use Garden\models\Endereco;
 
 class EnderecoController
 {
-    private EnderecoDAO $enderecoDAO;
+    private EnderecoDao $enderecoDao;
 
     public function __construct()
     {
-        $this->enderecoDAO = new EnderecoDAO();
+        $this->enderecoDao = new EnderecoDao();
     }
 
     public function listarPorUsuario(int $id_usuario, object $dadosToken)
@@ -24,7 +24,7 @@ class EnderecoController
             return;
         }
 
-        $enderecos = $this->enderecoDAO->listarPorUsuarioId($id_usuario);
+        $enderecos = $this->enderecoDao->listarPorUsuarioId($id_usuario);
 
         $resultado = array_map(function ($endereco) {
             return [
@@ -74,7 +74,7 @@ class EnderecoController
             complemento: $dadosCorpo->complemento ?? null
         );
 
-        $novoId = $this->enderecoDAO->criar($endereco);
+        $novoId = $this->enderecoDao->criar($endereco);
 
         if ($novoId) {
             http_response_code(201);
@@ -88,7 +88,7 @@ class EnderecoController
     public function atualizar(int $id_endereco, object $dadosToken) {
         $idUsuarioLogado = $dadosToken->data->id_usuario;
         
-        $enderecoExistente = $this->enderecoDAO->buscarPorId($id_endereco);
+        $enderecoExistente = $this->enderecoDao->buscarPorId($id_endereco);
 
         if (!$enderecoExistente) {
             http_response_code(404);
@@ -117,7 +117,7 @@ class EnderecoController
             complemento: $dadosCorpo->complemento ?? $enderecoExistente->getComplemento()
         );
 
-        $sucesso = $this->enderecoDAO->atualizar($enderecoParaAtualizar);
+        $sucesso = $this->enderecoDao->atualizar($enderecoParaAtualizar);
 
         if ($sucesso) {
             echo json_encode(['mensagem' => 'Endereço atualizado com sucesso.']);
@@ -131,7 +131,7 @@ class EnderecoController
     {
         $idUsuarioLogado = $dadosToken->data->id_usuario;
 
-        $enderecoExistente = $this->enderecoDAO->buscarPorId($id_endereco);
+        $enderecoExistente = $this->enderecoDao->buscarPorId($id_endereco);
 
         if (!$enderecoExistente) {
             http_response_code(404);
@@ -145,7 +145,7 @@ class EnderecoController
             return;
         }
 
-        $sucesso = $this->enderecoDAO->deletar($id_endereco, $idUsuarioLogado);
+        $sucesso = $this->enderecoDao->deletar($id_endereco, $idUsuarioLogado);
 
         if ($sucesso) {
             echo json_encode(['mensagem' => 'Endereço deletado com sucesso.']);

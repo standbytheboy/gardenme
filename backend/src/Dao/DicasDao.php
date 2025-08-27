@@ -6,7 +6,7 @@ use PDO;
 use Garden\core\Database;
 use Garden\models\Dicas;
 
-class DicasDAO
+class DicasDao
 {
     private PDO $conn;
 

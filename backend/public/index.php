@@ -194,8 +194,8 @@ if (preg_match('#^/api/produtos/primeiro$#', $route)) {
         }
         
         // Carrega o usuário para verificar se é admin
-        $usuarioDAO = new \Garden\DAO\UsuarioDAO();
-        $usuario = $usuarioDAO->buscarPorId($authResult->data->id_usuario);
+        $usuarioDao = new \Garden\Dao\UsuarioDao();
+        $usuario = $usuarioDao->buscarPorId($authResult->data->id_usuario);
         
         if (!$usuario || !$usuario->isAdmin()) {
             http_response_code(403); // Forbidden

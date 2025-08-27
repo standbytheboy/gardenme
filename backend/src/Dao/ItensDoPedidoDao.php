@@ -6,7 +6,7 @@ use PDO;
 use Garden\core\Database;
 use Garden\models\ItensDoPedido;
 
-class ItensDoPedidoDAO
+class ItensDoPedidoDao
 {
     private PDO $conn;
 

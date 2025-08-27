@@ -2,21 +2,21 @@
 
 namespace Garden\Controllers;
 
-use Garden\DAO\CategoriaDAO;
+use Garden\Dao\CategoriaDao;
 use Garden\models\Categoria;
 
 class CategoriaController
 {
-    private CategoriaDAO $categoriaDAO;
+    private CategoriaDao $categoriaDao;
 
     public function __construct()
     {
-        $this->categoriaDAO = new CategoriaDAO();
+        $this->categoriaDao = new CategoriaDao();
     }
 
     public function listar()
     {
-        $categorias = $this->categoriaDAO->listarTodos();
+        $categorias = $this->categoriaDao->listarTodos();
 
         $resultado = array_map(function ($categoria) {
             return [
@@ -31,7 +31,7 @@ class CategoriaController
 
     public function detalhar(int $id)
     {
-        $categoria = $this->categoriaDAO->buscarPorId($id);
+        $categoria = $this->categoriaDao->buscarPorId($id);
 
         header('Content-Type: application/json');
         if ($categoria) {
@@ -65,7 +65,7 @@ class CategoriaController
             atualizacaoEm: null
         );
 
-        $resultado = $this->categoriaDAO->criar($categoria);
+        $resultado = $this->categoriaDao->criar($categoria);
 
         if ($resultado === 'conflict') {
             http_response_code(409);
@@ -89,7 +89,7 @@ class CategoriaController
             return;
         }
 
-        $categoriaExistente = $this->categoriaDAO->buscarPorId($id);
+        $categoriaExistente = $this->categoriaDao->buscarPorId($id);
 
         if (!$categoriaExistente) {
             http_response_code(404);
@@ -104,7 +104,7 @@ class CategoriaController
             atualizacaoEm: null
         );
 
-        $resultado = $this->categoriaDAO->atualizar($categoriaParaAtualizar);
+        $resultado = $this->categoriaDao->atualizar($categoriaParaAtualizar);
 
         header('Content-Type: application/json');
         if ($resultado === 'conflict') {
@@ -123,8 +123,8 @@ class CategoriaController
         $dadosToken = \Garden\Middleware\AuthMiddleware::verificar();
         $idUsuarioLogado = $dadosToken->data->id_usuario;
 
-        $usuarioDAO = new \Garden\Dao\UsuarioDAO();
-        $usuario = $usuarioDAO->buscarPorId($idUsuarioLogado);
+        $usuarioDao = new \Garden\Dao\UsuarioDao();
+        $usuario = $usuarioDao->buscarPorId($idUsuarioLogado);
 
         if (!$usuario || !$usuario->isAdmin()) {
             http_response_code(403);
@@ -132,8 +132,8 @@ class CategoriaController
             return;
         }
 
-        $categoriaDAO = new CategoriaDAO();
-        $categoria = $categoriaDAO->buscarPorId($id);
+        $categoriaDao = new CategoriaDao();
+        $categoria = $categoriaDao->buscarPorId($id);
 
         if (!$categoria) {
             http_response_code(404);
@@ -141,7 +141,7 @@ class CategoriaController
             return;
         }
 
-        $sucesso = $categoriaDAO->deletar($id);
+        $sucesso = $categoriaDao->deletar($id);
 
         if ($sucesso) {
             http_response_code(200);

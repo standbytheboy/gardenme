@@ -6,7 +6,7 @@ use PDO;
 use Garden\core\Database;
 use Garden\models\Status;
 
-class StatusDAO
+class StatusDao
 {
     private PDO $conn;
 

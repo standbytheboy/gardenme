@@ -5,9 +5,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once dirname(__DIR__) . '/models/Usuario.php';
-require_once dirname(__DIR__) . '/Dao/UsuarioDAO.php';
+require_once dirname(__DIR__) . '/Dao/UsuarioDao.php';
 use Garden\models\Usuario;
-use Garden\Dao\UsuarioDAO;
+use Garden\Dao\UsuarioDao;
 
 function isLoggedIn(): bool {
     return isset($_SESSION['user_token']);
@@ -22,8 +22,8 @@ function getLoggedUser(): ?Usuario {
         return unserialize($_SESSION['user_object']);
     }
 
-    $dao = new UsuarioDAO();
-    $usuario = $dao->getByToken($_SESSION['user_token']);
+    $Dao = new UsuarioDao();
+    $usuario = $Dao->getByToken($_SESSION['user_token']);
 
     if ($usuario) {
         $_SESSION['user_object'] = serialize($usuario);

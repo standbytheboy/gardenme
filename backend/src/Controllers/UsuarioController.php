@@ -2,7 +2,7 @@
 
 namespace Garden\Controllers;
 
-use Garden\DAO\UsuarioDAO;
+use Garden\Dao\UsuarioDao;
 
 class UsuarioController
 {
@@ -16,8 +16,8 @@ class UsuarioController
             return;
         }
 
-        $usuarioDAO = new UsuarioDAO();
-        $usuario = $usuarioDAO->buscarPorId($id);
+        $usuarioDao = new UsuarioDao();
+        $usuario = $usuarioDao->buscarPorId($id);
         header('Content-Type: application/json');
         if ($usuario) {
             $resultado = [
@@ -54,8 +54,8 @@ class UsuarioController
             return;
         }
 
-        $usuarioDAO = new UsuarioDAO();
-        $usuarioExistente = $usuarioDAO->buscarPorId($id);
+        $usuarioDao = new UsuarioDao();
+        $usuarioExistente = $usuarioDao->buscarPorId($id);
 
         if (!$usuarioExistente) {
             http_response_code(404);
@@ -66,7 +66,7 @@ class UsuarioController
         // Lógica de alteração de senha
         if (isset($dadosCorpo['senhaAtual'], $dadosCorpo['novaSenha'])) {
             // Busca a senha hash do usuário no banco de dados para verificação
-            $usuarioComSenha = $usuarioDAO->buscarPorEmail($usuarioExistente->getEmail());
+            $usuarioComSenha = $usuarioDao->buscarPorEmail($usuarioExistente->getEmail());
 
             if (!password_verify($dadosCorpo['senhaAtual'], $usuarioComSenha['senha_hash'])) {
                 http_response_code(401);
@@ -82,7 +82,7 @@ class UsuarioController
 
         // Se o email for atualizado, verifica se já existe
         if (isset($dadosCorpo['email'])) {
-             $usuarioComEmailExistente = $usuarioDAO->buscarPorEmail($dadosCorpo['email']);
+             $usuarioComEmailExistente = $usuarioDao->buscarPorEmail($dadosCorpo['email']);
              if ($usuarioComEmailExistente && (int)$usuarioComEmailExistente['id_usuario'] !== (int)$id) {
                  http_response_code(409);
                  echo json_encode(['mensagem' => 'O e-mail fornecido já está em uso.']);
@@ -90,7 +90,7 @@ class UsuarioController
              }
         }
         
-        $resultado = $usuarioDAO->atualizar($id, $dadosCorpo);
+        $resultado = $usuarioDao->atualizar($id, $dadosCorpo);
 
         header('Content-Type: application/json');
 
@@ -115,8 +115,8 @@ class UsuarioController
             return;
         }
 
-        $usuarioDAO = new UsuarioDAO();
-        $usuario = $usuarioDAO->buscarPorId($id);
+        $usuarioDao = new UsuarioDao();
+        $usuario = $usuarioDao->buscarPorId($id);
 
         if (!$usuario) {
             http_response_code(404);
@@ -124,7 +124,7 @@ class UsuarioController
             return;
         }
 
-        $sucesso = $usuarioDAO->deletar($id);
+        $sucesso = $usuarioDao->deletar($id);
 
         header('Content-Type: application/json');
         if ($sucesso) {

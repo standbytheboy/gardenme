@@ -1,11 +1,11 @@
 <?php
 
-namespace Garden\DAO;
+namespace Garden\Dao;
 use Garden\core\Database;
 use Garden\models\Produto;
 use PDO;
 
-class ProdutoDAO
+class ProdutoDao
 {
     private PDO $conn;
 

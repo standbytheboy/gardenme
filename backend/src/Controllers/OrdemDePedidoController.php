@@ -2,27 +2,27 @@
 
 namespace Garden\Controllers;
 
-use Garden\DAO\OrdemDePedidoDAO;
-use Garden\DAO\ItensDoPedidoDAO;
-use Garden\DAO\ProdutoDAO;
-use Garden\DAO\EnderecoDAO;
+use Garden\Dao\OrdemDePedidoDao;
+use Garden\Dao\ItensDoPedidoDao;
+use Garden\Dao\ProdutoDao;
+use Garden\Dao\EnderecoDao;
 use Garden\models\OrdemDePedido;
 use Garden\models\ItensDoPedido;
 use Garden\Middleware\AuthMiddleware;
 
 class OrdemDePedidoController
 {
-    private OrdemDePedidoDAO $ordemDePedidoDAO;
-    private ItensDoPedidoDAO $itensDoPedidoDAO;
-    private ProdutoDAO $produtoDAO;
-    private EnderecoDAO $enderecoDAO;
+    private OrdemDePedidoDao $ordemDePedidoDao;
+    private ItensDoPedidoDao $itensDoPedidoDao;
+    private ProdutoDao $produtoDao;
+    private EnderecoDao $enderecoDao;
 
     public function __construct()
     {
-        $this->ordemDePedidoDAO = new OrdemDePedidoDAO();
-        $this->itensDoPedidoDAO = new ItensDoPedidoDAO();
-        $this->produtoDAO = new ProdutoDAO();
-        $this->enderecoDAO = new EnderecoDAO(); 
+        $this->ordemDePedidoDao = new OrdemDePedidoDao();
+        $this->itensDoPedidoDao = new ItensDoPedidoDao();
+        $this->produtoDao = new ProdutoDao();
+        $this->enderecoDao = new EnderecoDao(); 
     }
 
     public function detalhar(int $id)
@@ -42,7 +42,7 @@ class OrdemDePedidoController
         // Lógica para verificar se o usuário é admin viria aqui, possivelmente do $dadosToken
         $isAdmin = $dadosToken->data->is_admin ?? false; 
 
-        $pedido = $this->ordemDePedidoDAO->buscarPorId($id);
+        $pedido = $this->ordemDePedidoDao->buscarPorId($id);
 
         if (!$pedido) {
             http_response_code(404);
@@ -56,7 +56,7 @@ class OrdemDePedidoController
             return;
         }
         
-        $itens = $this->itensDoPedidoDAO->buscarPorPedidoId($id);
+        $itens = $this->itensDoPedidoDao->buscarPorPedidoId($id);
 
         header('Content-Type: application/json');
         echo json_encode([
@@ -80,7 +80,7 @@ class OrdemDePedidoController
         $valorFreteCalculado = 25.0; 
 
         foreach ($dadosCorpo->itens as $item) {
-            $produto = $this->produtoDAO->buscarPorId($item->id_produto);
+            $produto = $this->produtoDao->buscarPorId($item->id_produto);
             
             if (!$produto) {
                 http_response_code(404);
@@ -100,7 +100,7 @@ class OrdemDePedidoController
             pagamentoStatus: $dadosCorpo->pagamento_status ?? 'pendente'
         );
 
-        $idNovoPedido = $this->ordemDePedidoDAO->criar($novoPedido);
+        $idNovoPedido = $this->ordemDePedidoDao->criar($novoPedido);
 
         if (!$idNovoPedido) {
             http_response_code(500);
@@ -115,7 +115,7 @@ class OrdemDePedidoController
                 quantidade: $item->quantidade,
                 precoUnitario: $item->preco_unitario // Preço do momento da compra
             );
-            $this->itensDoPedidoDAO->criar($novoItem);
+            $this->itensDoPedidoDao->criar($novoItem);
         }
 
         http_response_code(201);
@@ -126,15 +126,15 @@ class OrdemDePedidoController
     {
         try {
             $idUsuario = $dadosToken->data->id_usuario;
-            $pedidos = $this->ordemDePedidoDAO->buscarPorUsuarioId($idUsuario);
+            $pedidos = $this->ordemDePedidoDao->buscarPorUsuarioId($idUsuario);
 
             $pedidosComDetalhes = [];
             foreach ($pedidos as $pedido) {
                 // Busca os itens do pedido
-                $itensDoPedido = $this->itensDoPedidoDAO->buscarPorPedidoId($pedido->getId());
+                $itensDoPedido = $this->itensDoPedidoDao->buscarPorPedidoId($pedido->getId());
                 $itensComDetalhes = [];
                 foreach ($itensDoPedido as $item) {
-                    $produto = $this->produtoDAO->buscarPorId($item->getIdProduto());
+                    $produto = $this->produtoDao->buscarPorId($item->getIdProduto());
                     $itensComDetalhes[] = [
                         'id_produto' => $item->getIdProduto(),
                         'quantidade' => $item->getQuantidade(),
@@ -144,7 +144,7 @@ class OrdemDePedidoController
                 }
 
                 // Busca o endereço do pedido
-                $endereco = $this->enderecoDAO->buscarPorId($pedido->getIdEndereco());
+                $endereco = $this->enderecoDao->buscarPorId($pedido->getIdEndereco());
                 $enderecoDetalhes = $endereco ? [
                     'id_endereco' => $endereco->getId(),
                     'apelido' => $endereco->getApelido(),
