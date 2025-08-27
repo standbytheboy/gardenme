@@ -1,8 +1,24 @@
+RewriteBase /
+
+# ---------------------- PARA WINDOWS ----------------------
+# RewriteBase /gardenme/backend/public/
+
+# Adicione esta linha para garantir que o cabeçalho de autorização seja passado
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+# Liga o motor de reescrita de URL do Apache
 RewriteEngine On
 
-# Se não for arquivo ou diretório real
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
+
+# Se a URL pedida NÃO for um arquivo que existe de verdade...
 RewriteCond %{REQUEST_FILENAME} !-f
+# ...E se a URL pedida NÃO for uma pasta que existe de verdade...
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Redireciona tudo para index.php
-RewriteRule . index.php [QSA,L]
+# ...então, redirecione a requisição para o arquivo index.php
+RewriteRule ^(.*)$ index.php [QSA,L]

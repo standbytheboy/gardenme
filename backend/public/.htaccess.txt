@@ -1,0 +1,14 @@
+RewriteEngine On
+RewriteBase /gardenme/backend/public/
+
+# Adicione estas duas linhas para passar o cabeçalho de autorização para o PHP
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Se a URL pedida NÃO for um arquivo que existe de verdade...
+RewriteCond %{REQUEST_FILENAME} !-f
+# ...E se a URL pedida NÃO for uma pasta que existe de verdade...
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# ...então, redirecione a requisição para o arquivo index.php
+RewriteRule ^(.*)$ index.php [QSA,L]

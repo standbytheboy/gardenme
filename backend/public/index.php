@@ -3,9 +3,6 @@
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
@@ -29,13 +26,14 @@ try {
 }
 
 use Garden\Middleware\AuthMiddleware;
-use Garden\Controllers\CategoriaController;
 use Garden\Controllers\AuthController;
-use Garden\Controllers\UsuarioController;
+use Garden\Controllers\CategoriaController;
 use Garden\Controllers\DicasController;
 use Garden\Controllers\EnderecoController;
 use Garden\Controllers\FotoController;
+use Garden\Controllers\OrdemDePedidoController; 
 use Garden\Controllers\ProdutoController;
+use Garden\Controllers\UsuarioController;
 
 // **Movido para o topo para que fiquem disponíveis para todas as rotas**
 // define('DB_HOST', 'localhost');
@@ -81,6 +79,7 @@ $requiresAuth = [
     '#^/api/categorias/(\d+)$#' => ['DELETE'],
     '#^/api/usuarios/(\d+)/foto$#' => ['POST', 'DELETE'],
     '#^/api/meus-pedidos$#' => ['GET'],
+    '#^/api/pedidos$#' => ['POST'],
 ];
 
 foreach ($requiresAuth as $pattern => $methods) {
@@ -94,6 +93,17 @@ foreach ($requiresAuth as $pattern => $methods) {
         $dadosToken = $authResult;
         break; 
     }
+}
+
+if ($route === '/api/pedidos' && $method === 'POST' && $dadosToken) {
+    (new OrdemDePedidoController())->criar($dadosToken);
+    exit();
+}
+
+if ($route === '/api/meus-pedidos' && $method === 'GET' && $dadosToken) {
+    $pedidos = (new OrdemDePedidoController())->listarPedidosComDetalhes($dadosToken);
+    echo json_encode($pedidos, JSON_UNESCAPED_UNICODE);
+    exit();
 }
 
 if (preg_match('#^/api/categorias(/(\d+))?$#', $route, $matches)) {
@@ -187,15 +197,15 @@ if (preg_match('#^/api/produtos/primeiro$#', $route)) {
     // Rotas que exigem ser administrador
     if (in_array($method, ['POST', 'PUT', 'DELETE'])) {
         $authResult = AuthMiddleware::verificar();
-        if (isset($authResult->status)) {
-            http_response_code($authResult->status);
-            echo json_encode(['mensagem' => $authResult->mensagem]);
+        if (isset($authResult['status'])) {
+            http_response_code($authResult['status']);
+            echo json_encode(['mensagem' => $authResult['mensagem']]);
             exit();
         }
         
         // Carrega o usuário para verificar se é admin
-        $usuarioDao = new \Garden\Dao\UsuarioDao();
-        $usuario = $usuarioDao->buscarPorId($authResult->data->id_usuario);
+        $usuarioDAO = new \Garden\Dao\UsuarioDAO();
+        $usuario = $usuarioDAO->buscarPorId($authResult->data->id_usuario);
         
         if (!$usuario || !$usuario->isAdmin()) {
             http_response_code(403); // Forbidden
@@ -237,80 +247,6 @@ if (preg_match('#^/api/produtos/primeiro$#', $route)) {
                 break;
         }
     }
-    exit();
-}
-
-// **lógica de pedido integrada ao roteador**
-if ($route === '/api/pedidos' && $method === 'POST') {
-    $authResult = AuthMiddleware::verificar();
-    if (is_array($authResult) && isset($authResult['status'])) {
-        http_response_code($authResult['status']);
-        echo json_encode(['mensagem' => $authResult['mensagem']]);
-        exit();
-    }
-    $dadosToken = $authResult;
-
-    // Recebe e decodifica o payload JSON
-    $data = json_decode(file_get_contents('php://input'), true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        sendResponse(400, 'Erro ao decodificar JSON: ' . json_last_error_msg());
-    }
-
-    // lógica de criação do pedido
-    try {
-        $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $pdo->beginTransaction();
-
-        $stmt = $pdo->prepare("
-            INSERT INTO ordem_de_pedido (id_usuario, id_endereco, id_status, preco_total, valor_frete, pagamento_metodo, pagamento_status) 
-            VALUES (:id_usuario, :id_endereco, :id_status, :preco_total, :valor_frete, :pagamento_metodo, :pagamento_status)
-        ");
-
-        $stmt->bindParam(':id_usuario', $data['id_usuario']);
-        $stmt->bindParam(':id_endereco', $data['id_endereco']);
-        $stmt->bindParam(':id_status', $data['id_status']);
-        $stmt->bindParam(':preco_total', $data['preco_total']);
-        $stmt->bindParam(':valor_frete', $data['valor_frete']);
-        $stmt->bindParam(':pagamento_metodo', $data['pagamento_metodo']);
-        $stmt->bindParam(':pagamento_status', $data['pagamento_status']);
-        $stmt->execute();
-        
-        $id_pedido = $pdo->lastInsertId();
-
-        $stmt_items = $pdo->prepare("
-            INSERT INTO itens_do_pedido (id_pedido, id_produto, quantidade, preco_unitario) 
-            VALUES (:id_pedido, :id_produto, :quantidade, :preco_unitario)
-        ");
-
-        foreach ($data['itens'] as $item) {
-            $stmt_items->bindParam(':id_pedido', $id_pedido);
-            $stmt_items->bindParam(':id_produto', $item['id_produto']);
-            $stmt_items->bindParam(':quantidade', $item['quantidade']);
-            $stmt_items->bindParam(':preco_unitario', $item['preco_unitario']);
-            $stmt_items->execute();
-        }
-
-        $pdo->commit();
-        sendResponse(201, 'Pedido criado com sucesso.', ['id_pedido' => $id_pedido]);
-
-    } catch (Exception $e) {
-        if ($pdo->inTransaction()) {
-            $pdo->rollBack();
-        }
-        sendResponse(500, 'Erro ao criar o pedido: ' . $e->getMessage());
-    }
-    exit();
-
-}
-
-// Roteamento específico para a listagem de pedidos após a autenticação
-if ($route === '/api/meus-pedidos' && $method === 'GET' && $dadosToken) {
-    $controller = new Garden\Controllers\OrdemDePedidoController();
-    $pedidos = $controller->listarPedidosComDetalhes($dadosToken);
-    header('Content-Type: application/json');
-    echo json_encode($pedidos, JSON_UNESCAPED_UNICODE);
     exit();
 }
 
