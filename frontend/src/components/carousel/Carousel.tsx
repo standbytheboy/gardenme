@@ -9,9 +9,10 @@ import { PlantCard } from "../PlantCard";
 import { Plant } from "../interfaces";
 import { CarouselProps, ProdutoBackend } from "../interfaces";
 
-export const Carousel = ({ onPlantClick }: CarouselProps) => {
+export const Carousel = ({ onPlantClick, initialSlideIndex }: CarouselProps) => {
   const prevRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLDivElement>(null);
+  
 
   const [plantCardsData, setPlantCardsData] = useState<Plant[]>([]);
 
@@ -63,6 +64,7 @@ export const Carousel = ({ onPlantClick }: CarouselProps) => {
         centeredSlides={true}
         slidesPerView={3}
         loop={true}
+        initialSlide={initialSlideIndex || 0}
         modules={[EffectCoverflow, Navigation]}
         onBeforeInit={(swiper) => {
           if (typeof swiper.params.navigation !== "boolean") {

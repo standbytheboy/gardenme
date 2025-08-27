@@ -79,6 +79,7 @@ export interface PlantCardProps {
 
 export interface CarouselProps {
   onPlantClick: (plant: Plant) => void;
+  initialSlideIndex?: number;
 }
 
 export interface MainPlantProps {
