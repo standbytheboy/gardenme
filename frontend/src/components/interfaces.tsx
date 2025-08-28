@@ -200,5 +200,5 @@ export interface CartItemType {
   kit: string;
   price: number;
   quantity: number;
-  image?: string; 
+  imageSrc: string; 
 }

@@ -74,7 +74,7 @@ const handleRemoveItem = (id: number, name: string) => {
     kit={item.kit || ""}
     price={item.price}
     quantity={item.quantity}
-    imageSrc={item.image || ""}
+    imageSrc={item.imageSrc || ""}
     onQuantityChange={handleQuantityChange}
     onRemove={handleRemoveItem}
   />
