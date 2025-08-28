@@ -4,9 +4,7 @@ import { Navbar } from "../components/Navbar";
 import Footer from "../components/Footer";
 import CheckoutItem from "../components/CheckoutItem";
 import pixIcon from "../assets/pix.svg";
-import { Plant } from "src/components/interfaces";
-import { AddressType } from "src/components/interfaces";
-import { PaymentMethodType } from "src/components/interfaces";
+import { Plant, AddressType, PaymentMethodType } from "src/components/interfaces";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -150,22 +148,29 @@ const CheckoutPage = () => {
   }, [cartItems, couponCode]);
 
   const handleQuantityChange = (id: number, newQuantity: number) => {
-    setCartItems((prev) =>
-      prev
-        .map((item) =>
-          item.id === id ? { ...item, quantity: newQuantity } : item
-        )
-        .filter((item) => item.quantity > 0)
-    );
-  };
+  setCartItems((prev) => {
+    const updatedItems = prev
+      .map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      )
+      .filter((item) => item.quantity > 0);
 
-  const handleRemoveItem = (id: number, name: string) => {
-    if (window.confirm(`Tem certeza que deseja remover ${name} do carrinho?`)) {
-      setCartItems((currentItems) =>
-        currentItems.filter((item) => item.id !== id)
-      );
-    }
-  };
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+    return updatedItems;
+  });
+};
+
+
+const handleRemoveItem = (id: number, name: string) => {
+  if (window.confirm(`Tem certeza que deseja remover ${name} do carrinho?`)) {
+    setCartItems((prev) => {
+      const updatedItems = prev.filter((item) => item.id !== id);
+      localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+      return updatedItems;
+    });
+  }
+};
+
 
   const handleApplyCoupon = () => {
     alert(`Cupom ${couponCode} aplicado!`);

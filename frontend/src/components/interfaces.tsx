@@ -21,39 +21,39 @@ export interface Category {
 
 export interface Address {
   id: number;
-  nickname: string;
+  apelido: string;
   cep: string;
-  street: string;
-  number: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-  complement?: string; // Opcional
+  bairro: string;
+  numero: string;
+  logradouro: string;
+  cidade: string;
+  estado: string;
+  complemento?: string; 
 }
 
 export interface OrderItem {
-  productId: number;
-  quantity: number;
-  unitPrice: number;
-  name?: string; // Pode ser útil para exibir no histórico
+  id_produto: number;
+  quantidade: number;
+  preco_unitario: number;
+  name?: string;
 }
 
 export interface Order {
-  id: number;
-  totalPrice: number;
-  createdAt: string; // Data de criação
-  statusId: number;
-  items: OrderItem[];
-  shippingAddress: Address | null;
+  id_pedido: number;
+  preco_total: number;
+  criado_em: string;
+  id_status: number;
+  itens: OrderItem[];
+  endereco: Address | null;
 }
 
 export interface CartItem {
-  id: string; // Pode ser um ID composto (productId-kitId)
+  id: number; 
   name: string;
   kit: string;
   price: number;
   quantity: number;
-  image: string;
+  imageSrc: string;
 }
 
 // =================================================================
@@ -63,7 +63,6 @@ export interface CartItem {
 export interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  // Outras props comuns como type, disabled, etc.
 }
 
 export interface Sidebar9Props {
@@ -88,7 +87,8 @@ export interface MainPlantProps {
 }
 
 export interface CartItemProps extends CartItem {
-  onQuantityChange: (id: string, newQuantity: number) => void;
+  onQuantityChange: (id: number, newQuantity: number) => void;
+  onRemove: (id: number, name: string) => void;
 }
 
 export interface AddressFormProps {
@@ -119,5 +119,86 @@ export interface ProdutoBackend {
 
 export interface ServerResponse {
   mensagem: string;
-  // outros campos que a API pode retornar
+  
+}
+
+// =================================================================
+// AUXILIARES
+// =================================================================
+export interface AddressType {
+  id: number;
+  logradouro: string;
+  numero: string;
+  bairro: string;
+  cidade: string;
+  estado: string;
+  cep: string;
+}
+
+export interface PaymentMethodType {
+  type: string;
+  details: string;
+  icon?: string;    
+}
+
+export interface AccordionItemProps {
+  handleToggle: (index: number) => void;
+  active: number | null;
+  item: {
+    header: string;
+    content: string;
+  };
+  index: number;
+}
+
+export interface AccordionProps {
+  items: {
+    header: string;
+    content: string;
+  }[];
+}
+
+export interface AddedToCartCardProps {
+  productName: string;
+  productPrice: string | number;
+}
+
+export interface NavItem {
+  name: string;
+  link: string;
+  items?: NavItem[]; 
+}
+
+export interface LinkProps {
+  item: NavItem;
+  onHover: (item: NavItem, x: string) => void;
+  activeItem?: NavItem | null; 
+}
+
+export interface CategoryCardProps {
+  icon: React.ComponentType<any>;
+  title: string;
+  description: string;
+}
+
+export interface TestimonialCardProps {
+  user: string;
+  role: string;
+  text: string;
+  badge: string;
+  stars?: number;
+}
+
+export interface ProgressBarProps {
+  totalIndicators: number;
+  currentSlide: number;
+}
+
+export interface CartItemType {
+  id: number;
+  name: string;
+  kit: string;
+  price: number;
+  quantity: number;
+  image?: string; 
 }

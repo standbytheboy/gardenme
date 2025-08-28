@@ -30,21 +30,35 @@ const ShoppingCart: React.FC = () => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const handleQuantityChange = (id: string, newQuantity: number) => {
-    setCartItems((prev) =>
-      prev
-        .map((item) =>
-          item.id === id ? { ...item, quantity: newQuantity } : item
-        )
-        .filter((item) => item.quantity > 0)
-    );
-  };
+  const handleQuantityChange = (id: number, newQuantity: number) => {
+  setCartItems((prev) => {
+    const updatedItems = prev
+      .map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      )
+      .filter((item) => item.quantity > 0);
+
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+    return updatedItems;
+  });
+};
+
+const handleRemoveItem = (id: number, name: string) => {
+  if (window.confirm(`Tem certeza que deseja remover ${name} do carrinho?`)) {
+    setCartItems((prev) => {
+      const updatedItems = prev.filter((item) => item.id !== id);
+      localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+      return updatedItems;
+    });
+  }
+};
+
   const navigate = useNavigate();
 
   return (
     <div className="mt-21">
       <Navbar></Navbar>
-      <div className="min-h-[12rem] bg-[#386641] p-20 md:p-20 flex flex-col items-center">
+      <div className="min-h-[70vh] bg-[#386641] p-20 md:p-20 flex flex-col items-center">
         <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">
           Seu Carrinho
         </h1>
@@ -53,12 +67,19 @@ const ShoppingCart: React.FC = () => {
           {/* Lista de Itens do Carrinho */}
           <div className="flex-1 bg-[#F2E8CF] p-6 rounded-4xl shadow-lg">
             {cartItems.map((item) => (
-              <CartItem
-                key={item.id}
-                {...item}
-                onQuantityChange={handleQuantityChange}
-              />
-            ))}
+  <CartItem
+    key={item.id}
+    id={item.id}
+    name={item.name}
+    kit={item.kit || ""}
+    price={item.price}
+    quantity={item.quantity}
+    imageSrc={item.image || ""}
+    onQuantityChange={handleQuantityChange}
+    onRemove={handleRemoveItem}
+  />
+))}
+
           </div>
 
           {/* Resumo do Pedido */}
