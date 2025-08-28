@@ -1,6 +1,7 @@
-RewriteBase /
+# ================= PARA Linux =================
+# RewriteBase /
 
-# ---------------------- PARA WINDOWS ----------------------
+# ================= PARA WINDOWS =================
 # RewriteBase /gardenme/backend/public/
 
 # Adicione esta linha para garantir que o cabeçalho de autorização seja passado
