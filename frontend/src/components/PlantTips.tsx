@@ -1,38 +1,72 @@
-// frontend/src/components/PlantTips.tsx
-import React, { useState, useEffect } from 'react';
-import { Tip } from './interfaces';
+import { Tip } from "./interfaces";
+import React, { useEffect, useState } from "react";
 
 const PlantTips: React.FC = () => {
-  const [tips, setTips] = useState<Tip[]>([]);
+  const [dicasPorProduto, setDicasPorProduto] = useState<Record<string, Tip[]>>({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchTips = async () => {
+    const fetchDicas = async () => {
       const token = localStorage.getItem("userToken");
-      const response = await fetch("/api/dicas", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await response.json();
-      setTips(data);
-      setLoading(false);
+      if (!token) {
+        setError("Você precisa estar logado para ver suas dicas.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/minhas-dicas", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          throw new Error("Erro ao carregar as dicas.");
+        }
+
+        const data: Tip[] = await response.json();
+        
+        // Agrupa as dicas por nome do produto
+        const groupedDicas = data.reduce((acc, dica) => {
+          const { nome_produto } = dica;
+          if (!acc[nome_produto]) {
+            acc[nome_produto] = [];
+          }
+          acc[nome_produto].push(dica);
+          return acc;
+        }, {} as Record<string, Tip[]>);
+
+        setDicasPorProduto(groupedDicas);
+
+      } catch (err) {
+        if (err instanceof Error) setError(err.message);
+        else setError("Ocorreu um erro desconhecido.");
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchTips();
+
+    fetchDicas();
   }, []);
 
-  if (loading) return <p>Carregando suas dicas...</p>;
+  if (loading) return <p className="text-center text-white">Carregando suas dicas personalizadas...</p>;
+  if (error) return <p className="text-center text-red-400">{error}</p>;
+  if (Object.keys(dicasPorProduto).length === 0) return <p className="text-center text-gray-300">Você ainda não possui dicas para as plantas que comprou.</p>;
 
   return (
-    <div className='text-[#F2E8CF]'>
-      {tips.length > 0 ? (
-        tips.map(tip => (
-          <div key={tip.id_dica}>
-            <h3>{tip.titulo_dica}</h3>
-            <p>{tip.conteudo_dica}</p>
-          </div>
-        ))
-      ) : (
-        <p>Nenhuma dica encontrada para as plantas que você comprou.</p>
-      )}
+    <div className="flex flex-col h-[80vh] rounded-lg p-6 space-y-6 overflow-auto">
+      {Object.entries(dicasPorProduto).map(([nomeProduto, dicas]) => (
+        <div key={nomeProduto} className="bg-[#00000050] p-4 rounded-lg shadow-md">
+          <h4 className="text-lg font-bold text-[#A7C957] mb-2">Dicas para: {nomeProduto}</h4>
+          <ul className="space-y-2 list-disc list-inside">
+            {dicas.map((dica) => (
+              <li key={dica.id_dica} className="text-gray-300">
+                <strong className="font-semibold text-white">{dica.titulo_dica}:</strong> {dica.conteudo_dica}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 };

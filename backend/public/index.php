@@ -81,6 +81,7 @@ try {
         '#^/api/usuarios/(\d+)/foto$#' => ['POST', 'DELETE'],
         '#^/api/meus-pedidos$#' => ['GET'],
         '#^/api/pedidos$#' => ['POST'],
+        '#^/api/meus-dicas$#' => ['GET'],
     ];
 
     foreach ($requiresAuth as $pattern => $methods) {
@@ -104,6 +105,11 @@ try {
     if ($route === '/api/meus-pedidos' && $method === 'GET' && $dadosToken) {
         $pedidos = (new OrdemDePedidoController())->listarPedidosComDetalhes($dadosToken);
         echo json_encode($pedidos, JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+
+     if ($route === '/api/minhas-dicas' && $method === 'GET' && $dadosToken) {
+        (new OrdemDePedidoController())->listarDicasDoUsuario($dadosToken);
         exit();
     }
 
