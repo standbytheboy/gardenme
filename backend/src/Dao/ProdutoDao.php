@@ -14,8 +14,7 @@ class ProdutoDao
         $this->conn = Database::getInstance();
     }
 
-    public function listarTodos(): array
-    {
+    public function listarTodos(): array {
         $sql = "SELECT 
                     p.id_produto,
                     p.id_categoria,
@@ -34,8 +33,7 @@ class ProdutoDao
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function buscarPorId(int $id): ?Produto
-    {
+    public function buscarPorId(int $id): ?Produto {
         $sql = "SELECT 
                     p.id_produto,
                     p.id_categoria,
@@ -57,8 +55,7 @@ class ProdutoDao
         return $dados ? $this->mapProduto($dados) : null;
     }
 
-    public function criar(array $produto): int|string|false
-    {
+    public function criar(array $produto): int|string|false {
         $check = $this->conn->prepare("SELECT id_produto FROM produtos WHERE nome_produto = :nome");
         $check->execute(['nome' => $produto['nome_produto']]);
         if ($check->fetch()) {
@@ -80,8 +77,7 @@ class ProdutoDao
         return $ok ? $this->conn->lastInsertId() : false;
     }
 
-    public function atualizar(int $id, array $produto): bool|string
-    {
+    public function atualizar(int $id, array $produto): bool|string {
         $check = $this->conn->prepare("SELECT id_produto FROM produtos WHERE nome_produto = :nome AND id_produto != :id");
         $check->execute(['nome' => $produto['nome_produto'], 'id' => $id]);
         if ($check->fetch()) {
@@ -107,14 +103,13 @@ class ProdutoDao
         ]);
     }
 
-    public function deletar(int $id): bool
-    {
+    public function deletar(int $id): bool {
         $sql = "DELETE FROM produtos WHERE id_produto = :id";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }
-     private function mapProduto(array $dados):Produto
-    {
+    
+    private function mapProduto(array $dados):Produto {
         return new Produto(
             idProduto: $dados['id_produto'],
             idCategoria: $dados['id_categoria'],

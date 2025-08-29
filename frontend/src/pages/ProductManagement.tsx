@@ -1,4 +1,3 @@
-// frontend/src/pages/ProductManagement.tsx
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -73,7 +72,7 @@ const ProductManagement: React.FC = () => {
         // Se o parse falhar, o erro real está no responseText que logamos acima
         setMessage('Erro: A resposta do servidor não é um JSON válido. Verifique o console do navegador para ver a resposta bruta.');
         console.error("Erro de parse JSON:", jsonError);
-        return; // Interrompe a execução
+        return;
       }
 
       if (response.ok) {

@@ -46,32 +46,59 @@ class ProdutoController
         }
     }
 
-    public function criar()
-    {
+
+    public function criar() {
+        // Limpa qualquer saída de buffer anterior
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+        header('Content-Type: application/json; charset=utf-8');
+
         $dadosCorpo = json_decode(file_get_contents('php://input'), true);
 
+        // Validação de entrada
         $erros = [];
         if (empty($dadosCorpo['nome_produto'])) $erros[] = 'O nome do produto é obrigatório.';
         if (!isset($dadosCorpo['preco']) || !is_numeric($dadosCorpo['preco'])) $erros[] = 'O preço é obrigatório e deve ser numérico.';
-        if (!isset($dadosCorpo['id_categoria']) || !is_numeric($dadosCorpo['id_categoria'])) $erros[] = 'Inserir a categoria é obrigatório e deve ser um inteiro.';
+        if (empty($dadosCorpo['id_categoria']) || !is_numeric($dadosCorpo['id_categoria'])) $erros[] = 'Inserir a categoria é obrigatório e deve ser um inteiro.';
 
         if (!empty($erros)) {
-            http_response_code(400);
+            http_response_code(400); // Bad Request
             echo json_encode(['erros' => $erros], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        $resultado = $this->produtoDao->criar($dadosCorpo);
+        try {
+            $resultado = $this->produtoDao->criar($dadosCorpo);
 
-        if ($resultado === 'conflict') {
-            http_response_code(409);
-            echo json_encode(['mensagem' => 'Erro ao criar: nome já em uso.'], JSON_UNESCAPED_UNICODE);
-        } elseif ($resultado) {
-            http_response_code(201);
-            echo json_encode(['id_produto' => $resultado, 'mensagem' => 'Produto criado com sucesso.'], JSON_UNESCAPED_UNICODE);
-        } else {
+            if ($resultado === 'conflict') {
+                http_response_code(409); // Conflict
+                echo json_encode(['mensagem' => 'Erro ao criar: nome de produto já existente.'], JSON_UNESCAPED_UNICODE);
+            } elseif ($resultado) {
+                http_response_code(201); // Created
+                echo json_encode(['id_produto' => $resultado, 'mensagem' => 'Produto criado com sucesso.'], JSON_UNESCAPED_UNICODE);
+            } else {
+                // Este 'else' pode ser removido se a Dao sempre lançar exceção em caso de falha
+                http_response_code(500); // Internal Server Error
+                echo json_encode(['mensagem' => 'Erro desconhecido ao criar produto.'], JSON_UNESCAPED_UNICODE);
+            }
+
+        } catch (\PDOException $e) {
+            // Captura especificamente erros de banco de dados (PDO)
             http_response_code(500);
-            echo json_encode(['mensagem' => 'Erro interno ao criar produto.'], JSON_UNESCAPED_UNICODE);
+            // Loga o erro real para você poder depurar
+            error_log("Erro de PDO em ProdutoController->criar: " . $e->getMessage()); 
+            // Envia uma mensagem genérica para o usuário
+            echo json_encode(['mensagem' => 'Ocorreu um erro interno no servidor ao processar sua solicitação.'], JSON_UNESCAPED_UNICODE);
+
+        } catch (\Exception $e) {
+            // Captura quaisquer outros erros
+            http_response_code(500);
+            error_log("Erro geral em ProdutoController->criar: " . $e->getMessage());
+            echo json_encode(['mensagem' => 'Ocorreu um erro inesperado.'], JSON_UNESCAPED_UNICODE);
+        } finally {
+            // Garante que o script pare após enviar a resposta
+            exit;
         }
     }
 
