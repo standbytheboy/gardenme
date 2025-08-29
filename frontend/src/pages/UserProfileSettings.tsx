@@ -8,6 +8,7 @@ import MyOrders from "../components/MyOrders.tsx";
 import SecuritySettings from "../components/SecuritySettings.tsx";
 import { logout } from "../utils/authUtils";
 import UserData from "../components/UserData.tsx";
+import PlantTips from "../components/PlantTips.tsx";
 
 
 const UserProfileSettings: React.FC = () => {
@@ -113,6 +114,7 @@ const UserProfileSettings: React.FC = () => {
             </h2>
 
             {activeMenuItem === "Meus Dados" && (<UserData />)}
+            {activeMenuItem === "Dicas" && (<PlantTips />)}
             {activeMenuItem === "Segurança" && (<SecuritySettings />)}
             {activeMenuItem === "Endereços" && <AddressManager />}
             {activeMenuItem === "Meus Pedidos" && (<MyOrders />)}
@@ -145,19 +147,10 @@ const UserProfileSettings: React.FC = () => {
                 >
                   <div className="space-y-4">
                     <div>
-                      <label
-                        htmlFor="subject"
-                        className="block text-lg text-[#A7C957] mb-2"
-                      >
+                      <label htmlFor="subject" className="block text-lg text-[#A7C957] mb-2">
                         Assunto
                       </label>
-                      <input
-                        type="text"
-                        id="subject"
-                        className="w-full p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
-                        placeholder="Ex: Problema com pedido, Dúvida sobre planta, etc."
-                        required
-                      />
+                      <input type="text" id="subject" className="w-full p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]" placeholder="Ex: Problema com pedido, Dúvida sobre planta, etc." required />
                     </div>
                     <div>
                       <label

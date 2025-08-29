@@ -188,9 +188,8 @@ try {
             http_response_code(405); // Method Not Allowed
             echo json_encode(['mensagem' => 'Método não permitido para esta rota.']);
         }
-        exit(); // Finaliza o script após tratar a rota
+        exit(); 
 
-    // 2. Rota com ID numérico: /api/produtos/123
     } elseif (preg_match('#^/api/produtos(/(\d+))?$#', $route, $matches)) {
         $id = $matches[2] ?? null;
         $controller = new ProdutoController();
@@ -204,7 +203,6 @@ try {
                 exit();
             }
             
-            // Carrega o usuário para verificar se é admin
             $usuarioDao = new \Garden\Dao\UsuarioDao();
             $usuario = $usuarioDao->buscarPorId($authResult->data->id_usuario);
             
@@ -256,13 +254,11 @@ try {
     exit();
 
 } catch (\Throwable $e) { 
-    // Captura qualquer tipo de erro ou exceção
     http_response_code(500); // Internal Server Error
 
-    // Loga o erro real no log do servidor para você poder depurar
+    // Loga o erro real no log do servidor para poder depurar
     error_log("Erro fatal não capturado no roteador: " . $e->getMessage() . " em " . $e->getFile() . " na linha " . $e->getLine());
     error_log("Stack trace: " . $e->getTraceAsString());
-
 
     // Envia uma resposta JSON genérica para o frontend
     echo json_encode(['mensagem' => 'Ocorreu um erro crítico no servidor.']);

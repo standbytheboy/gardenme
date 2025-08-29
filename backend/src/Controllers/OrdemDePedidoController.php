@@ -6,6 +6,7 @@ use Garden\Dao\OrdemDePedidoDao;
 use Garden\Dao\ItensDoPedidoDao;
 use Garden\Dao\ProdutoDao;
 use Garden\Dao\EnderecoDao;
+use Garden\Dao\DicasDao;
 use Garden\models\OrdemDePedido;
 use Garden\models\ItensDoPedido;
 use Garden\Middleware\AuthMiddleware;
@@ -16,6 +17,7 @@ class OrdemDePedidoController
     private ItensDoPedidoDao $itensDoPedidoDao;
     private ProdutoDao $produtoDao;
     private EnderecoDao $enderecoDao;
+    private DicasDao $dicasDao;
 
     public function __construct()
     {
@@ -23,10 +25,10 @@ class OrdemDePedidoController
         $this->itensDoPedidoDao = new ItensDoPedidoDao();
         $this->produtoDao = new ProdutoDao();
         $this->enderecoDao = new EnderecoDao(); 
+        $this->dicasDao = new DicasDao(); 
     }
 
-    public function detalhar(int $id)
-    {
+    public function detalhar(int $id) {
         // Bloco de verificação de autenticação
         $resultadoAuth = AuthMiddleware::verificar();
         if (isset($resultadoAuth['status']) && $resultadoAuth['status'] === 401) {
@@ -65,8 +67,7 @@ class OrdemDePedidoController
         ]);
     }
     
-    public function criar(object $dadosToken)
-    {
+    public function criar(object $dadosToken) {
         $idUsuario = $dadosToken->data->id_usuario;
         $dadosCorpo = json_decode(file_get_contents('php://input'));
 
@@ -122,8 +123,7 @@ class OrdemDePedidoController
         echo json_encode(['mensagem' => 'Pedido criado com sucesso.', 'data' => ['id_pedido' => $idNovoPedido]]);
     }
 
-        public function listarPedidosComDetalhes(object $dadosToken): array
-    {
+    public function listarPedidosComDetalhes(object $dadosToken): array {
         try {
             $idUsuario = $dadosToken->data->id_usuario;
             $pedidos = $this->ordemDePedidoDao->buscarPorUsuarioId($idUsuario);
@@ -170,6 +170,40 @@ class OrdemDePedidoController
         } catch (\Exception $e) {
             error_log('Erro ao listar pedidos com detalhes: ' . $e->getMessage());
             return [];
+        }
+    }
+
+    public function listarDicasDoUsuario(object $dadosToken) {
+        header('Content-Type: application/json');
+        try {
+            $idUsuario = $dadosToken->data->id_usuario;
+            $pedidos = $this->ordemDePedidoDao->buscarPorUsuarioId($idUsuario);
+
+            if (empty($pedidos)) {
+                echo json_encode([]);
+                return;
+            }
+
+            $idsProdutos = [];
+            foreach ($pedidos as $pedido) {
+                $itensDoPedido = $this->itensDoPedidoDao->buscarPorPedidoId($pedido->getId());
+                foreach ($itensDoPedido as $item) {
+                    $idsProdutos[] = $item->getIdProduto();
+                }
+            }
+
+            // Remove IDs duplicados
+            $idsProdutosUnicos = array_unique($idsProdutos);
+            
+            // Busca todas as dicas de uma vez
+            $dicas = $this->dicasDao->buscarPorProdutoIds($idsProdutosUnicos);
+            
+            echo json_encode($dicas);
+
+        } catch (\Exception $e) {
+            http_response_code(500);
+            error_log('Erro ao listar dicas do usuário: ' . $e->getMessage());
+            echo json_encode(['mensagem' => 'Erro interno ao buscar as dicas.']);
         }
     }
 

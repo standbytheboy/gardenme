@@ -15,8 +15,7 @@ class DicasDao
         $this->conn = Database::getInstance();
     }
 
-    public function criar(Dicas $dica): int|false
-    {
+    public function criar(Dicas $dica): int|false {
         try {
             $sql = 'INSERT INTO dicas (titulo_dica, conteudo_dica, id_produto) VALUES (:titulo, :conteudo, :id_produto)';
 
@@ -33,8 +32,7 @@ class DicasDao
         }
     }
 
-    public function listarTodos(): array
-    {
+    public function listarTodos(): array {
         try {
             $sql = 'SELECT * FROM dicas ORDER BY titulo_dica ASC';
 
@@ -53,25 +51,43 @@ class DicasDao
         }
     }
 
-    public function buscarPorId(int $id): ?Dicas
-    {
+    public function buscarPorProdutoIds(array $idsProdutos): array {
+        if (empty($idsProdutos)) {
+            return [];
+        }
+        // Cria os placeholders para a cláusula IN (?, ?, ?)
+        $placeholders = implode(',', array_fill(0, count($idsProdutos), '?'));
+
         try {
-            $sql = 'SELECT * FROM dicas WHERE id_dica = :id';
+            $sql = "SELECT d.*, p.nome_produto 
+                    FROM dicas d
+                    JOIN produtos p ON d.id_produto = p.id_produto
+                    WHERE d.id_produto IN ($placeholders)";
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt->execute($idsProdutos);
 
-            $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+            $listaDeDados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $dicas = [];
 
-            return $dados ? $this->mapDica($dados) : null;
+            foreach ($listaDeDados as $dados) {
+                $dica = $this->mapDica($dados);
+                $dicas[] = [
+                    'id_dica' => $dica->getId(),
+                    'titulo_dica' => $dica->getTituloDica(),
+                    'conteudo_dica' => $dica->getConteudoDica(),
+                    'id_produto' => $dica->getIdProduto(),
+                    'nome_produto' => $dados['nome_produto']
+                ];
+            }
+            return $dicas;
         } catch (\PDOException $e) {
-            return null;
+            error_log($e->getMessage());
+            return [];
         }
     }
 
-    public function atualizar(Dicas $dica): bool|string
-    {
+    public function atualizar(Dicas $dica): bool|string {
         try {
             $sql = 'UPDATE dicas SET titulo_dica = :titulo, conteudo_dica = :conteudo, id_produto = :id_produto WHERE id_dica = :id';
 
@@ -90,8 +106,7 @@ class DicasDao
         }
     }
 
-    public function deletar(int $id): bool
-    {
+    public function deletar(int $id): bool {
         try {
             $sql = 'DELETE FROM dicas WHERE id_dica = :id';
 
@@ -105,8 +120,7 @@ class DicasDao
         }
     }
 
-    public function mapDica(array $dados): Dicas
-    {
+    public function mapDica(array $dados): Dicas {
         return new Dicas(
             idDica: $dados['id_dica'],
             tituloDica: $dados['titulo_dica'],

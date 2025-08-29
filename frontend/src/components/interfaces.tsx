@@ -14,6 +14,12 @@ export interface Plant {
   quantity: number;
 }
 
+export interface Tip {
+  id_dica: number;
+  titulo_dica: string;
+  conteudo_dica: string;
+}
+
 export interface Category {
   id_categoria: number;
   nome_categoria: string;
