@@ -60,8 +60,58 @@ INSERT INTO estoque (id_produto, quantidade_disponivel) VALUES
 (7, 40), -- Samambaia Americana
 (8, 35); -- Antúrio Vermelho
 
+-- =================================================================
+--  POPULANDO A TABELA DE DICAS (Dicas associadas a produtos específicos)
+-- =================================================================
+
 INSERT INTO dicas (titulo_dica, conteudo_dica, id_produto) VALUES
-('Como Regar Suculentas', 'Suculentas armazenam água. Regue apenas quando o solo estiver completamente seco para evitar o apodrecimento das raízes. No inverno, reduza a frequência.', 1),
+-- Suculenta Echeveria (ID: 1)
+('Rega para Echeveria', 'Suculentas armazenam água. Regue apenas quando o solo estiver completamente seco para evitar o apodrecimento das raízes. No inverno, reduza a frequência.', 1),
+('Luz Solar para Suculentas', 'Echeverias amam luz. Posicione-a em um local que receba pelo menos 6 horas de sol direto por dia para manter suas cores vibrantes.', 1),
+
+-- Cacto Mandacaru (ID: 2)
+('Cuidado com Cactos', 'Cactos como o Mandacaru precisam de pouquíssima água. Regue a cada 15-20 dias no verão e uma vez por mês no inverno. Use um solo bem drenado.', 2),
+
+-- Orquídea Phalaenopsis (ID: 3)
 ('Luz Ideal para Orquídeas', 'Orquídeas Phalaenopsis preferem luz indireta e brilhante. Evite sol direto, que pode queimar as folhas. Uma janela voltada para o leste é ideal.', 3),
+('Umidade para Orquídeas', 'Para simular o ambiente natural, borrife água nas folhas da sua orquídea nos dias mais quentes e secos.', 3),
+
+-- Manjericão (ID: 4)
+('Colheita do Manjericão', 'Para estimular o crescimento, colha as folhas superiores do manjericão regularmente. Isso fará com que a planta crie mais ramos e folhas.', 4),
+
+-- Costela-de-Adão (ID: 5)
+('Limpeza das Folhas', 'As folhas grandes da Costela-de-Adão podem acumular pó. Limpe-as suavemente com um pano úmido para ajudá-la a respirar e fazer fotossíntese melhor.', 5),
+('Tutor para Monstera', 'Para um crescimento vertical e saudável, considere adicionar um tutor (estaca de musgo) no vaso para que a planta possa se apoiar.', 5),
+
+-- Bonsai de Ficus (ID: 6)
 ('Poda de Manutenção do Bonsai', 'Pode regularmente os galhos e folhas do seu Bonsai para manter a forma desejada e estimular um crescimento mais denso e compacto.', 6),
-('Dica de Adubação Geral', 'A maioria das plantas de interior se beneficia de adubação durante a primavera e o verão, que é seu período de crescimento ativo. Siga as instruções do fertilizante.', NULL);
+
+-- Samambaia Americana (ID: 7)
+('Mantenha a Umidade', 'Samambaias amam umidade. Mantenha o solo sempre levemente úmido (mas não encharcado) e borrife água nas folhas com frequência.', 7),
+
+-- Antúrio (ID: 8)
+('Floração do Antúrio', 'Para incentivar a floração, mantenha seu Antúrio em um local com boa iluminação indireta e adube com um fertilizante rico em fósforo durante a primavera.', 8),
+
+-- Zamioculca (ID: 9)
+('A Planta Imortal', 'A Zamioculca é extremamente tolerante a condições de pouca luz e rega infrequente. É a planta perfeita se você esquece de cuidar das suas plantas.', 9),
+
+-- Jiboia (ID: 10)
+('Como Propagar Jiboia', 'É muito fácil criar novas mudas! Corte um galho abaixo de um nó (pequena raiz aérea) e coloque-o em um copo com água. Em poucas semanas, novas raízes surgirão.', 10),
+
+-- Espada-de-São-Jorge (ID: 11)
+('Purificadora de Ar', 'Além de resistente, a Espada-de-São-Jorge é uma das melhores plantas para purificar o ar, removendo toxinas do ambiente. Ótima para quartos!', 11),
+
+-- Rosa do Deserto (ID: 12)
+('Sol Pleno é Essencial', 'Como o nome sugere, a Rosa do Deserto precisa de muito sol direto. Coloque-a no local mais ensolarado da sua casa para garantir flores lindas.', 12),
+
+-- Babosa (Aloe Vera) (ID: 13)
+('Uso Medicinal da Babosa', 'Para usar o gel, corte uma folha mais antiga da base da planta. O gel é ótimo para aliviar queimaduras de sol e hidratar a pele.', 13),
+
+-- Alecrim (ID: 14)
+('Aroma e Sabor', 'O alecrim precisa de sol e pouca água. Esfregue as folhas para liberar seu aroma e use os ramos frescos para temperar pratos e bebidas.', 14),
+
+-- Pé de Limão Siciliano (ID: 15)
+('Frutos em Vaso', 'Para que seu limoeiro dê frutos em um vaso, garanta que ele receba pelo menos 6-8 horas de sol por dia e adubação regular com um fertilizante para cítricos.', 15),
+
+-- Pilea (ID: 16)
+('Girando sua Pilea', 'Gire sua Pilea a cada poucos dias para que todos os lados recebam luz solar. Isso ajuda a manter seu formato simétrico e evita que ela se incline em direção à janela.', 16);

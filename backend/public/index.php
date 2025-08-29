@@ -81,7 +81,7 @@ try {
         '#^/api/usuarios/(\d+)/foto$#' => ['POST', 'DELETE'],
         '#^/api/meus-pedidos$#' => ['GET'],
         '#^/api/pedidos$#' => ['POST'],
-        '#^/api/meus-dicas$#' => ['GET'],
+        '#^/api/minhas-dicas$#' => ['GET'],
     ];
 
     foreach ($requiresAuth as $pattern => $methods) {
