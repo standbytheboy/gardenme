@@ -54,10 +54,10 @@ const PlantTips: React.FC = () => {
   if (Object.keys(dicasPorProduto).length === 0) return <p className="text-center text-gray-300">Você ainda não possui dicas para as plantas que comprou.</p>;
 
   return (
-    <div className="flex flex-col h-[80vh] rounded-lg p-6 space-y-6 overflow-auto">
+    <div className="flex flex-col h-[60vh] rounded-lg p-6 space-y-6">
       {Object.entries(dicasPorProduto).map(([nomeProduto, dicas]) => (
         <div key={nomeProduto} className="bg-[#00000050] p-4 rounded-lg shadow-md">
-          <h4 className="text-lg font-bold text-[#A7C957] mb-2">Dicas para: {nomeProduto}</h4>
+          <h4 className="text-lg font-bold text-[#A7C957] mb-2">{nomeProduto}</h4>
           <ul className="space-y-2 list-disc list-inside">
             {dicas.map((dica) => (
               <li key={dica.id_dica} className="text-gray-300">
