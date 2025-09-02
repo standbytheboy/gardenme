@@ -1,8 +1,8 @@
 # ================= PARA Linux =================
-RewriteBase /
+# RewriteBase /
 
 # ================= PARA WINDOWS =================
-# RewriteBase /gardenme/backend/public/
+RewriteBase /gardenme/backend/public/
 
 # Adicione esta linha para garantir que o cabeçalho de autorização seja passado
 SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1

@@ -109,9 +109,6 @@ const UserProfileSettings: React.FC = () => {
           />
 
           <div className="flex-1 bg-[#00000050] p-4 px-20 rounded-lg shadow-lg overflow-auto flex flex-col justify-center">
-            <h2 className="text-2xl font-bold text-[#A7C957] mb-6">
-              {activeMenuItem}
-            </h2>
 
             {activeMenuItem === "Meus Dados" && (<UserData />)}
             {activeMenuItem === "Dicas" && (<PlantTips />)}

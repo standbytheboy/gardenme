@@ -34,6 +34,7 @@ use Garden\Controllers\FotoController;
 use Garden\Controllers\OrdemDePedidoController; 
 use Garden\Controllers\ProdutoController;
 use Garden\Controllers\UsuarioController;
+use Garden\Controllers\CepController;
 
 // **Movido para o topo para que fiquem disponíveis para todas as rotas**
 // define('DB_HOST', 'localhost');
@@ -163,7 +164,19 @@ try {
             $controller->deletar($id_endereco, $dadosToken);
         }
         exit();
+    } 
+
+// ... (mais abaixo no arquivo) ...
+
+    // ROTA PARA BUSCA DE CEP
+    if (preg_match('#^/api/cep/(\d{8})$#', $route, $matches)) {
+        $cep = $matches[1];
+        if ($method === 'GET') {
+            (new CepController())->buscar($cep);
+        }
+        exit();
     }
+
 
     if (preg_match('#^/api/usuarios/(\d+)$#', $route, $matches)) {
         $id = (int)$matches[1];

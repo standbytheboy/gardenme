@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Pencil,  Plus, TrashCan } from "akar-icons";
+import React, { useState, useEffect, useRef } from "react";
+import { Pencil, Plus, TrashCan } from "akar-icons";
 import { Address, AddressFormProps } from "./interfaces";
 
-const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData }) => {
-  const [formData, setFormData] = useState<Omit<Address, 'id' | 'userId'>>(
+const AddressForm: React.FC<AddressFormProps> = ({
+  onSave,
+  onCancel,
+  initialData,
+}) => {
+  const [formData, setFormData] = useState<Omit<Address, "id" | "userId">>(
     initialData || {
       apelido: "",
       cep: "",
@@ -15,10 +19,47 @@ const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData
       complemento: "",
     }
   );
+  const [cepLoading, setCepLoading] = useState(false);
+  const numeroInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
+    const cep = e.target.value.replace(/[^0-9]/g, "");
+
+    if (cep.length !== 8) {
+      return;
+    }
+
+    setCepLoading(true);
+    try {
+      // Alteração aqui: Chamando a sua própria API no backend
+      const response = await fetch(`/api/cep/${cep}`);
+
+      if (!response.ok) {
+        throw new Error("Não foi possível buscar o CEP.");
+      }
+      const data = await response.json();
+
+      if (data && !data.erro) {
+        setFormData((prev) => ({
+          ...prev,
+          logradouro: data.logradouro || "",
+          bairro: data.bairro || "",
+          cidade: data.cidade || "",
+          estado: data.uf || "",
+        }));
+        // Foca no campo "Número" após preencher os dados
+        numeroInputRef.current?.focus();
+      }
+    } catch (error) {
+      console.error("Erro ao buscar dados do CEP:", error);
+    } finally {
+      setCepLoading(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -28,7 +69,9 @@ const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h3 className="text-xl font-bold text-[#A7C957]">{initialData ? "Editar Endereço" : "Adicionar Novo Endereço"}</h3>
+      <h3 className="text-xl font-bold text-[#A7C957]">
+        {initialData ? "Editar Endereço" : "Adicionar Novo Endereço"}
+      </h3>
       <input
         name="apelido"
         value={formData.apelido}
@@ -41,10 +84,16 @@ const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData
           name="cep"
           value={formData.cep}
           onChange={handleChange}
-          placeholder="CEP"
+          onBlur={handleCepBlur}
+          placeholder={cepLoading ? "Buscando..." : "CEP"}
           required
+          maxLength={9}
           className="w-full p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+          disabled={cepLoading}
         />
+        {cepLoading && (
+          <p className="text-sm text-white animate-pulse">Buscando...</p>
+        )}
       </div>
       <input
         name="logradouro"
@@ -53,14 +102,17 @@ const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData
         placeholder="Logradouro"
         required
         className="w-full p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+        disabled={cepLoading}
       />
       <div className="flex gap-2">
         <input
+          ref={numeroInputRef}
           name="numero"
           value={formData.numero}
           onChange={handleChange}
           placeholder="Número"
           required
+          disabled={cepLoading}
           className="w-1/3 p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
         />
         <input
@@ -68,6 +120,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData
           value={formData.complemento}
           onChange={handleChange}
           placeholder="Complemento"
+          disabled={cepLoading}
           className="w-2/3 p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
         />
       </div>
@@ -76,6 +129,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData
         value={formData.bairro}
         onChange={handleChange}
         placeholder="Bairro"
+        disabled={cepLoading}
         required
         className="w-full p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
       />
@@ -83,6 +137,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData
         <input
           name="cidade"
           value={formData.cidade}
+          disabled={cepLoading}
           onChange={handleChange}
           placeholder="Cidade"
           required
@@ -92,6 +147,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData
           name="estado"
           value={formData.estado}
           onChange={handleChange}
+          disabled={cepLoading}
           placeholder="Estado"
           required
           className="w-1/3 p-3 rounded-md bg-[#00000030] text-[#FFFFFF] placeholder-[#D4EDC8] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
@@ -116,7 +172,6 @@ const AddressForm: React.FC<AddressFormProps> = ({ onSave, onCancel, initialData
   );
 };
 
-
 const AddressList: React.FC<{
   addresses: Address[];
   onEdit: (address: Address) => void;
@@ -125,7 +180,10 @@ const AddressList: React.FC<{
   <div className="space-y-4">
     {addresses.length > 0 ? (
       addresses.map((address) => (
-        <div key={address.id} className="bg-[#00000050] p-4 rounded-lg shadow-md flex justify-between items-start">
+        <div
+          key={address.id}
+          className="bg-[#00000050] p-4 rounded-lg shadow-md flex justify-between items-start"
+        >
           <div>
             <p className="font-semibold text-white">
               {address.apelido ? `${address.apelido} - ` : ""}
@@ -153,11 +211,12 @@ const AddressList: React.FC<{
         </div>
       ))
     ) : (
-      <p className="text-gray-300">Nenhum endereço cadastrado. Adicione um novo endereço para continuar.</p>
+      <p className="text-gray-300">
+        Nenhum endereço cadastrado. Adicione um novo endereço para continuar.
+      </p>
     )}
   </div>
 );
-
 
 const AddressManager: React.FC = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -178,28 +237,31 @@ const AddressManager: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        `/api/usuarios/${userId}/enderecos`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`/api/usuarios/${userId}/enderecos`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         if (Array.isArray(data)) {
           setAddresses(data);
         } else {
-          setError("Resposta inesperada do servidor: A lista de endereços não é um array.");
+          setError(
+            "Resposta inesperada do servidor: A lista de endereços não é um array."
+          );
         }
       } else {
         const errorData = await response.json();
-        setError(errorData.mensagem || "Não foi possível carregar os endereços.");
+        setError(
+          errorData.mensagem || "Não foi possível carregar os endereços."
+        );
       }
     } catch {
-      setError("Erro na conexão com o servidor. Verifique o URL da API e a conexão de rede 1.");
+      setError(
+        "Erro na conexão com o servidor. Verifique o URL da API e a conexão de rede 1."
+      );
     } finally {
       setLoading(false);
     }
@@ -251,7 +313,9 @@ const AddressManager: React.FC = () => {
         setError(errorData.mensagem || "Erro ao salvar o endereço.");
       }
     } catch {
-      setError("Erro na conexão com o servidor. Verifique o URL da API e a conexão de rede 2.");
+      setError(
+        "Erro na conexão com o servidor. Verifique o URL da API e a conexão de rede 2."
+      );
     } finally {
       setLoading(false);
     }
@@ -288,7 +352,9 @@ const AddressManager: React.FC = () => {
         setError(errorData.mensagem || "Erro ao excluir o endereço.");
       }
     } catch {
-      setError("Erro na conexão com o servidor. Verifique o URL da API e a conexão de rede 3.");
+      setError(
+        "Erro na conexão com o servidor. Verifique o URL da API e a conexão de rede 3."
+      );
     } finally {
       setLoading(false);
     }
@@ -311,7 +377,7 @@ const AddressManager: React.FC = () => {
   if (error) {
     return <p className="text-center text-red-400">{error}</p>;
   }
-  
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex justify-between items-center">
@@ -336,7 +402,11 @@ const AddressManager: React.FC = () => {
           initialData={editingAddress}
         />
       ) : (
-        <AddressList addresses={addresses} onEdit={handleEditClick} onDelete={handleDelete} />
+        <AddressList
+          addresses={addresses}
+          onEdit={handleEditClick}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );
