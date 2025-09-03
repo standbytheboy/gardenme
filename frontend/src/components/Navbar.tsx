@@ -7,7 +7,6 @@ import profilePlaceholder from '../assets/profile-picture-placeholder.jpg';
 import { isLoggedIn, getProfilePictureUrl, logout } from "../utils/authUtils";
 import { NavItem, LinkProps } from "./interfaces";
 
-
 const items: NavItem[] = [
   { name: "Início", link: "/" },
   { name: "Plantas", link: "/plantas" },

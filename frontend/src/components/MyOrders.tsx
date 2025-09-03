@@ -40,7 +40,9 @@ const MyOrders: React.FC = () => {
     fetchOrders();
   }, [navigate]);
 
-  if (loading) return <p className="text-center text-white">Carregando pedidos...</p>;
+  if (loading) return <div className="flex justify-center items-center h-[100dvh]">
+        <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
   if (error) return <p className="text-center text-red-400">{error}</p>;
   if (orders.length === 0) return <p className="text-center text-gray-300">Você ainda não tem pedidos.</p>;
 

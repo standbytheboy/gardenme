@@ -92,7 +92,9 @@ const AddressForm: React.FC<AddressFormProps> = ({
           disabled={cepLoading}
         />
         {cepLoading && (
-          <p className="text-sm text-white animate-pulse">Buscando...</p>
+          <div className="flex justify-center items-center h-[100dvh] bg-[#386641]">
+            <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
         )}
       </div>
       <input
@@ -371,7 +373,11 @@ const AddressManager: React.FC = () => {
   };
 
   if (loading) {
-    return <p className="text-center text-white">Carregando endereços...</p>;
+    return (
+      <div className="flex justify-center items-center h-[100dvh]">
+        <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   if (error) {

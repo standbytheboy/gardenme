@@ -49,7 +49,9 @@ const PlantTips: React.FC = () => {
     fetchDicas();
   }, []);
 
-  if (loading) return <p className="text-center text-white">Carregando suas dicas personalizadas...</p>;
+  if (loading) return <div className="flex justify-center items-center h-[100dvh]">
+        <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
   if (error) return <p className="text-center text-red-400">{error}</p>;
   if (Object.keys(dicasPorProduto).length === 0) return <p className="text-center text-gray-300">Você ainda não possui dicas para as plantas que comprou.</p>;
 
