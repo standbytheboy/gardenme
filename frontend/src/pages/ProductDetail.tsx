@@ -73,7 +73,11 @@ const ProductPage: React.FC = () => {
     fetchFirstProduct();
   }, []);
   if (isLoading) {
-    return <div>Carregando planta...</div>;
+    return (
+    <div className="flex justify-center items-center h-[100dvh] bg-[#386641]">
+      <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
   }
 
 

@@ -14,8 +14,6 @@ const items: NavItem[] = [
   { name: "Carrinho", link: "/carrinho" },
 ];
 
-
-
 const Link = ({ item, onHover }: LinkProps) => {
   const navigate = useNavigate();
   const linkRef = useRef<HTMLAnchorElement>(null);
