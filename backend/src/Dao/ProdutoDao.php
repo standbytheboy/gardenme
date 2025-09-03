@@ -26,8 +26,7 @@ class ProdutoDao
                     p.imagem_url,
                     p.atualizado_em
                 FROM produtos p
-                JOIN categorias c ON p.id_categoria = c.id_categoria
-                ORDER BY p.id_produto ASC";
+                JOIN categorias c ON p.id_categoria = c.id_categoria";
 
         if ($termo) {
             $sql .= " WHERE p.nome_produto LIKE :termo OR p.descricao LIKE :termo";
