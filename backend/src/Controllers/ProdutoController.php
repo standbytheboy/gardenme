@@ -122,7 +122,7 @@ class ProdutoController
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
-        'Authorization: ' . 'Bearer CHAVE_API_AQUI',
+        'Authorization: ' . 'Bearer ' . getenv('OPENAI_API_KEY'),
     ]);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
