@@ -11,7 +11,7 @@ const AccordionItem: FC<AccordionItemProps> = ({ handleToggle, active, item, ind
   const isActive = active === index;
 
   return (
-    <li className="list-none m-0 p-0"> {}
+    <li className="list-none m-0 p-0 max-w-[78rem] mx-auto">
       <h2
         className={`
           flex items-center gap-5 h-12 px-2.5 pl-5 rounded-lg cursor-pointer

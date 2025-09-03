@@ -79,7 +79,8 @@ class UsuarioDao
             sobrenome: $dados['sobrenome'],
             email: $dados['email'],
             celular: $dados['celular'] ?? null,
-            isAdmin: $dados['is_admin']
+            isAdmin: $dados['is_admin'],
+            caminhoFotoPerfil: $dados['caminho_foto_perfil'] ?? null
         );
     }
 

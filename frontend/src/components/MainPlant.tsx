@@ -33,21 +33,22 @@ export const MainPlant: React.FC<MainPlantProps> = ({
   return (
     <div>
       {/* Seção Principal da Planta */}
-      <section className="bg-[#386641] p-16 flex flex-col lg:flex-row justify-between items-center gap-8 w-screen mt-20">
+      <section className="bg-[#386641] p-16 px-[10rem] flex flex-col lg:flex-row justify-between items-center gap-8 w-screen mt-20">
         {/* Lado Esquerdo - Detalhes da Planta */}
         <div className="flex-1 text-center lg:text-left max-w-min">
-          <h1 className="text-4xl font-bold mb-2 text-[#A7C957] w-min-[10rem]">
+          <h1 className="text-5xl font-bold mb-8 text-[#A7C957] w-min-[10rem]">
             {currentPlant.name}
           </h1>
           <div className="flex gap-8 items-center w-100">
-            <p className="text-3xl font-bold text-[#F2E8CF] mb-4">
-              R$ {currentPlant.price}
+            <p className="text-4xl font-bold text-[#F2E8CF] mb-4">
+              {` R$ ${currentPlant.price.toFixed(2)
+                .replace(".", ",")}`}
             </p>
-            <p className="text-sm text-[#F2E8CF] mb-4">
+            <p className=" text-[#F2E8CF] mb-4">
               200 pessoas plantaram essa
             </p>
           </div>
-          <p className="mb-4 text-[#F2E8CF] w-[30rem]">{currentPlant.description}</p>
+          <p className="text-xl mb-4 text-[#F2E8CF] w-[30rem]">{currentPlant.description}</p>
 
           {/* Ações e Quantidade */}
           <div className="flex items-center space-x-4 mb-8 w-150">
@@ -81,21 +82,6 @@ export const MainPlant: React.FC<MainPlantProps> = ({
           />
         </div>
 
-        {/* Lado Direito - Botões de Características */}
-        <div className="flex flex-col items-stretch space-y-4 flex-shrink-0">
-          <div className="bg-[#F2E8CF] text-[#386641] text-center font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
-            Umidade
-          </div>
-          <div className="bg-[#F2E8CF] text-[#386641] text-center font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
-            Tamanho
-          </div>
-          <div className="bg-[#F2E8CF] text-[#386641] text-center font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
-            Luz
-          </div>
-          <div className="bg-[#F2E8CF] text-[#386641] text-center font-semibold py-3 px-6 rounded-full hover:bg-opacity-80 transition-colors">
-            Adubação
-          </div>
-        </div>
       </section>
       {/* Acordeão de Dicas */}
       <div className="p-4 bg-[#386641] w-screen">
