@@ -8,6 +8,10 @@ import { Plant, ProdutoBackend } from "../components/interfaces";
 
 const ProductPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+  const handlePlantClick = (plant: Plant) => setMainPlant(plant);
+  const [mainPlant, setMainPlant] = useState<Plant | null>(null);
   
   // Estado do carrinho persistido
   const [cart, setCart] = useState<Plant[]>(() => {
@@ -36,12 +40,6 @@ const ProductPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => setIsModalOpen(false);
-  const handlePlantClick = (plant: Plant) => setMainPlant(plant);
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [mainPlant, setMainPlant] = useState<Plant | null>(null);
-  
   useEffect(() => {
     const fetchFirstProduct = async () => {
       try {
@@ -79,7 +77,6 @@ const ProductPage: React.FC = () => {
     </div>
   );
   }
-
 
   return (
     <div className="bg-[#A7C957] text-[#386641] min-h-screen">

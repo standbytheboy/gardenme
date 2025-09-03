@@ -25,8 +25,10 @@ class ProdutoController
 
     header('Content-Type: application/json; charset=utf-8');
 
+    $termo = $_GET['search'] ?? null;
+
     try {
-        $produtos = $this->produtoDao->listarTodos();
+        $produtos = $this->produtoDao->listarTodos($termo);
         echo json_encode($produtos, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
     } catch (\Exception $e) {
         // Se houver qualquer erro (na consulta ou no encode), captura e retorna um erro 500

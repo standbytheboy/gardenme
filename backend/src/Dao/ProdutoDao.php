@@ -14,7 +14,7 @@ class ProdutoDao
         $this->conn = Database::getInstance();
     }
 
-    public function listarTodos(): array {
+    public function listarTodos(string $termo = null): array {
         $sql = "SELECT 
                     p.id_produto,
                     p.id_categoria,
@@ -29,7 +29,19 @@ class ProdutoDao
                 JOIN categorias c ON p.id_categoria = c.id_categoria
                 ORDER BY p.id_produto ASC";
 
-        $stmt = $this->conn->query($sql);
+        if ($termo) {
+            $sql .= " WHERE p.nome_produto LIKE :termo OR p.descricao LIKE :termo";
+        }
+
+        $sql .= " ORDER BY p.id_produto ASC";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if ($termo) {
+            $stmt->bindValue(':termo', '%' . $termo . '%');
+        }
+
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
