@@ -58,7 +58,7 @@ export const Sidebar9: React.FC<Sidebar9Props> = ({ activeMenuItem, setActiveMen
               className={`group flex items-center h-11 font-sans text-sm capitalize leading-none px-3 rounded-lg opacity-70 transition-all duration-300 ease-in-out text-[#A7C957] ${isOpen ? 'w-full' : 'w-11'} ${activeMenuItem === item.name ? 'bg-[#ffffff50] bg-opacity-10 opacity-100 font-semibold' : 'hover:bg-[#ffffff20] hover:bg-opacity-10 hover:opacity-100'}`}
             >
               <item.icon size={20} className="flex-shrink-0 mr-5" />
-              <p className={`flex-grow-0 flex-shrink-0 whitespace-nowrap overflow-hidden transition-opacity duration-250 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+              <p className={`py-7 flex-grow-0 flex-shrink-0 whitespace-nowrap overflow-hidden transition-opacity duration-250 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                 {item.name}
               </p>
             </button>
