@@ -3,18 +3,21 @@
 namespace Garden\Controllers;
 
 use Garden\Dao\ProdutoDao;
+use Garden\models\Dicas;
+use Garden\Dao\DicasDao;
 
 class ProdutoController
 {
     private ProdutoDao $produtoDao;
+    private DicasDao $dicasDao;
 
     public function __construct()
     {
         $this->produtoDao = new ProdutoDao();
+        $this->dicasDao = new DicasDao();
     }
 
-    public function listar()
-{
+    public function listar(){
     // Limpa qualquer saída de buffer anterior para evitar erros de JSON
     if (ob_get_level()) {
         ob_end_clean();
@@ -34,8 +37,7 @@ class ProdutoController
     exit; // Garante que nada mais é enviado após a resposta
 }
 
-    public function detalhar(int $id)
-    {
+    public function detalhar(int $id){
         $produto = $this->produtoDao->buscarPorId($id);
 
         if ($produto) {
@@ -45,7 +47,6 @@ class ProdutoController
             echo json_encode(['mensagem' => 'Produto não encontrado.'], JSON_UNESCAPED_UNICODE);
         }
     }
-
 
     public function criar() {
         // Limpa qualquer saída de buffer anterior
@@ -76,6 +77,13 @@ class ProdutoController
                 echo json_encode(['mensagem' => 'Erro ao criar: nome de produto já existente.'], JSON_UNESCAPED_UNICODE);
             } elseif ($resultado) {
                 http_response_code(201); // Created
+                $idNovoProduto = (int)$resultado;
+                $nomeProduto = $dadosCorpo['nome_produto'];
+                $descricaoProduto = $dadosCorpo['descricao'] ?? '';
+
+                // Chama a função para gerar e salvar as dicas
+                $this->gerarEsalvarDicasComIA($idNovoProduto, $nomeProduto, $descricaoProduto);
+
                 echo json_encode(['id_produto' => $resultado, 'mensagem' => 'Produto criado com sucesso.'], JSON_UNESCAPED_UNICODE);
             } else {
                 // Este 'else' pode ser removido se a Dao sempre lançar exceção em caso de falha
@@ -102,8 +110,81 @@ class ProdutoController
         }
     }
 
-    public function atualizar(int $id)
-    {
+    private function gerarEsalvarDicasComIA(int $idProduto, string $nomeProduto, string $descricaoProduto){
+    $prompt = "Crie 3 dicas curtas e práticas para cuidar da planta '$nomeProduto'. 
+    Considere a seguinte descrição: '$descricaoProduto'. 
+    As dicas devem ser sobre rega, iluminação e um cuidado especial. 
+    Formate a resposta como JSON no formato:
+    { \"dicas\": [ {\"titulo\": \"...\", \"conteudo\": \"...\"}, ... ] }";
+
+    // Configurar cURL
+    $ch = curl_init('https://api.openai.com/v1/chat/completions');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: ' . 'Bearer CHAVE_API_AQUI',
+    ]);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+        'model' => 'gpt-4o-mini', // pode trocar por gpt-4 ou gpt-3.5-turbo se quiser
+        'messages' => [
+            ['role' => 'system', 'content' => 'Você é um gerador de dicas de plantas. Responda sempre em JSON válido.'],
+            ['role' => 'user', 'content' => $prompt],
+        ],
+        'temperature' => 0.7,
+    ]));
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30); // tempo máximo de 30 segundos
+    $response = curl_exec($ch);
+    if ($response === false) {
+        error_log("Erro ao chamar OpenAI: " . curl_error($ch));
+        curl_close($ch);
+        return;
+    }
+    curl_close($ch);
+
+    $data = json_decode($response, true);
+
+    // Captura o conteúdo retornado
+    $conteudoGerado = $data['choices'][0]['message']['content'] ?? '';
+    if ($conteudoGerado) {
+    $dadosResposta = json_decode($conteudoGerado, true);
+
+    if ($dadosResposta && isset($dadosResposta['dicas'])) {
+        foreach ($dadosResposta['dicas'] as $texto) {
+            $dica = new Dicas(null, $idProduto, $texto);
+            $this->dicasDao->criar($dica);
+        }
+        error_log("✅ Dicas geradas e salvas para o produto ID:");
+    } else {
+        error_log("⚠️ Resposta da IA não está em JSON válido -> " . $conteudoGerado);
+    }
+} else {
+    error_log("⚠️ Não foi possível extrair conteúdo da resposta para produto ID:");
+}
+
+    // Tenta decodificar como JSON
+    $dadosResposta = json_decode($conteudoGerado, true);
+
+    if (isset($dadosResposta['dicas']) && is_array($dadosResposta['dicas'])) {
+        foreach ($dadosResposta['dicas'] as $dicaInfo) {
+            if (!empty($dicaInfo['titulo']) && !empty($dicaInfo['conteudo'])) {
+                $novaDica = new Dicas(
+                    tituloDica: $dicaInfo['titulo'],
+                    conteudoDica: $dicaInfo['conteudo'],
+                    idProduto: $idProduto
+                );
+                $this->dicasDao->criar($novaDica);
+            }
+        }
+    } else {
+        // Se a IA não retornar JSON válido, loga para depuração
+        error_log("Resposta inesperada da OpenAI para '$nomeProduto': " . $conteudoGerado);
+    }
+    
+}
+
+
+    public function atualizar(int $id){
         $dadosCorpo = json_decode(file_get_contents('php://input'), true);
 
         $erros = [];
@@ -129,9 +210,7 @@ class ProdutoController
             echo json_encode(['mensagem' => 'Erro interno ao atualizar produto.'], JSON_UNESCAPED_UNICODE);
         }
     }
-
-    public function deletar(int $id)
-    {
+    public function deletar(int $id){
         $produto = $this->produtoDao->buscarPorId($id);
 
         if (!$produto) {
