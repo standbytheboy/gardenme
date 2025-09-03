@@ -40,17 +40,31 @@ const Link = ({ item, onHover }: LinkProps) => {
   );
 };
 
-const SearchLupe = () => (
-  <div className="relative mr-20 w-[150rem]">
-    <Search className="absolute top-1/2 left-3 -translate-y-1/2 text-[#F2E8CF] w-5 h-5" />
-    <input
-      type="text"
-      placeholder="Pesquisar"
-      className="border-none rounded-full h-9 w-full text-[#F2E8CF] bg-[#F2E8CF50] pl-9 text-base
+const SearchLupe = () => {
+    const [query, setQuery] = useState('');
+    const navigate = useNavigate();
+
+    const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && query.trim() !== '') {
+            navigate(`/plantas?search=${encodeURIComponent(query.trim())}`);
+        }
+    };
+
+    return (
+        <div className="relative mr-20 w-[150rem]">
+            <Search className="absolute top-1/2 left-3 -translate-y-1/2 text-[#F2E8CF] w-5 h-5" />
+            <input
+                type="text"
+                placeholder="Pesquisar"
+                className="border-none rounded-full h-9 w-full text-[#F2E8CF] bg-[#F2E8CF50] pl-9 text-base
                  focus:outline-none focus:border-2 focus:border-[#386641] placeholder:text-[#F2E8CF]"
-    />
-  </div>
-);
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleSearch}
+            />
+        </div>
+    );
+};
 
 export const Navbar = () => {
   const [translateX, setTranslateX] = useState<string>("0");
