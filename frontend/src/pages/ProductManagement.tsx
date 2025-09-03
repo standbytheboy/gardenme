@@ -104,7 +104,7 @@ const ProductManagement: React.FC = () => {
               <label htmlFor="productName" className="block text-[#A7C957] font-semibold mb-2">Nome do Produto</label>
               <input
                 id="productName" type="text" value={productName} onChange={(e) => setProductName(e.target.value)}
-                className="w-full p-3 rounded-md bg-white text-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                className="w-full p-3 rounded-md bg-white text-[#386641] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
                 required
               />
             </div>
@@ -112,7 +112,7 @@ const ProductManagement: React.FC = () => {
               <label htmlFor="description" className="block text-[#A7C957] font-semibold mb-2">Descrição</label>
               <textarea
                 id="description" value={description} onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-3 rounded-md bg-white text-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                className="w-full p-3 rounded-md bg-white text-[#386641] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
                 rows={4}
                 required
               ></textarea>
@@ -122,7 +122,7 @@ const ProductManagement: React.FC = () => {
                 <label htmlFor="price" className="block text-[#A7C957] font-semibold mb-2">Preço (R$)</label>
                 <input
                   id="price" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)}
-                  className="w-full p-3 rounded-md bg-white text-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                  className="w-full p-3 rounded-md bg-white text-[#386641] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
                   required
                 />
               </div>
@@ -146,7 +146,7 @@ const ProductManagement: React.FC = () => {
               <label htmlFor="imageUrl" className="block text-[#A7C957] font-semibold mb-2">URL da Imagem</label>
               <input
                 id="imageUrl" type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full p-3 rounded-md bg-white text-[#A7C957] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
+                className="w-full p-3 rounded-md bg-white text-[#386641] focus:outline-none focus:ring-2 focus:ring-[#A7C957]"
               />
             </div>
             {message && <p className="text-center text-green-500">{message}</p>}
