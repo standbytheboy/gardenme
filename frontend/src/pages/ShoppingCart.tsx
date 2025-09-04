@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { CartItemType } from "src/components/interfaces.tsx";
 
 const ShoppingCart: React.FC = () => {
+  // ... (toda a sua lógica de state e funções permanece a mesma)
   const [cartItems, setCartItems] = useState<CartItemType[]>(() => {
     const storedCart = localStorage.getItem("cartItems");
     return storedCart ? JSON.parse(storedCart) : [];
@@ -19,73 +20,76 @@ const ShoppingCart: React.FC = () => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // Efeito para recalcular sempre que os itens do carrinho mudarem
   useEffect(() => {
     const newSubtotal = cartItems.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0
     );
     setSubtotal(newSubtotal);
-    setTotal(newSubtotal); // Simplificado, você pode adicionar a lógica de frete e desconto aqui
+    setTotal(newSubtotal);
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
   const handleQuantityChange = (id: number, newQuantity: number) => {
-  setCartItems((prev) => {
-    const updatedItems = prev
-      .map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-      .filter((item) => item.quantity > 0);
-
-    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
-    return updatedItems;
-  });
-};
-
-const handleRemoveItem = (id: number, name: string) => {
-  if (window.confirm(`Tem certeza que deseja remover ${name} do carrinho?`)) {
     setCartItems((prev) => {
-      const updatedItems = prev.filter((item) => item.id !== id);
+      const updatedItems = prev
+        .map((item) =>
+          item.id === id ? { ...item, quantity: newQuantity } : item
+        )
+        .filter((item) => item.quantity > 0);
+
       localStorage.setItem("cartItems", JSON.stringify(updatedItems));
       return updatedItems;
     });
-  }
-};
+  };
+
+  const handleRemoveItem = (id: number, name: string) => {
+    if (window.confirm(`Tem certeza que deseja remover ${name} do carrinho?`)) {
+      setCartItems((prev) => {
+        const updatedItems = prev.filter((item) => item.id !== id);
+        localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+        return updatedItems;
+      });
+    }
+  };
 
   const navigate = useNavigate();
 
+
   return (
+    // A classe mt-21 provavelmente corresponde à altura do seu Navbar. Se o Navbar for responsivo,
+    // talvez essa margem também precise ser.
     <div className="mt-21">
-      <Navbar></Navbar>
-      <div className="min-h-[70vh] bg-[#386641] p-20 md:p-20 flex flex-col items-center">
-        <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">
+      <Navbar />
+      <div className="min-h-[70vh] bg-[#386641] px-4 py-16 md:px-8 lg:px-16 lg:py-12 flex flex-col items-center">
+        
+        <h1 className="w-full max-w-7xl text-3xl sm:text-4xl font-bold text-[#A7C957] mb-8 self-start">
           Seu Carrinho
         </h1>
 
         <div className="w-full max-w-7xl flex flex-col lg:flex-row gap-8">
-          {/* Lista de Itens do Carrinho */}
-          <div className="flex-1 bg-[#F2E8CF] p-6 rounded-4xl shadow-lg">
-            {cartItems.map((item) => (
-  <CartItem
-    key={item.id}
-    id={item.id}
-    name={item.name}
-    kit={item.kit || ""}
-    price={item.price}
-    quantity={item.quantity}
-    imageSrc={item.imageSrc || ""}
-    onQuantityChange={handleQuantityChange}
-    onRemove={handleRemoveItem}
-  />
-))}
-
+          <div className="flex-1 bg-[#F2E8CF] p-4 sm:p-6 rounded-4xl shadow-lg">
+            {cartItems.length > 0 ? (
+              cartItems.map((item) => (
+                <CartItem
+                  key={item.id}
+                  id={item.id}
+                  name={item.name}
+                  kit={item.kit || ""}
+                  price={item.price}
+                  quantity={item.quantity}
+                  imageSrc={item.imageSrc || ""}
+                  onQuantityChange={handleQuantityChange}
+                  onRemove={handleRemoveItem}
+                />
+              ))
+            ) : (
+              <p className="text-center text-gray-600 py-8">Seu carrinho está vazio.</p>
+            )}
           </div>
-
-          {/* Resumo do Pedido */}
-          <div className="lg:w-96 bg-[#F2E8CF] p-6 rounded-4xl shadow-lg self-start sticky top-8">
+          <div className="lg:w-96 bg-[#F2E8CF] p-6 rounded-4xl shadow-lg self-start lg:sticky lg:top-24">
             <h2 className="text-xl font-semibold mb-4 text-text-dark">
-              Subtotal
+              Resumo do Pedido
             </h2>
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-600">Subtotal</span>
@@ -113,7 +117,7 @@ const handleRemoveItem = (id: number, name: string) => {
           </div>
         </div>
       </div>
-      <Footer></Footer>
+      <Footer />
     </div>
   );
 };
