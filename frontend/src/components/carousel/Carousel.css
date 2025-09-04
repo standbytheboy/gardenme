@@ -3,3 +3,30 @@
   -webkit-box-reflect: below 1px linear-gradient(transparent, transparent, #0006);
 
 }
+
+.card-container {
+  /* Por padrão, tem o tamanho original do seu card */
+  width: 470px;
+  height: 255px;
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+/* O card em si, que será escalado */
+.scalable-card {
+  /* Garante que a transformação parta do canto superior esquerdo */
+  transform-origin: top left;
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 550px) {
+  .card-container {
+    /* Encolhemos o container para o tamanho do card escalado (470px * 0.7 = 329px) */
+    width: 329px;
+    height: 179px;
+  }
+
+  .scalable-card {
+    /* Aplicamos um "zoom out" de 70% no card */
+    transform: scale(0.7);
+  }
+}
