@@ -232,7 +232,7 @@ const CheckoutPage = () => {
                   ))}
                 </div>
               ) : (
-                <p>Nenhum endereço cadastrado.</p>
+                <p className="text-gray-600">Nenhum endereço cadastrado</p>
               )}
             </div>
 
