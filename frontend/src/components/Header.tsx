@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Navbar } from "./Navbar";
 import GardeningCuate from "../assets/Gardening-cuate.svg";
 import Blooming from "../assets/Blooming-amico.svg";
 import Personal from "../assets/personalGrowth.svg";
@@ -16,40 +15,49 @@ export const Header = () => {
     Reforestation,
     ReforestationCuate,
     Seeding,
-    House
+    House,
   ];
 
   const [currentImage] = useState(() => {
     const randomIndex = Math.floor(Math.random() * images.length);
     return images[randomIndex];
   });
+
   return (
     <div className="bg-[#A7C957]">
-      <section className="flex justify-center gap-20 font-sans bg-[#386641] pt-30 pb-20 rounded-bl-[3rem] rounded-br-[3rem]">
-        <Navbar></Navbar>
-        <div className="left">
-          <h1 className="font-black text-4xl w-2xl text-[#A7C957] mt-[4rem]">
+      <section className="flex flex-col lg:flex-row lg:px-30 items-center lg:items-start justify-center lg:justify-between gap-10 lg:gap-20 font-sans bg-[#386641] pt-30 pb-12 px-6 rounded-bl-[3rem] rounded-br-[3rem]">
+        {/* Texto */}
+        <div className="max-w-xl text-center lg:text-left">
+          <h1 className="font-black text-2xl sm:text-3xl lg:text-4xl text-[#A7C957] mt-6">
             A Natureza na Sua Porta: Plantas e Dicas de Cuidado para seu Lar.
           </h1>
-          <p className="text-[#F2E8CF] w-150">
+          <p className="text-[#F2E8CF] mt-4 text-base sm:text-lg">
             Descubra a planta perfeita para sua casa ou presenteie com vida.
             Entregamos em toda São Paulo!
           </p>
-          <div className="flex">
-            <div className="mt-30 mb-10 mr-10">
-              <h2 className="data font-black text-4xl text-[#A7C957]">1M+</h2>
+
+          {/* Métricas */}
+          <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-8 mt-10">
+            <div>
+              <h2 className="font-black text-3xl sm:text-4xl text-[#A7C957]">
+                1M+
+              </h2>
               <p className="text-[#F2E8CF]">Compradores</p>
             </div>
-            <div className="mt-30">
-              <h2 className="data font-black text-4xl text-[#A7C957]">50+</h2>
+            <div>
+              <h2 className="font-black text-3xl sm:text-4xl text-[#A7C957]">
+                50+
+              </h2>
               <p className="text-[#F2E8CF]">Plantas</p>
             </div>
           </div>
         </div>
+
+        {/* Imagem */}
         <img
           src={currentImage}
           alt="Imagem de jardinagem"
-          className="size-100"
+          className="w-60 sm:w-72 md:w-80 lg:w-[26rem] mt-8 lg:mt-0"
         />
       </section>
     </div>
