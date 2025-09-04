@@ -76,7 +76,7 @@ const CheckoutPage = () => {
   const handleConfirmPurchase = async () => {
     const token = localStorage.getItem("userToken");
     if (!token) {
-      alert("Você precisa estar logado para finalizar a compra.");
+      alert("Você precisa fazer login para finalizar a compra.");
       navigate("/login");
       setIsProcessing(false);
       return;
@@ -186,8 +186,8 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div>
-      <div className="min-h-screen bg-[#386641] p-4 md:p-8 flex flex-col items-center mt-21">
+    <div className="mt-15">
+      <div className="min-h-[45rem] bg-[#386641] mt-15 px-20 md:p-20 flex flex-col items-center">
         <Navbar />
         <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">
           Finalizar Compra

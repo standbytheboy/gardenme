@@ -214,7 +214,7 @@ export const Navbar = () => {
             </div>
           ) : (
             <div className="flex flex-col gap-3 mt-4">
-              <Button onClick={() => navigate("/login")}>Login</Button>
+              <Button onClick={() => navigate("/login")}>Entrar</Button>
               <Button onClick={() => navigate("/signup")}>Cadastre-se</Button>
             </div>
           )}

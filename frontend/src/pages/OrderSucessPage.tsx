@@ -16,9 +16,9 @@ const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="mt-21">
+    <div>
       <Navbar></Navbar>
-      <div className="min-h-[15rem] bg-[#386641] text-center flex flex-col items-center justify-center p-8 md:p-20">
+      <div className="min-h-[45rem] bg-[#386641] mt-15 px-20 md:p-20 flex flex-col items-center">
         <h1 className="text-4xl md:text-5xl font-bold text-[#A7C957] mb-6">
           Pedido Realizado com Sucesso!
         </h1>
