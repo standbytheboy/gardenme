@@ -4,13 +4,19 @@ import { Navbar } from "../components/Navbar";
 import Footer from "../components/Footer";
 import CheckoutItem from "../components/CheckoutItem";
 import pixIcon from "../assets/pix.svg";
-import { Plant, AddressType, PaymentMethodType } from "src/components/interfaces";
+import {
+  Plant,
+  AddressType,
+  PaymentMethodType,
+} from "src/components/interfaces";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
 
   const [addresses, setAddresses] = useState<AddressType[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<AddressType | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<AddressType | null>(
+    null
+  );
   const [isProcessing, setIsProcessing] = useState(false);
   const [cartItems, setCartItems] = useState<Plant[]>([]);
   const [couponCode, setCouponCode] = useState("");
@@ -148,29 +154,27 @@ const CheckoutPage = () => {
   }, [cartItems, couponCode]);
 
   const handleQuantityChange = (id: number, newQuantity: number) => {
-  setCartItems((prev) => {
-    const updatedItems = prev
-      .map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-      .filter((item) => item.quantity > 0);
-
-    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
-    return updatedItems;
-  });
-};
-
-
-const handleRemoveItem = (id: number, name: string) => {
-  if (window.confirm(`Tem certeza que deseja remover ${name} do carrinho?`)) {
     setCartItems((prev) => {
-      const updatedItems = prev.filter((item) => item.id !== id);
+      const updatedItems = prev
+        .map((item) =>
+          item.id === id ? { ...item, quantity: newQuantity } : item
+        )
+        .filter((item) => item.quantity > 0);
+
       localStorage.setItem("cartItems", JSON.stringify(updatedItems));
       return updatedItems;
     });
-  }
-};
+  };
 
+  const handleRemoveItem = (id: number, name: string) => {
+    if (window.confirm(`Tem certeza que deseja remover ${name} do carrinho?`)) {
+      setCartItems((prev) => {
+        const updatedItems = prev.filter((item) => item.id !== id);
+        localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+        return updatedItems;
+      });
+    }
+  };
 
   const handleApplyCoupon = () => {
     alert(`Cupom ${couponCode} aplicado!`);
@@ -178,23 +182,24 @@ const handleRemoveItem = (id: number, name: string) => {
 
   return (
     <div>
-      <div className="min-h-screen bg-[#386641] p-4 md:p-8 flex flex-col items-center mt-21">
-        <Navbar />
-        <h1 className="w-full max-w-7xl text-4xl font-bold text-[#A7C957] mb-8 self-start">
+      <Navbar />
+      <div className="min-h-screen bg-[#386641] px-4 py-16 md:px-8 lg:p-12 flex flex-col items-center mt-21">
+        <h1 className="w-full max-w-7xl text-3xl sm:text-4xl font-bold text-[#A7C957] mb-8 self-start">
           Finalizar Compra
         </h1>
 
         <div className="w-full max-w-7xl flex flex-col lg:flex-row gap-8">
+          {/* Coluna da Esquerda (Informações) */}
           <div className="flex-1 flex flex-col gap-8">
             {/* Seus Endereços */}
-            <div className="bg-[#F2E8CF] p-6 rounded-4xl">
-              <div className="flex justify-between items-center mb-4">
+            <div className="bg-[#F2E8CF] p-4 sm:p-6 rounded-4xl">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
                 <h2 className="text-xl font-semibold text-[#386641]">
                   Seus Endereços
                 </h2>
                 <button
                   onClick={() => navigate("/perfil")}
-                  className="bg-transparent text-[#6CAF4B] border border-[#6CAF4B] py-2 px-4 rounded-full text-sm font-semibold hover:bg-[#A7C957] hover:text-[#386641] transition-colors duration-300"
+                  className="bg-transparent text-[#6CAF4B] border border-[#6CAF4B] py-2 px-4 rounded-full text-sm font-semibold hover:bg-[#A7C957] hover:text-[#386641] transition-colors duration-300 w-full sm:w-auto"
                 >
                   Adicionar Endereço
                 </button>
@@ -202,33 +207,39 @@ const handleRemoveItem = (id: number, name: string) => {
               {addresses.length > 0 ? (
                 <div className="flex flex-col gap-4">
                   {addresses.map((addr) => (
-                    <label key={addr.id} className="flex items-center p-3 rounded-lg cursor-pointer">
+                    <label
+                      key={addr.id}
+                      className="flex items-start p-3 rounded-lg cursor-pointer hover:bg-green-100/50 transition-colors"
+                    >
                       <input
                         type="radio"
                         name="address"
                         value={addr.id}
                         checked={selectedAddress?.id === addr.id}
                         onChange={() => setSelectedAddress(addr)}
-                        className="mr-3"/>
-                          <div>
-                            <p className="font-semibold text-[#386641]">
-                              {addr.logradouro}, {addr.numero}
-                            </p>
-                            <p className="text-gray-500">{addr.bairro}</p>
-                            <p className="text-gray-500">
-                              {addr.cidade} - {addr.estado}, {addr.cep}
-                            </p>
-                          </div>
+                        className="peer hidden"
+                      />
+                      {/* Radio customizado */}
+                      <span className="w-3 h-3 mr-4 rounded-full border border-gray-500 peer-checked:border-none peer-checked:bg-[#386641] transition-all"></span>
+                      <div>
+                        <p className="font-semibold text-[#386641]">
+                          {addr.logradouro}, {addr.numero}
+                        </p>
+                        <p className="text-gray-500 text-sm">{addr.bairro}</p>
+                        <p className="text-gray-500 text-sm">
+                          {addr.cidade} - {addr.estado}, {addr.cep}
+                        </p>
+                      </div>
                     </label>
                   ))}
                 </div>
               ) : (
-                <p>Nenhum endereço cadastrado.</p>
+                <p className="text-gray-600">Nenhum endereço cadastrado.</p>
               )}
             </div>
 
             {/* Método de Pagamento */}
-            <div className="bg-[#F2E8CF] p-6 rounded-4xl">
+            <div className="bg-[#F2E8CF] p-4 sm:p-6 rounded-4xl">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-[#386641]">
                   Método de Pagamento
@@ -249,72 +260,84 @@ const handleRemoveItem = (id: number, name: string) => {
             </div>
 
             {/* Seus Itens */}
-            <div className="bg-[#F2E8CF] p-6 rounded-4xl">
+            <div className="bg-[#F2E8CF] p-4 sm:p-6 rounded-4xl">
               <h2 className="text-xl font-semibold text-[#386641] mb-4">
                 Seus Itens
               </h2>
-              {cartItems.map((item) => (
-                <CheckoutItem
-                  key={item.id}
-                  item={item}
-                  onQuantityChange={handleQuantityChange}
-                  onRemove={handleRemoveItem}
-                />
-              ))}
+              {cartItems.length > 0 ? (
+                cartItems.map((item) => (
+                  <CheckoutItem
+                    key={item.id}
+                    item={item}
+                    onQuantityChange={handleQuantityChange}
+                    onRemove={handleRemoveItem}
+                  />
+                ))
+              ) : (
+                <p className="text-center text-gray-600 py-4">
+                  Seu carrinho está vazio.
+                </p>
+              )}
             </div>
           </div>
 
-          {/* Resumo do Pedido */}
-          <div className="lg:w-96 bg-[#F2E8CF] p-6 rounded-4xl self-start sticky top-8">
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-4 text-[#386641]">
-                Resumo do Pedido
-              </h2>
-              <div className="flex items-center border border-gray-300 rounded-full overflow-hidden mb-4">
-                <input
-                  type="text"
-                  placeholder="Cupom de Desconto"
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  className="flex-grow py-2 px-4 bg-transparent text-[#386641] placeholder-gray-500 focus:outline-none"
-                />
-                <button
-                  onClick={handleApplyCoupon}
-                  className="bg-[#A7C957] text-[#386641] py-2 px-4 rounded-r-full hover:bg-opacity-90 transition duration-300 text-sm font-semibold whitespace-nowrap"
-                >
-                  Aplicar
-                </button>
-              </div>
+          {/* Resumo do pedido */}
+          <div className="w-full lg:w-96 bg-[#F2E8CF] p-4 md:p-6 rounded-3xl self-start lg:sticky lg:top-8 flex-shrink-0">
+            <h2 className="text-xl font-semibold text-[#386641] mb-4">
+              Resumo do Pedido
+            </h2>
 
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">Subtotal</span>
+            {/* Cupom */}
+            <div className="flex items-center mb-4 border border-gray-300 rounded-full overflow-hidden">
+              <input
+                type="text"
+                placeholder="Cupom de Desconto"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value)}
+                className="flex-grow py-2 px-4 bg-transparent text-[#386641] placeholder-gray-500 focus:outline-none"
+              />
+              <button
+                onClick={handleApplyCoupon}
+                className="bg-[#A7C957] text-[#386641] py-2 px-4 rounded-r-full hover:bg-opacity-90 transition duration-300 text-sm font-semibold whitespace-nowrap"
+              >
+                Aplicar
+              </button>
+            </div>
+
+            {/* Valores */}
+            <div className="flex flex-col gap-2 mb-4">
+              <div className="flex justify-between text-gray-600">
+                <span>Subtotal</span>
                 <span className="font-semibold text-[#386641]">
                   R$ {subtotal.toFixed(2).replace(".", ",")}
                 </span>
               </div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">Frete</span>
+              <div className="flex justify-between text-gray-600">
+                <span>Frete</span>
                 <span className="font-semibold text-[#386641]">
                   R$ {shippingCost.toFixed(2).replace(".", ",")}
                 </span>
               </div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-gray-600">Descontos aplicados</span>
-                <span className="font-semibold text-[#E53E3E]">
+              <div className="flex justify-between text-red-600">
+                <span>Descontos aplicados</span>
+                <span>
                   - R$ {discountsApplied.toFixed(2).replace(".", ",")}
                 </span>
               </div>
-              <hr className="my-4 border-gray-300" />
-              <div className="flex justify-between items-center text-2xl font-bold mb-6 text-[#386641]">
-                <span>Total</span>
-                <span>R$ {total.toFixed(2).replace(".", ",")}</span>
-              </div>
             </div>
+
+            <hr className="my-4 border-gray-300" />
+
+            <div className="flex justify-between items-center text-2xl font-bold text-[#386641] mb-4">
+              <span>Total</span>
+              <span>R$ {total.toFixed(2).replace(".", ",")}</span>
+            </div>
+
             <button
               onClick={handleConfirmPurchase}
-              disabled={isProcessing}
+              disabled={isProcessing || cartItems.length === 0}
               className={`w-full py-3 rounded-full text-lg font-semibold transition duration-300 ${
-                isProcessing
+                isProcessing || cartItems.length === 0
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-[#A7C957] text-[#386641] hover:bg-opacity-90 cursor-pointer"
               }`}
