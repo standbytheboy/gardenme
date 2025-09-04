@@ -24,7 +24,7 @@ export const Header = () => {
   });
 
   return (
-    <div className="bg-[#A7C957]">
+    <div className="bg-[#386641] py-[5rem]">
       <section className="flex flex-col lg:flex-row lg:px-30 items-center lg:items-start justify-center lg:justify-between gap-10 lg:gap-20 font-sans bg-[#386641] pt-30 pb-12 px-6 rounded-bl-[3rem] rounded-br-[3rem]">
         {/* Texto */}
         <div className="max-w-xl text-center lg:text-left">
