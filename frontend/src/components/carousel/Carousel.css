@@ -1,7 +1,6 @@
 /* Manter o box-reflect aqui, pois não há equivalente direto no Tailwind */
 .swiper .swiper-slide {
   -webkit-box-reflect: below 1px linear-gradient(transparent, transparent, #0006);
-
 }
 
 .card-container {

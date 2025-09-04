@@ -59,7 +59,7 @@ export const Carousel = ({ onPlantClick, initialSlideIndex = 0 }: CarouselProps)
       <div ref={nextRef} className="absolute right-2 md:right-10 top-1/2 -translate-y-1/2 z-20 cursor-pointer text-2xl md:text-3xl font-bold text-black">›</div>
 
       <Swiper
-        // MUDANÇA 3: A prop 'onSwiper' agora apenas armazena a instância no nosso estado
+        // 'onSwiper' agora apenas armazena a instância no nosso estado
         onSwiper={setSwiper}
         
         grabCursor={true}
