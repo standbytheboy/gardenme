@@ -135,8 +135,6 @@ const ProductPage: React.FC = () => {
             <section className="py-12 w-screen">
               <h2 className="text-3xl font-bold text-center mb-8">Mais Vendidas</h2>
               <Carousel onPlantClick={handlePlantClick} initialSlideIndex={4}/>
-              <div className="h-10"></div>
-              <Carousel onPlantClick={handlePlantClick} initialSlideIndex={9}/>
             </section>
 
             <section className="py-12 w-screen">
@@ -144,15 +142,11 @@ const ProductPage: React.FC = () => {
                 Melhores Para Iniciantes
               </h2>
               <Carousel onPlantClick={handlePlantClick} initialSlideIndex={13} />
-              <div className="h-10"></div>
-              <Carousel onPlantClick={handlePlantClick} initialSlideIndex={17}/>
             </section>
 
             <section className="py-12 w-screen">
               <h2 className="text-3xl font-bold text-center mb-8">Novidades</h2>
               <Carousel onPlantClick={handlePlantClick} initialSlideIndex={3}/>
-              <div className="h-10"></div>
-              <Carousel onPlantClick={handlePlantClick} initialSlideIndex={7}/>
             </section>
           </>
         )}
