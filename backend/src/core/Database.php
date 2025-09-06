@@ -26,7 +26,7 @@ class Database
                 $db_user = getenv('DB_USER') ?: 'gardenme';
                 $db_pass = getenv('DB_PASS') ?: 'senha_forte';
 
-                $dsn = 'mysql:host=' . $db_host . ';port=3306;dbname=' . $db_name . ';charset=utf8';
+                $dsn = 'mysql:host=' . $db_host . ';port=3306;dbname=' . $db_name . ';charset=utf8mb4';
 
                 self::$instance = new PDO($dsn, $db_user, $db_pass);
 
