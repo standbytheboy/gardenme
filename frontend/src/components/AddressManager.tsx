@@ -68,7 +68,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 mt-20">
       <h3 className="text-xl font-bold text-[#A7C957]">
         {initialData ? "Editar Endereço" : "Adicionar Novo Endereço"}
       </h3>
@@ -92,7 +92,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
           disabled={cepLoading}
         />
         {cepLoading && (
-          <div className="flex justify-center items-center h-[100dvh] bg-[#386641]">
+          <div className="flex justify-center items-center">
             <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
         )}

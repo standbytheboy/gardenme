@@ -179,7 +179,7 @@ export const Navbar = () => {
 
       {/* Drawer Mobile */}
       {menuOpen && (
-        <div className="lg:hidden fixed top-[70px] left-0 w-full bg-[#386641] flex flex-col items-center gap-4 p-12 shadow-lg z-10">
+        <div className="lg:hidden fixed top-[100px] left-0 w-full bg-[#386641] flex flex-col items-center gap-4 p-12 shadow-lg z-10">
           <SearchLupe />
           {items.map((item) => (
             <a

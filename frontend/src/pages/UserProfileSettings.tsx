@@ -101,11 +101,11 @@ const UserProfileSettings: React.FC = () => {
       <main className="flex-grow bg-[#386641] pt-16 md:pt-20">
         <div className="container mx-auto p-4 md:p-8">
           {/* Container principal que mantém o seu tamanho personalizado */}
-          <div className="relative flex flex-col lg:flex-row gap-8 w-full pt-12 max-w-7xl mx-auto min-h-[80vh]">
+          <div className="relative flex flex-col lg:flex-row gap-8 w-full pt-12 max-w-7xl mx-auto min-h-[85vh]">
             {/* Botão de Menu para Mobile (permanece igual) */}
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="lg:hidden absolute top-2 right-2 z-30 p-2 bg-[#00000050] rounded-full text-white"
+              className="lg:hidden absolute top-2 right-2 z-30 p-2 bg-[#00000050] rounded-full text-white mt-12"
               aria-label="Abrir menu"
             >
               {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
@@ -114,7 +114,7 @@ const UserProfileSettings: React.FC = () => {
             {/* Sidebar */}
             <div
               className={`
-            absolute lg:static h-[77vh] z-20 
+            absolute lg:static h-[79vh] z-20
             transition-transform duration-300 ease-in-out
             w-64 md:w-72  /* Adicione uma largura fixa para a sidebar no modo mobile */
             ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
